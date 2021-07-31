@@ -1,4 +1,4 @@
-package sang.gondroid.myapplication.view
+package sang.gondroid.myapplication.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
