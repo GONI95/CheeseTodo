@@ -1,7 +1,8 @@
-package sang.gondroid.myapplication
+package sang.gondroid.myapplication.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import sang.gondroid.myapplication.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
