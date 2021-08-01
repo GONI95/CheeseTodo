@@ -1,23 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="viewModel"
             type="sang.gondroid.myapplication.presentation.home.HomeViewModel" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.home.HomeFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="home" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="?attr/toolbarStyle"
+            android:layout_width="0dp"
+            android:background="@color/cheese_light_lv"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/welcomeUserTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/cute_light"
+                android:maxWidth="250dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="10dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="어서오세요." />
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            app:tabIndicatorFullWidth="false"
+            app:tabMode="auto"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@color/light_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
+
+        <HorizontalScrollView
+            android:id="@+id/filterScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout"
+            android:scrollbars="none">
+            <!--
+            chipSpacingHorizontal, chipSpacingVertical : padding
+            singleLine : 한줄로 처리
+            singleSelection : 하나만 선택 가능
+            checkedChip :
+            selectionRequired : 무조건 하나는 선택이 되어야함을 의미
+            -->
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/filterChipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="4dp"
+                app:chipSpacingVertical="6dp"
+                app:singleLine="true"
+                app:singleSelection="true"
+                app:checkedChip="@id/chipInitialize"
+                android:paddingHorizontal="12dp"
+                app:selectionRequired="true"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipInitialize"
+                    android:text="@string/initialize"
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
+                    style="@style/Widget.CheeseTodo.Chip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipIconEnabled="true"
+                    android:visibility="visible"
+                    app:chipIconTint="@color/icon_filter_chip_state_list_reset"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipLowImportance"
+                    style="@style/Widget.CheeseTodo.Chip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hight_importance"
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
+                    app:chipIconEnabled="true"
+                    app:chipIconTint="@color/icon_filter_chip_state_list_reset" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFastDate"
+                    style="@style/Widget.CheeseTodo.Chip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fast_date"
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
+                    app:chipIconEnabled="true"
+                    app:chipIconTint="@color/icon_filter_chip_state_list_reset" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filterScrollView"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addPlanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:src="@drawable/ic_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:tint="@color/white"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

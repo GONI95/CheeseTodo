@@ -4,7 +4,9 @@
     <string name="home">Home</string>
     <string name="my">My</string>
     <string name="review">Review</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="initialize">초기화</string>
+    <string name="hight_importance">중요도 순</string>
+    <string name="fast_date">날짜 빠른 순</string>
 
 </resources>

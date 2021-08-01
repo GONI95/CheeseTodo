@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:andriod="http://schemas.android.com/aapt">
+    <item android:color="@color/cheese_light_lv3" android:state_checked="true" />
+    <item android:color="@color/white" />
+    <!-- 선택이 된 경우와 아닌 경우의 색상 설정 -->
+</selector>

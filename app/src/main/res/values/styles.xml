@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar 설정 -->
+    <style name="Widget.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:title">@null</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+
+    <!-- Chip 스타일 설정 -->
+    <style name="Widget.CheeseTodo.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipStrokeColor">@color/light_gray</item>
+        <item name="chipStrokeWidth">0.5dp</item>
+        <item name="chipBackgroundColor">@color/bg_filter_chip_state_list</item>
+        <item name="android:textColor">@color/tv_filter_chip_state_list</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="chipIconTint">@color/icon_filter_chip_state_list_reset</item>
+        <item name="chipIconSize">12dp</item>
+        <item name="iconStartPadding">6dp</item>
+        <item name="iconEndPadding">2dp</item>
+    </style>
+
+
+    <!-- Chip Font 스타일 -->
+    <style name="Widget.CheeseTodo.ChipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:fontFamily">@font/nanum_gothic</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+</resources>
