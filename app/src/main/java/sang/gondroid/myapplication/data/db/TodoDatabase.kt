@@ -11,7 +11,7 @@ import sang.gondroid.myapplication.data.entity.TodoEntity
 )
 abstract class TodoDatabase : RoomDatabase() {
     companion object {
-        const val DB_NAME = "PlanDatabase.db"
+        const val DB_NAME = "TodoDatabase.db"
     }
 
     abstract fun todoDao() : TodoDao

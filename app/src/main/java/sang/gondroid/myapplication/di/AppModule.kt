@@ -17,15 +17,28 @@ import sang.gondroid.myapplication.presentation.my.MyViewModel
 import sang.gondroid.myapplication.presentation.review.ReviewViewModel
 
 val appModule = module {
+
+    /**
+     * CoroutineDispatcher
+     */
     single<CoroutineDispatcher>(named("main")) { Dispatchers.Main }
     single<CoroutineDispatcher>(named("io")) { Dispatchers.IO }
 
+    /**
+     * ViewModel
+     */
     viewModel { HomeViewModel() }
     viewModel { MyViewModel() }
     viewModel { ReviewViewModel() }
 
+    /**
+     * Repository
+     */
     single<TodoRepository> { TodoRepositoryImpl() }
 
+    /**
+     * Database
+     */
     single<TodoDatabase> { provideDB(androidApplication()) }
     single<TodoDao> { provideTodoDao(get()) }
 }
