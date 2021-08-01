@@ -2,6 +2,7 @@ package com.gondroid.cheeseplan.presentation.base
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Job
+import sang.gondroid.myapplication.util.Constants
 
 
 /**
@@ -20,6 +22,7 @@ import kotlinx.coroutines.Job
  *
  */
 abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment() {
+    private val THIS_NAME = this::class.simpleName
 
     /**
      * 1. Generic 타입으로 받기때문에 viewModel과 viewBining은 Generic 타입으로 선언이 가능
@@ -30,19 +33,20 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
     protected lateinit var binding : VB
     private lateinit var fetchJob: Job
 
-    abstract fun getViewBinding() : VB
+    abstract fun getDataBinding() : VB
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true) //없으면 메뉴가 출력되지 않음
-        binding = getViewBinding()
+        binding = getDataBinding()
+        binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
         initState()
     }
 
@@ -53,11 +57,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
      * 4. 해당 Activity가 종료될 때 coroutine이 살아있으면 중지
      */
     open fun initState() {
-        /*  //없어도 문제없는디?
-        arguments?.let {
-            viewModel.storeState(it)
-        }
-         */
         initViews()
         fetchJob = viewModel.fetchData()
         observeData()

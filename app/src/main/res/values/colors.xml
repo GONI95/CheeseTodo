@@ -7,4 +7,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="sky">#34C9ED</color>
+    <color name="light_sky">#CAFBFF</color>
+
+    <color name="light_gray">#D5D5D5</color>
+    <color name="gray">#A3A3A3</color>
+
+    <color name="cheese_thick">#FF9C07</color>
+    <color name="cheese_light_lv">#FDC418</color>
+    <color name="cheese_light_lv1">#FFDA6A</color>
+    <color name="cheese_light_lv2">#FFE390</color>
+    <color name="cheese_light_lv3">#FFF0C3</color>
+    <color name="cheese">#FFAC07</color>
 </resources>

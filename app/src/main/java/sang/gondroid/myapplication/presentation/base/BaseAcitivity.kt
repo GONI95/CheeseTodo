@@ -24,13 +24,14 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
      */
     abstract val viewModel : VM
     protected lateinit var binding : VB
-    //private lateinit var fetchJob: Job
+    private lateinit var fetchJob: Job
 
     abstract fun getViewBinding() : VB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = getViewBinding()
+        binding.lifecycleOwner = this
         setContentView(binding.root)
         initState()
     }
@@ -43,7 +44,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
      */
     open fun initState() {
         initViews()
-        //fetchJob = viewModel.fetchData()
+        fetchJob = viewModel.fetchData()
         observeData()
     }
 
@@ -52,7 +53,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
     abstract fun observeData()
 
     override fun onDestroy() {
-        //if (fetchJob.isActive) fetchJob.cancel()
+        if (fetchJob.isActive) fetchJob.cancel()
         super.onDestroy()
     }
 }
