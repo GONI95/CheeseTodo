@@ -11,9 +11,9 @@ data class TodoEntity (
     val id : Long,
     @ColumnInfo(name = "date")
     val date : Long,
-    @ColumnInfo(name = "dateString")
+    @ColumnInfo(name = "category")
     val category: TodoCategory,
-    @ColumnInfo(name = "importance")
+    @ColumnInfo(name = "importanceId")
     val importanceId : Int,
     @ColumnInfo(name = "title")
     val title : String,

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Job
+import sang.gondroid.myapplication.databinding.FragmentTodoCategoryBinding
 import sang.gondroid.myapplication.util.Constants
 
 

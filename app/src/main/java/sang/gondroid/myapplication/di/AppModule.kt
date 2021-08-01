@@ -15,6 +15,8 @@ import sang.gondroid.myapplication.data.repository.TodoRepositoryImpl
 import sang.gondroid.myapplication.presentation.home.HomeViewModel
 import sang.gondroid.myapplication.presentation.my.MyViewModel
 import sang.gondroid.myapplication.presentation.review.ReviewViewModel
+import sang.gondroid.myapplication.presentation.todocategory.TodoCategoryViewModel
+import sang.gondroid.myapplication.util.TodoCategory
 
 val appModule = module {
 
@@ -30,6 +32,8 @@ val appModule = module {
     viewModel { HomeViewModel() }
     viewModel { MyViewModel() }
     viewModel { ReviewViewModel() }
+
+    viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory) }
 
     /**
      * Repository
