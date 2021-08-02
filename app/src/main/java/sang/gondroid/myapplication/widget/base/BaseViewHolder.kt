@@ -16,9 +16,9 @@ abstract class BaseViewHolder<M : BaseModel> (
     /**
      * model을 전달받아 View에 bind하는 작업
      */
-    open fun bindData(model : M) {}
-    
- 
+    abstract fun bindData(model : M)
+
+
     /**
      * bind된 View에 이벤트가 발생하면, AdapterListener를 구현한 곳에서 처리
      */

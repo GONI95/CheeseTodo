@@ -3,7 +3,12 @@ package sang.gondroid.myapplication.widget.base
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import sang.gondroid.myapplication.databinding.LayoutEmptyItemBinding
+import sang.gondroid.myapplication.databinding.LayoutTodoItemBinding
 import sang.gondroid.myapplication.domain.model.BaseModel
+import sang.gondroid.myapplication.domain.model.TodoModel
+import sang.gondroid.myapplication.util.checkType
+import sang.gondroid.myapplication.widget.todo.TodoViewHolder
 
 @Suppress("UNCHECKED_CAST")
 class BaseAdapter<M : BaseModel>(
@@ -11,15 +16,18 @@ class BaseAdapter<M : BaseModel>(
     private val adapterListener : AdapterListener
 ) : ListAdapter<BaseModel, BaseViewHolder<M>>(BaseModel.DIFF_CALLBACK){
 
-    private val THIS_NAME = this::class.simpleName
-
-
     override fun getItemCount(): Int = modelList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<M> {
-        val inflate = LayoutInflater.from(parent.context)
+        val inflater = LayoutInflater.from(parent.context)
 
-        //TODO: Create ViewHodelr Instance
+        return if (modelList.checkType<TodoModel>()){
+            TodoViewHolder(LayoutTodoItemBinding.inflate(inflater, parent, false)) as BaseViewHolder<M>
+        }
+            else {
+            EmptyViewHolder(LayoutEmptyItemBinding.inflate(inflater, parent, false)) as BaseViewHolder<M>
+        }
+
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<M>, position: Int) {
