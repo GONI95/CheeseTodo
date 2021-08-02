@@ -1,10 +1,6 @@
 package sang.gondroid.myapplication.presentation.home
 
-import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.gondroid.cheeseplan.presentation.base.BaseFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -24,6 +20,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override val viewModel: HomeViewModel by viewModel()
 
+    // Fragment에 하위 뷰를 삽입하기위해 FragmentStateAdapter를 상속받는 Adapter 선언
     private lateinit var viewPagerAdapter: FragmentViewPagerAdapter
 
     override fun getDataBinding(): FragmentHomeBinding
@@ -35,13 +32,26 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         initViewPager()
     }
 
+    /**
+     * 1. todoCategories : enum class로 정의한 Category들의 값을 배열에 저장
+     *
+     * 2. if문 : viewPagerAdapter가 초기화되지 않았다면,
+     * Category 배열만큼 TodoCategoryFragment의 인스턴스 생성한 후, List에 Fragment를 저장
+     * FragmentViewPagerAdapter에 Fragment를 담은 List를 전달하여, 하위 뷰를 담을 컨테이너를 생성해 viewPager에 삽입
+     *
+     * 3. offscreenPageLimit : ViewPager2가 현재 페이지로부터 얼만큼 떨어진 페이지를 미리 생성할 것인지 설정
+     *
+     * 4. TabLayoutMediator : TabLayout을 ViewPager2와 연결하는 중재자 역할을 하며, Tab을 선택하면 ViewPager2의 위치와
+     * 동기화하고, ViewPager2를 끌면 TabLayout의 스크롤 위치를 동기화
+     *
+     */
     private fun initViewPager() = with(binding) {
-        // 생성한 카테고리 받기
         val todoCategories = TodoCategory.values()
 
-        // viewPagerAdapter가 초기화되지 않았으면 초기화
         if (::viewPagerAdapter.isInitialized.not()) {
             val fragmentList = todoCategories.map {
+                Log.d(Constants.TAG, "$THIS_NAME Create TodoCategoryFragment : $it")
+
                 TodoCategoryFragment.newInstance(it)
             }
 
@@ -52,7 +62,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
             viewPager.adapter = viewPagerAdapter
         }
 
-        viewPager.offscreenPageLimit = todoCategories.size
+        viewPager.offscreenPageLimit = 1
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             Log.d(Constants.TAG, "$THIS_NAME TodoCategory : $position, ${todoCategories[position].name}")
             tab.text = todoCategories[position].name

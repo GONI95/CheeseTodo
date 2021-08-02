@@ -1,17 +1,11 @@
 package sang.gondroid.myapplication.presentation.todocategory
 
-import android.app.ActivityOptions
-import android.content.Intent
-import android.os.Bundle
+import android.graphics.Color
 import android.util.Log
-import android.util.Pair
-import android.view.View
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.gondroid.cheeseplan.presentation.base.BaseFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.FragmentTodoCategoryBinding
 import sang.gondroid.myapplication.util.Constants
 import sang.gondroid.myapplication.util.TodoCategory
@@ -19,24 +13,19 @@ import sang.gondroid.myapplication.util.TodoCategory
 class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCategoryBinding>() {
     private val THIS_NAME = this::class.simpleName
 
-    init {
-        // TodoCategoryFragment들이 잘생성되었는지 확인하기 위한 용도
-        Log.d(Constants.TAG, "$THIS_NAME hashCode : ${hashCode()}")
-    }
+    override val viewModel: TodoCategoryViewModel by viewModel { parametersOf(todoCategory) }
 
     // HomeFragment에서 newInstance()를 통해 전달한 category값을 Bundle로부터 가져옴
     private val todoCategory by lazy { arguments?.getSerializable(TODO_CATEGORY_KEY) as TodoCategory }
-        .also {
-            Log.d(Constants.TAG, "$THIS_NAME todoCategory : $arguments, $TODO_CATEGORY_KEY")
-        }
-
-    override val viewModel: TodoCategoryViewModel by viewModel { parametersOf(todoCategory) }
 
     override fun getDataBinding(): FragmentTodoCategoryBinding
         = FragmentTodoCategoryBinding.inflate(layoutInflater)
 
     override fun initViews() = with(binding) {
-
+        if (todoCategory == TodoCategory.ANDROID) {
+            Log.d(Constants.TAG, "$THIS_NAME initViews() : ${hashCode()}")
+            binding.TodoCategoryRecyclerView.setBackgroundColor(Color.BLUE)
+        }
     }
 
     override fun onResume() {
