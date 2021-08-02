@@ -1,14 +1,25 @@
 package sang.gondroid.myapplication.presentation.todocategory
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
+import android.util.Pair
+import android.view.View
 import androidx.core.os.bundleOf
-import com.gondroid.cheeseplan.presentation.base.BaseFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.FragmentTodoCategoryBinding
+import sang.gondroid.myapplication.domain.model.BaseModel
+import sang.gondroid.myapplication.domain.model.TodoModel
+import sang.gondroid.myapplication.presentation.base.BaseFragment
 import sang.gondroid.myapplication.util.Constants
 import sang.gondroid.myapplication.util.TodoCategory
+import sang.gondroid.myapplication.widget.base.AdapterListener
+import sang.gondroid.myapplication.widget.base.BaseAdapter
+import sang.gondroid.myapplication.widget.todo.TodoListener
 
 class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCategoryBinding>() {
     private val THIS_NAME = this::class.simpleName
@@ -18,14 +29,39 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     // HomeFragment에서 newInstance()를 통해 전달한 category값을 Bundle로부터 가져옴
     private val todoCategory by lazy { arguments?.getSerializable(TODO_CATEGORY_KEY) as TodoCategory }
 
+    private val adapter by lazy {
+        BaseAdapter<TodoModel>(
+            listOf(),
+            adapterListener = object : TodoListener {
+                override fun onClickItem(v: View, model: BaseModel) {
+
+                    val bundle = Bundle()
+                    bundle.putSerializable("TodoItemData", model)
+
+                    /*
+                    Intent(requireContext(), ***********::class.java).apply {
+                        putExtra("bundle", bundle)
+
+                        startActivity(this, getBudle(v))
+                    }
+                     */
+                }
+            })
+    }
+
+    private fun getBudle(v : View) : Bundle {
+        // API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리
+        return ActivityOptions.makeSceneTransitionAnimation(
+            requireActivity(),
+            Pair.create(v, resources.getString(R.string.title_transition_name))
+        ).toBundle()
+    }
+
     override fun getDataBinding(): FragmentTodoCategoryBinding
         = FragmentTodoCategoryBinding.inflate(layoutInflater)
 
     override fun initViews() = with(binding) {
-        if (todoCategory == TodoCategory.ANDROID) {
-            Log.d(Constants.TAG, "$THIS_NAME initViews() : ${hashCode()}")
-            binding.TodoCategoryRecyclerView.setBackgroundColor(Color.BLUE)
-        }
+        todoCategoryRecyclerView.adapter = adapter
     }
 
     override fun onResume() {
@@ -34,7 +70,8 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun observeData()  {
-
+        adapter.submitList(listOf(TodoModel(
+            0, 0, "2020년", TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", "")))
     }
 
     companion object {

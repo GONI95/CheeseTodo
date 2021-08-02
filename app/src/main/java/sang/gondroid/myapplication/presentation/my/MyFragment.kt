@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import com.gondroid.cheeseplan.presentation.base.BaseFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.FragmentMyBinding
+import sang.gondroid.myapplication.presentation.base.BaseFragment
 import sang.gondroid.myapplication.presentation.home.HomeFragment
 
 

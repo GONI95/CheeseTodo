@@ -1,7 +1,7 @@
 package sang.gondroid.myapplication.presentation.todocategory
 
 import android.util.Log
-import com.gondroid.cheeseplan.presentation.base.BaseViewModel
+import sang.gondroid.myapplication.presentation.base.BaseViewModel
 import sang.gondroid.myapplication.util.Constants
 import sang.gondroid.myapplication.util.TodoCategory
 

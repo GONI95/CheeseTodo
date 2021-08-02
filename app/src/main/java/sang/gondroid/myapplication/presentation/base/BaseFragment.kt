@@ -1,4 +1,4 @@
-package com.gondroid.cheeseplan.presentation.base
+package sang.gondroid.myapplication.presentation.base
 
 import android.os.Bundle
 import android.os.PersistableBundle

@@ -12,7 +12,7 @@ import sang.gondroid.myapplication.widget.todo.TodoViewHolder
 
 @Suppress("UNCHECKED_CAST")
 class BaseAdapter<M : BaseModel>(
-    private val modelList : List<BaseModel>,
+    private var modelList : List<BaseModel>,
     private val adapterListener : AdapterListener
 ) : ListAdapter<BaseModel, BaseViewHolder<M>>(BaseModel.DIFF_CALLBACK){
 
@@ -35,8 +35,11 @@ class BaseAdapter<M : BaseModel>(
         holder.bindViews(modelList[position] as M, adapterListener)
     }
 
-    override fun submitList(list: MutableList<BaseModel>?) {
-        super.submitList(list)
-    }
+    override fun submitList(list: List<BaseModel>?) {
+        list?.let {
+            modelList = it
 
+            super.submitList(list)
+        }
+    }
 }

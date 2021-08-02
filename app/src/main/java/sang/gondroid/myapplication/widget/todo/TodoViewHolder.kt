@@ -16,7 +16,7 @@ class TodoViewHolder(
     override fun bindViews(model: TodoModel, adapterListener: AdapterListener) {
             if (adapterListener is TodoListener) {
                 binding.root.setOnClickListener {
-                    adapterListener.onClickItem(binding.planItemTile, model)
+                    adapterListener.onClickItem(binding.todoItemTile, model)
                 }
             }
     }

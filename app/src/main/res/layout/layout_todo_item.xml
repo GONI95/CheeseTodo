@@ -35,7 +35,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/planItemTile"
+                        android:id="@+id/todoItemTile"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="40dp"
@@ -46,44 +46,48 @@
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/planItemDate"
+                        android:text="@{todoItem.title}"
+                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="제목" />
 
                     <TextView
-                        android:id="@+id/planItemDate"
+                        android:id="@+id/todoItemDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="40dp"
                         android:layout_marginBottom="8dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
+                        android:text="@{todoItem.dateString}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="날짜" />
 
                     <TextView
-                        android:id="@+id/planItemCategory"
+                        android:id="@+id/todoItemCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="8dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
+                        android:text="@{todoItem.category.categoryNameId}"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/planItemImportance"
+                        app:layout_constraintEnd_toStartOf="@+id/todoItemImportance"
                         tools:text="카테고리" />
 
                     <TextView
-                        android:id="@+id/planItemImportance"
+                        android:id="@+id/todoItemImportance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
                         android:layout_marginBottom="8dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
+                        android:text="@{Integer.toString(todoItem.importanceId)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         tools:text="중요도" />
