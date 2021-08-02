@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="all">전체</string>
+    <string name="android">안드로이드</string>
+    <string name="language">자바•코틀린</string>
+    <string name="db">데이터베이스•쿼리문</string>
+    <string name="other">기타</string>
+</resources>

@@ -66,7 +66,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             Log.d(Constants.TAG, "$THIS_NAME TodoCategory : $position, ${todoCategories[position].name}")
-            tab.text = todoCategories[position].name
+            tab.text = getString(todoCategories[position].categoryNameId)
         }.attach()
     }
 
