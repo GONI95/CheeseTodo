@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import sang.gondroid.myapplication.util.Constants
 import java.io.Serializable
 
- @SuppressLint("ParcelCreator")
 abstract class BaseModel (
      open val id : Long?
 ) : Serializable {
