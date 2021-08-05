@@ -8,6 +8,4 @@ class EmptyViewHolder(
 ) : BaseViewHolder<BaseModel>(binding) {
 
     override fun bindData(model: BaseModel) = Unit
-
-    override fun bindViews(model: BaseModel, adapterListener: AdapterListener) = Unit
 }

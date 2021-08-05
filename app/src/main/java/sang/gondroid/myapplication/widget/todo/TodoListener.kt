@@ -5,5 +5,5 @@ import sang.gondroid.myapplication.domain.model.BaseModel
 import sang.gondroid.myapplication.widget.base.AdapterListener
 
 interface TodoListener : AdapterListener {
-    fun onClickItem(v: View, model: BaseModel)
+    fun onClickItem(position: Int, model: BaseModel)
 }

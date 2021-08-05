@@ -8,6 +8,8 @@ import android.util.Log
 import android.util.Pair
 import android.view.View
 import androidx.core.os.bundleOf
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import sang.gondroid.myapplication.R
@@ -20,6 +22,8 @@ import sang.gondroid.myapplication.util.TodoCategory
 import sang.gondroid.myapplication.widget.base.AdapterListener
 import sang.gondroid.myapplication.widget.base.BaseAdapter
 import sang.gondroid.myapplication.widget.todo.TodoListener
+import kotlin.coroutines.coroutineContext
+import kotlin.random.Random
 
 class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCategoryBinding>() {
     private val THIS_NAME = this::class.simpleName
@@ -31,9 +35,11 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
 
     private val adapter by lazy {
         BaseAdapter<TodoModel>(
-            listOf(),
+            modelList = listOf(),
             adapterListener = object : TodoListener {
-                override fun onClickItem(v: View, model: BaseModel) {
+                override fun onClickItem(position: Int, model: BaseModel) {
+
+                    Log.d(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
                     val bundle = Bundle()
                     bundle.putSerializable("TodoItemData", model)
@@ -62,6 +68,27 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
 
     override fun initViews() = with(binding) {
         todoCategoryRecyclerView.adapter = adapter
+
+        Thread(Runnable {
+            kotlin.run {
+                repeat(2) {
+                    Thread.sleep(3000)
+                    adapter.submitList(listOf(
+                        TodoModel(
+                            0, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+                        TodoModel(
+                            1, 0, "2020년", TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
+                        TodoModel(
+                            2, 0, "2020년", TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
+                        TodoModel(
+                            4, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+                        TodoModel(
+                            5, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+
+                    ))
+                }
+            }
+        }).start()
     }
 
     override fun onResume() {
@@ -70,8 +97,16 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun observeData()  {
-        adapter.submitList(listOf(TodoModel(
-            0, 0, "2020년", TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", "")))
+        adapter.submitList(listOf(
+            TodoModel(
+                0, 0, "2020년", TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
+            TodoModel(
+                1, 0, "2020년", TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
+            TodoModel(
+                2, 0, "2020년", TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
+            TodoModel(
+                4, 0, "2020년", TodoCategory.LANGUAGE, 4, "ddddd", "daaaaa", ""),
+        ))
     }
 
     companion object {

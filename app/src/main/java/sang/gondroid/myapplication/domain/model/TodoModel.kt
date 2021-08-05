@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import sang.gondroid.myapplication.data.entity.TodoEntity
 import sang.gondroid.myapplication.util.TodoCategory
+import java.io.Serializable
 
 data class TodoModel(
     override var id: Long,
