@@ -1,10 +1,8 @@
 package sang.gondroid.myapplication.widget.base
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import sang.gondroid.myapplication.databinding.LayoutEmptyItemBinding
 import sang.gondroid.myapplication.databinding.LayoutTodoItemBinding
@@ -33,13 +31,13 @@ class BaseAdapter<M : BaseModel>(
 
             TodoViewHolder(
                 binding = LayoutTodoItemBinding.inflate(inflater, parent, false),
-                onItemClick = { adapterPosition ->
+                onItemClick = { view, adapterPosition ->
                 Log.d(Constants.TAG, "$THIS_NAME, onItemClick() called : ViHolder로부터 응답을 받았습니다.")
 
                 if (adapterListener is TodoListener) {
                     Log.d(Constants.TAG, "$THIS_NAME, onItemClick() called : 구현체에 값을 전달합니다.")
 
-                    adapterListener.onClickItem(adapterPosition, modelList[adapterPosition])
+                    adapterListener.onClickItem(view, adapterPosition, modelList[adapterPosition])
                 }
 
             }) as BaseViewHolder<M>

@@ -10,4 +10,6 @@
     <string name="fast_date">날짜 빠른 순</string>
 
     <string name="title_transition_name">TodoTile</string>
+
+    <string name="save">저장하기</string>
 </resources>

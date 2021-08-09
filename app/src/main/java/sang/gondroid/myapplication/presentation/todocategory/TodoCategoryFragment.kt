@@ -2,14 +2,11 @@ package sang.gondroid.myapplication.presentation.todocategory
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
 import android.view.View
 import androidx.core.os.bundleOf
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import sang.gondroid.myapplication.R
@@ -19,11 +16,8 @@ import sang.gondroid.myapplication.domain.model.TodoModel
 import sang.gondroid.myapplication.presentation.base.BaseFragment
 import sang.gondroid.myapplication.util.Constants
 import sang.gondroid.myapplication.util.TodoCategory
-import sang.gondroid.myapplication.widget.base.AdapterListener
 import sang.gondroid.myapplication.widget.base.BaseAdapter
 import sang.gondroid.myapplication.widget.todo.TodoListener
-import kotlin.coroutines.coroutineContext
-import kotlin.random.Random
 
 class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCategoryBinding>() {
     private val THIS_NAME = this::class.simpleName
@@ -37,20 +31,18 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
         BaseAdapter<TodoModel>(
             modelList = listOf(),
             adapterListener = object : TodoListener {
-                override fun onClickItem(position: Int, model: BaseModel) {
+                override fun onClickItem(view: View, position: Int, model: BaseModel) {
 
                     Log.d(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
                     val bundle = Bundle()
                     bundle.putSerializable("TodoItemData", model)
 
-                    /*
-                    Intent(requireContext(), ***********::class.java).apply {
+                    Intent(requireContext(), InsertTodoActivity::class.java).apply {
                         putExtra("bundle", bundle)
 
-                        startActivity(this, getBudle(v))
+                        startActivity(this, getBudle(view))
                     }
-                     */
                 }
             })
     }
