@@ -108,6 +108,7 @@
                             android:layout_weight="1"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:checked="true"
                             android:text="@{todoCategory.ANDROID.name()}" />
 
                         <RadioButton

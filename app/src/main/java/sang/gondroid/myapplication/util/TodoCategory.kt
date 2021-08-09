@@ -10,11 +10,6 @@ enum class TodoCategory(
     ANDROID(R.string.android),
     LANGUAGE(R.string.language),
     DB(R.string.db),
-    OTHER(R.string.other);
+    OTHER(R.string.other),
+    ERROR(R.string.error);
 }
-
-/*
-enum class TodoCategory {
-    ALL, ANDROID, KOTLIN, SQL, INTERVIEW;
-}
- */

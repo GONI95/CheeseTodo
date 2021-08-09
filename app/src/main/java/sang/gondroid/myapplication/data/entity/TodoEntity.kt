@@ -8,7 +8,7 @@ import sang.gondroid.myapplication.util.TodoCategory
 @Entity(tableName = "todo_table")
 data class TodoEntity (
     @PrimaryKey(autoGenerate = true)
-    val id : Long,
+    val id : Long?,
     @ColumnInfo(name = "date")
     val date : Long,
     @ColumnInfo(name = "category")
@@ -20,5 +20,5 @@ data class TodoEntity (
     @ColumnInfo(name = "todo")
     val todo : String,
     @ColumnInfo(name = "difficult")
-    val difficult : String
+    val difficult : String?
 )

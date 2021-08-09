@@ -67,15 +67,15 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
                     Thread.sleep(3000)
                     adapter.submitList(listOf(
                         TodoModel(
-                            0, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+                            0, 0,  TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
                         TodoModel(
-                            1, 0, "2020년", TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
+                            1, 0,  TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
                         TodoModel(
-                            2, 0, "2020년", TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
+                            2, 0,  TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
                         TodoModel(
-                            4, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+                            4, 0, TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
                         TodoModel(
-                            5, 0, "2020년", TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
+                            5, 0,  TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
 
                     ))
                 }
@@ -89,16 +89,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun observeData()  {
-        adapter.submitList(listOf(
-            TodoModel(
-                0, 0, "2020년", TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
-            TodoModel(
-                1, 0, "2020년", TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
-            TodoModel(
-                2, 0, "2020년", TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
-            TodoModel(
-                4, 0, "2020년", TodoCategory.LANGUAGE, 4, "ddddd", "daaaaa", ""),
-        ))
+
     }
 
     companion object {
