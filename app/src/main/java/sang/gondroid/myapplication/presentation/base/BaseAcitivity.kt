@@ -37,6 +37,11 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
 
     /**
      * 1. View 초기화를 위한 initViews()
+     * 2. LiveData를 처리하는 observeData()
      */
-    open fun initViews() = Unit
+    open fun initViews() {
+        observeData()
+    }
+
+    abstract fun observeData()
 }
