@@ -1,29 +1,34 @@
 package sang.gondroid.myapplication.data.repository
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import sang.gondroid.myapplication.data.db.TodoDao
 import sang.gondroid.myapplication.data.entity.TodoEntity
 
-class TodoRepositoryImpl() : TodoRepository {
-    override suspend fun getPlanList(): List<TodoEntity> {
+class TodoRepositoryImpl(
+    private val todoDao : TodoDao,
+    private val ioDispatcher: CoroutineDispatcher
+) : TodoRepository {
+    override suspend fun getTodoList(): List<TodoEntity> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlanItem(id: Long): TodoEntity? {
+    override suspend fun getTodoItem(id: Long): TodoEntity? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlanItem_Category(category: String): List<TodoEntity> {
+    override suspend fun getTodoItem_Category(category: String): List<TodoEntity> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertPlanItem(planEntity: TodoEntity): Long {
+    override suspend fun insertTodoItem(todoEntity: TodoEntity): Long
+        = withContext(ioDispatcher) { todoDao.insert(todoEntity) }
+
+    override suspend fun updateTodoItem(todoEntity: TodoEntity) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updatePlanItem(planEntity: TodoEntity) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deletePlanItem(id: Long) {
+    override suspend fun deleteTodoItem(id: Long) {
         TODO("Not yet implemented")
     }
 

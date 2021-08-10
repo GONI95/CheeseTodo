@@ -12,6 +12,7 @@ import sang.gondroid.myapplication.data.db.TodoDao
 import sang.gondroid.myapplication.data.db.TodoDatabase
 import sang.gondroid.myapplication.data.repository.TodoRepository
 import sang.gondroid.myapplication.data.repository.TodoRepositoryImpl
+import sang.gondroid.myapplication.domain.usecase.InsertTodoUseCase
 import sang.gondroid.myapplication.presentation.home.HomeViewModel
 import sang.gondroid.myapplication.presentation.my.MyViewModel
 import sang.gondroid.myapplication.presentation.review.ReviewViewModel
@@ -38,9 +39,14 @@ val appModule = module {
     viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory) }
 
     /**
-     * Repository
+     * Repository : Domain과 Data Layer 사이를 중재해주는 객체입니다.
      */
-    single<TodoRepository> { TodoRepositoryImpl() }
+    single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get<CoroutineDispatcher>()) }
+
+    /**
+     * UseCase : Repository를 받아 비즈니스 로직을 처리하는 부분, Interface 구현체로 보면 됩니다.
+     */
+    factory { InsertTodoUseCase(get()) }
 
     /**
      * Database
