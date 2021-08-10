@@ -1,7 +1,13 @@
 package sang.gondroid.myapplication.presentation.home
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.myapplication.R
@@ -9,8 +15,10 @@ import sang.gondroid.myapplication.databinding.FragmentHomeBinding
 import sang.gondroid.myapplication.databinding.FragmentMyBinding
 import sang.gondroid.myapplication.presentation.base.BaseFragment
 import sang.gondroid.myapplication.presentation.my.MyViewModel
+import sang.gondroid.myapplication.presentation.todocategory.InsertTodoActivity
 import sang.gondroid.myapplication.presentation.todocategory.TodoCategoryFragment
 import sang.gondroid.myapplication.util.Constants
+import sang.gondroid.myapplication.util.JobState
 import sang.gondroid.myapplication.util.TodoCategory
 import sang.gondroid.myapplication.widget.page.FragmentViewPagerAdapter
 
@@ -23,13 +31,30 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     // Fragment에 하위 뷰를 삽입하기위해 FragmentStateAdapter를 상속받는 Adapter 선언
     private lateinit var viewPagerAdapter: FragmentViewPagerAdapter
 
+    private val getStartActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+        if (activityResult.resultCode == RESULT_OK) {
+            activityResult.data?.extras?.getSerializable("jobState").let { jobState ->
+                Log.d(Constants.TAG, "$THIS_NAME jobState : $jobState")
+
+                when (jobState) {
+                    JobState.SUCCESS -> { Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show() }
+                    JobState.ERROR -> { Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show() }
+                }
+            }
+        }
+    }
+
     override fun getDataBinding(): FragmentHomeBinding
             = FragmentHomeBinding.inflate(layoutInflater)
 
-    override fun initState() {
-        super.initState()
-
+    override fun initViews() {
         initViewPager()
+
+        binding.addTodoButton.setOnClickListener {
+            Intent(requireContext(), InsertTodoActivity::class.java).apply {
+                getStartActivityForResult.launch(this)
+            }
+        }
     }
 
     /**

@@ -5,5 +5,4 @@
     <string name="language">자바•코틀린</string>
     <string name="db">데이터베이스•쿼리문</string>
     <string name="other">기타</string>
-    <string name="error">ERROR</string>
 </resources>

@@ -56,31 +56,12 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun getDataBinding(): FragmentTodoCategoryBinding
-        = FragmentTodoCategoryBinding.inflate(layoutInflater)
+            = FragmentTodoCategoryBinding.inflate(layoutInflater)
 
     override fun initViews() = with(binding) {
+        super.initViews()
+
         todoCategoryRecyclerView.adapter = adapter
-
-        Thread(Runnable {
-            kotlin.run {
-                repeat(2) {
-                    Thread.sleep(3000)
-                    adapter.submitList(listOf(
-                        TodoModel(
-                            0, 0,  TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
-                        TodoModel(
-                            1, 0,  TodoCategory.LANGUAGE, 2, "ddddd", "daaaaa", ""),
-                        TodoModel(
-                            2, 0,  TodoCategory.LANGUAGE, 3, "ddddd", "daaaaa", ""),
-                        TodoModel(
-                            4, 0, TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
-                        TodoModel(
-                            5, 0,  TodoCategory.LANGUAGE, (0..15).random(), "ddddd", "daaaaa", ""),
-
-                    ))
-                }
-            }
-        }).start()
     }
 
     override fun onResume() {
@@ -89,7 +70,16 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun observeData()  {
-
+        adapter.submitList(
+            listOf(
+                TodoModel(
+                    0, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
+                TodoModel(
+                    1, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
+                TodoModel(
+                    2, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", "")
+            )
+        )
     }
 
     companion object {

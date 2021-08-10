@@ -4,9 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="viewModel"
-            type="sang.gondroid.myapplication.presentation.todocategory.InsertTodoViewModel" />
-        <variable
             name="todoCategory"
             type="sang.gondroid.myapplication.util.TodoCategory" />
     </data>
@@ -108,7 +105,6 @@
                             android:layout_weight="1"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
-                            android:checked="true"
                             android:text="@{todoCategory.ANDROID.name()}" />
 
                         <RadioButton

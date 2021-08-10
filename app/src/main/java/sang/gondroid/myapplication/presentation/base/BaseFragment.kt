@@ -48,22 +48,18 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
-        initState()
+        initViews()
     }
 
     /**
-     * 1. Fragment가 가질 상태값 초기화하는 initState(), 상태값을 관리하는 용도로 사용할 arguments 초기화
-     * 2. View 초기화를 위한 initViews()
-     * 3. LiveData를 처리하는 observeData()
-     * 4. 해당 Activity가 종료될 때 coroutine이 살아있으면 중지
+     * 1. View 초기화를 위한 initViews()
+     * 2. LiveData를 처리하는 observeData()
+     * 3. 해당 Activity가 종료될 때 coroutine이 살아있으면 중지
      */
-    open fun initState() {
-        initViews()
+    open fun initViews() {
         fetchJob = viewModel.fetchData()
         observeData()
     }
-
-    open fun initViews() = Unit
 
     abstract fun observeData()
 

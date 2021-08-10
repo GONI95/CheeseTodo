@@ -24,7 +24,6 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
      */
     abstract val viewModel : VM
     protected lateinit var binding : VB
-    private lateinit var fetchJob: Job
 
     abstract fun getViewBinding() : VB
 
@@ -33,27 +32,11 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
         binding = getViewBinding()
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        initState()
+        initViews()
     }
 
     /**
-     * 1. Activity가 가질 상태값 초기화하는 initState()
-     * 2. View 초기화를 위한 initViews()
-     * 3. LiveData를 처리하는 observeData()
-     * 4. 해당 Activity가 종료될 때 coroutine이 살아있으면 중지
+     * 1. View 초기화를 위한 initViews()
      */
-    open fun initState() {
-        initViews()
-        fetchJob = viewModel.fetchData()
-        observeData()
-    }
-
     open fun initViews() = Unit
-
-    abstract fun observeData()
-
-    override fun onDestroy() {
-        if (fetchJob.isActive) fetchJob.cancel()
-        super.onDestroy()
-    }
 }

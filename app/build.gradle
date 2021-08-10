@@ -75,4 +75,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"   // optional - Kotlin Extensions and Coroutines support for Room
+
+    // Room table을 확인하기 위해 추가 : https://medium.com/harrythegreat/android-room-database-%EB%94%94%EB%B2%84%EA%B9%85%ED%95%98%EA%B8%B0%EC%A2%8B%EC%9D%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-a1909aee3f4d
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }

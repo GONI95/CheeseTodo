@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -25,7 +26,7 @@ val appModule = module {
     /**
      * CoroutineDispatcher
      */
-    single<CoroutineDispatcher>(named("main")) { Dispatchers.Main }
+    single<MainCoroutineDispatcher>(named("main")) { Dispatchers.Main }
     single<CoroutineDispatcher>(named("io")) { Dispatchers.IO }
 
     /**
@@ -34,14 +35,14 @@ val appModule = module {
     viewModel { HomeViewModel() }
     viewModel { MyViewModel() }
     viewModel { ReviewViewModel() }
-    viewModel { InsertTodoViewModel() }
+    viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
 
     viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory) }
 
     /**
      * Repository : Domain과 Data Layer 사이를 중재해주는 객체입니다.
      */
-    single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get<CoroutineDispatcher>()) }
+    single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get(named("io"))) }
 
     /**
      * UseCase : Repository를 받아 비즈니스 로직을 처리하는 부분, Interface 구현체로 보면 됩니다.

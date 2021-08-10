@@ -9,9 +9,9 @@ interface TodoRepository {
 
     suspend fun getTodoItem_Category(category: String): List<TodoEntity>
 
-    suspend fun insertTodoItem(planEntity: TodoEntity): Long
+    suspend fun insertTodoItem(todoEntity: TodoEntity): Long
 
-    suspend fun updateTodoItem(planEntity: TodoEntity)
+    suspend fun updateTodoItem(todoEntity: TodoEntity)
 
     suspend fun deleteTodoItem(id: Long)
 
