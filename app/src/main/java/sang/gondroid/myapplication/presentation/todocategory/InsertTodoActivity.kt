@@ -30,17 +30,29 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
 
     override fun initViews() {
         with(binding) {
-            ArrayAdapter.createFromResource(this@InsertTodoActivity,
+            /**
+             * 1. createFromResource() : 정적 메소드를 호출하여 ArrayAdapter 객체를 생성(context, array, layout id)
+             *
+             * 2. setDropDownViewResource() : Adapter가 Spinner 선택 항목의 목록을 표시하는데 사용할 Layout 지정
+             */
+            ArrayAdapter.createFromResource(
+                this@InsertTodoActivity,
                 R.array.importance_array,
                 R.layout.support_simple_spinner_dropdown_item).also {
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 importanceSpinner.adapter = it
             }
 
+            /**
+             * Spinner, RadioGroup, Button에 대한 사용자 이벤트 처리하기 위해서 View 객체에 리스너 등록
+             */
             importanceSpinner.onItemSelectedListener = this@InsertTodoActivity
             categoryRadioGroup.setOnCheckedChangeListener(this@InsertTodoActivity)
             insertButton.setOnClickListener(this@InsertTodoActivity)
 
+            /**
+             * EditText에 입력되는 이벤트를 처리하기 위해서 무명 클래스를 생성해 Listener로 사용
+             */
             titleEditLayout.editText?.addTextChangedListener {
                 if (!it.toString().isEmpty()) titleEditLayout.error = null
             }
@@ -50,6 +62,9 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
         }
     }
 
+    /**
+     * initViews()에서 등록한 각각의 Listener Interface를 구현한 메서드
+     */
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         Log.d(Constants.TAG,
             "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
