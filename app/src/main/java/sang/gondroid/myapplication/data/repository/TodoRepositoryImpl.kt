@@ -5,6 +5,9 @@ import kotlinx.coroutines.withContext
 import sang.gondroid.myapplication.data.db.TodoDao
 import sang.gondroid.myapplication.data.entity.TodoEntity
 
+/**
+ * 데이터 조회, 조작하는 작업을 하기위한 DB로의 접근을 담당하는 TodoDao를 이용해 Interface 구현체를 호출
+ */
 class TodoRepositoryImpl(
     private val todoDao : TodoDao,
     private val ioDispatcher: CoroutineDispatcher
