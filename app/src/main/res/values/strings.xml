@@ -18,4 +18,5 @@
 
     <string name="success">작업이 완료되었습니다.</string>
     <string name="error">오류로 인해 작업이 실패했습니다.</string>
+    <string name="an_error_occurred">오류로 인해 데이터를 가져올 수 없습니다.</string>
 </resources>

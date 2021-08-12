@@ -16,7 +16,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:text="죄송합니다. 작업에 대한 오류로 인해 데이터를 가져올 수 없습니다."
+            android:text="@string/an_error_occurred"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

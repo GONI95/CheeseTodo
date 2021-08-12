@@ -1,12 +1,17 @@
 package sang.gondroid.myapplication.presentation.todocategory
 
 import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RadioGroup
 import androidx.core.widget.addTextChangedListener
+import androidx.databinding.BindingAdapter
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.ActivityInsertTodoBinding
@@ -19,17 +24,24 @@ import sang.gondroid.myapplication.util.TodoCategory
 import java.util.*
 import kotlin.properties.Delegates
 
-class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>(),
-    AdapterView.OnItemSelectedListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+
+class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>(), View.OnClickListener {
 
     private val THIS_NAME = this::class.simpleName
-    private lateinit var category : TodoCategory
-    private var importanceId by Delegates.notNull<Int>()
+     var category : TodoCategory = TodoCategory.ANDROID
+     var importanceId by Delegates.notNull<Int>()
 
     override val viewModel: InsertTodoViewModel by viewModel<InsertTodoViewModel>()
 
     override fun getViewBinding(): ActivityInsertTodoBinding
         = ActivityInsertTodoBinding.inflate(layoutInflater)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.viewModel = viewModel
+        binding.handler = this
+        binding.todoModel = TodoModel(null, 0, TodoCategory.OTHER, 0, "", "", "")
+    }
 
     override fun initViews() {
         super.initViews()
@@ -43,19 +55,17 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
             ArrayAdapter.createFromResource(
                 this@InsertTodoActivity,
                 R.array.importance_array,
-                R.layout.support_simple_spinner_dropdown_item).also {
+                R.layout.support_simple_spinner_dropdown_item
+            ).also {
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 importanceSpinner.adapter = it
             }
 
             /**
-             * Spinner, RadioGroup, Button에 대한 사용자 이벤트 처리하기 위해서 View 객체에 리스너 등록
+             * Button에 대한 사용자 이벤트 처리하기 위해서 View 객체에 리스너 등록
              */
-            importanceSpinner.onItemSelectedListener = this@InsertTodoActivity
-            categoryRadioGroup.setOnCheckedChangeListener(this@InsertTodoActivity)
             insertButton.setOnClickListener(this@InsertTodoActivity)
 
-            binding.androidRadioButton.isChecked = true
 
             /**
              * EditText에 입력되는 이벤트를 처리하기 위해서 무명 클래스를 생성해 Listener로 사용
@@ -72,18 +82,17 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
     /**
      * initViews()에서 등록한 각각의 Listener Interface를 구현한 메서드
      */
-    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+    fun onCustomItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         Log.d(Constants.TAG,
             "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
 
         importanceId = position
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        Log.d(Constants.TAG, "$THIS_NAME onNothingSelected : $parent")
-    }
 
-    override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
+    fun onCustomCheckChanged(group: RadioGroup?, checkedId: Int) {
+        Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged")
+
         category = when (checkedId) {
             R.id.androidRadioButton -> TodoCategory.ANDROID
 
@@ -106,30 +115,24 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
                 todoEditLayout.error = getString(R.string.please_enter_the_text)
 
             else {
-                val todoModel = when(v?.id) {
-                    R.id.insertButton -> {
-                        TodoModel(
-                            null,
-                            System.currentTimeMillis(),
-                            category,
-                            importanceId,
-                            titleEdit.text.toString(),
-                            todoEdit.text.toString(),
-                            ""
-                        )
-                    }
+                Log.d(Constants.TAG, "$THIS_NAME $category, $importanceId")
 
-                    else -> null
+                val todoModel = when(v?.id) {
+                    R.id.insertButton ->
+                        TodoModel(null, System.currentTimeMillis(), category, importanceId, titleEdit.text.toString(), todoEdit.text.toString(), "")
+
+                    else ->
+                        null
                 }
 
-                todoModel?.let {  viewModel.insertData(it) }
+                todoModel?.let {  viewModel!!.insertData(it) }
             }
         }
     }
 
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
     override fun observeData() {
-        viewModel.jobState.observe(this) {  jobState ->
+        viewModel.jobState.observe(this) { jobState ->
             val resultIntent = Intent(this, HomeFragment::class.java)
 
             when(jobState) {
