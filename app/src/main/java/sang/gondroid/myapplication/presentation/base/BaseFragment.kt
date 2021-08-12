@@ -1,16 +1,13 @@
 package sang.gondroid.myapplication.presentation.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Job
-import sang.gondroid.myapplication.databinding.FragmentTodoCategoryBinding
 import sang.gondroid.myapplication.util.Constants
 
 
@@ -49,6 +46,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
         initViews()
+        observeData()
     }
 
     /**
@@ -58,7 +56,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
      */
     open fun initViews() {
         fetchJob = viewModel.fetchData()
-        observeData()
     }
 
     abstract fun observeData()

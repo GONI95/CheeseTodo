@@ -3,6 +3,7 @@ package sang.gondroid.myapplication.widget.page
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import sang.gondroid.myapplication.presentation.todocategory.TodoCategoryFragment
 import sang.gondroid.myapplication.util.Constants
 
@@ -11,16 +12,14 @@ import sang.gondroid.myapplication.util.Constants
  * https://developer.android.com/guide/navigation/navigation-swipe-view-2?hl=ko
  */
 class FragmentViewPagerAdapter(
-    fragment : Fragment,
-    val fragmentList : List<TodoCategoryFragment>
+    fragment: Fragment,
+    val fragmentList: List<TodoCategoryFragment>
 ) : FragmentStateAdapter(fragment) {
+    private val THIS_NAME = this::class.simpleName
 
     override fun getItemCount(): Int = fragmentList.size
 
-    override fun createFragment(position: Int): Fragment
-    {
-        Log.d(Constants.TAG, " createFragment() : $position, ${fragmentList[position]}")
-       return fragmentList[position]
+    override fun createFragment(position: Int): Fragment = fragmentList[position].also {
+        Log.d(Constants.TAG, "$THIS_NAME createFragment() : ${fragmentList[position].hashCode()}")
     }
-
 }

@@ -12,17 +12,15 @@ class TodoRepositoryImpl(
     private val todoDao : TodoDao,
     private val ioDispatcher: CoroutineDispatcher
 ) : TodoRepository {
-    override suspend fun getTodoList(): List<TodoEntity> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTodoList(): List<TodoEntity>
+        = withContext(ioDispatcher) { todoDao.getAll() }
 
     override suspend fun getTodoItem(id: Long): TodoEntity? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTodoItem_Category(category: String): List<TodoEntity> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTodoList_Category(category: String): List<TodoEntity>
+        = withContext(ioDispatcher) { todoDao.getList_Category(category) }
 
     override suspend fun insertTodoItem(todoEntity: TodoEntity): Long
         = withContext(ioDispatcher) { todoDao.insert(todoEntity) }

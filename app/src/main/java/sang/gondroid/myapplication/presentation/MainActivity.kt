@@ -1,10 +1,12 @@
 package sang.gondroid.myapplication.presentation
 
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.ActivityMainBinding
 import sang.gondroid.myapplication.presentation.home.HomeFragment
@@ -69,32 +71,27 @@ class MainActivity : AppCompatActivity() {
      *                           이러한 UI 상태가 예기치 않게 변경되어도 괜찮은 경우에 사용해야한다.
      */
     private fun showFragment(fragment: Fragment, tag: String) {
-
+        Log.d(Constants.TAG, "$THIS_NAME, showFragment() called")
         /**
          * 1. 주어진 Tag를 가진 Fragment가 가져옴
          * 2. FragmentTransaction을 가져와 각종 Transaction 작업을 할 수 있도록 함
          */
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
 
         /**
          * Fragment가 교체되기전 모든 Fragment들을 화면에서 숨김
          */
         supportFragmentManager.fragments.forEach { fm ->
-
-            fragmentTransaction.hide(fm)
-            //fragmentTransaction.hide(fm).commit()
+            supportFragmentManager.beginTransaction().hide(fm).commitAllowingStateLoss()
         }
 
         /**
          * 주어진 Tag를 가진 Fragment가 있으면 show(), 없다면 add
          */
-        findFragment?.let { fm ->
-
-            fragmentTransaction.show(fm).commit()
+        findFragment?.let {
+            supportFragmentManager.beginTransaction().show(it).commitAllowingStateLoss()
         } ?: kotlin.run {
-
-            fragmentTransaction
+            supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentContainer, fragment, tag)
                 .commitAllowingStateLoss()
         }

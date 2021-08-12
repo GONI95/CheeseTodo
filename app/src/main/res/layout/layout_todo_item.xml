@@ -4,6 +4,8 @@
         <variable
             name="todoItem"
             type="sang.gondroid.myapplication.domain.model.TodoModel" />
+
+        <import type="sang.gondroid.myapplication.util.ExtensionsKt"/>
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -61,7 +63,7 @@
                         android:layout_marginBottom="8dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:text="@{Long.toString(todoItem.date)}"
+                        android:text="@{ExtensionsKt.toDateFormat(todoItem.date)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="날짜" />
@@ -87,7 +89,7 @@
                         android:layout_marginBottom="8dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:text="@{Integer.toString(todoItem.importanceId)}"
+                        android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         tools:text="중요도" />

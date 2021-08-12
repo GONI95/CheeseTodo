@@ -60,7 +60,7 @@ class BaseAdapter<M : BaseModel>(
         list?.let {
             modelList = it
 
-            super.submitList(list)
+            super.submitList(list.toMutableList())
         }
     }
 

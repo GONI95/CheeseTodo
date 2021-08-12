@@ -1,12 +1,16 @@
 package sang.gondroid.myapplication.presentation.todocategory
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import sang.gondroid.myapplication.R
@@ -16,6 +20,7 @@ import sang.gondroid.myapplication.domain.model.TodoModel
 import sang.gondroid.myapplication.presentation.base.BaseFragment
 import sang.gondroid.myapplication.util.Constants
 import sang.gondroid.myapplication.util.TodoCategory
+import sang.gondroid.myapplication.util.TodoListSortFilter
 import sang.gondroid.myapplication.widget.base.BaseAdapter
 import sang.gondroid.myapplication.widget.todo.TodoListener
 
@@ -28,59 +33,45 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     private val todoCategory by lazy { arguments?.getSerializable(TODO_CATEGORY_KEY) as TodoCategory }
 
     private val adapter by lazy {
-        BaseAdapter<TodoModel>(
-            modelList = listOf(),
-            adapterListener = object : TodoListener {
-                override fun onClickItem(view: View, position: Int, model: BaseModel) {
+        BaseAdapter<TodoModel>( modelList = listOf(), adapterListener = object : TodoListener {
+            override fun onClickItem(view: View, position: Int, model: BaseModel) {
+                Log.d(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
-                    Log.d(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
+                val bundle = Bundle()
+                bundle.putSerializable("TodoItemData", model)
 
-                    val bundle = Bundle()
-                    bundle.putSerializable("TodoItemData", model)
-
-                    Intent(requireContext(), InsertTodoActivity::class.java).apply {
-                        putExtra("bundle", bundle)
-
-                        startActivity(this, getBudle(view))
-                    }
+                Intent(requireContext(), DetailTodoActivity::class.java).apply {
+                    putExtra("bundle", bundle)
+                    startActivity(this, getBudle(view))
                 }
-            })
+            }
+        })
     }
 
-    private fun getBudle(v : View) : Bundle {
-        // API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리
-        return ActivityOptions.makeSceneTransitionAnimation(
-            requireActivity(),
-            Pair.create(v, resources.getString(R.string.title_transition_name))
+    /**
+     * API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리 / 클릭 이벤트 애니메이션 처리
+     */
+    private fun getBudle(v : View) : Bundle
+        = ActivityOptions.makeSceneTransitionAnimation(
+            requireActivity(), Pair.create(v, resources.getString(R.string.title_transition_name))
         ).toBundle()
-    }
+
 
     override fun getDataBinding(): FragmentTodoCategoryBinding
             = FragmentTodoCategoryBinding.inflate(layoutInflater)
 
-    override fun initViews() = with(binding) {
-        super.initViews()
-
-        todoCategoryRecyclerView.adapter = adapter
-    }
-
     override fun onResume() {
-        Log.d(Constants.TAG, "$THIS_NAME onResume() : ${hashCode()}")
+        viewModel.fetchData()
         super.onResume()
     }
 
-    override fun observeData()  {
-        adapter.submitList(
-            listOf(
-                TodoModel(
-                    0, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
-                TodoModel(
-                    1, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", ""),
-                TodoModel(
-                    2, 0,  TodoCategory.LANGUAGE, 1, "ddddd", "daaaaa", "")
-            )
-        )
+    override fun initViews() = with(binding) {
+        todoCategoryRecyclerView.adapter = adapter
     }
+
+    override fun observeData() = viewModel.todoListLiveData.observe(viewLifecycleOwner, Observer {
+        adapter.submitList(it)
+    })
 
     companion object {
         const val TODO_CATEGORY_KEY = "todoCategory"

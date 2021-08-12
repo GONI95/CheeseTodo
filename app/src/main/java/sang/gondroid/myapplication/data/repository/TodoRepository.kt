@@ -7,7 +7,7 @@ interface TodoRepository {
 
     suspend fun getTodoItem(id: Long): TodoEntity?
 
-    suspend fun getTodoItem_Category(category: String): List<TodoEntity>
+    suspend fun getTodoList_Category(category: String): List<TodoEntity>
 
     suspend fun insertTodoItem(todoEntity: TodoEntity): Long
 

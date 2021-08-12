@@ -16,7 +16,7 @@ interface TodoDao {
     suspend fun getItem(id : Long) : TodoEntity?
 
     @Query("SELECT * FROM todo_table WHERE category=:category")
-    suspend fun getItem_Category(category : String) : List<TodoEntity>
+    suspend fun getList_Category(category : String) : List<TodoEntity>
 
     @Insert
     suspend fun insert(planEntity: TodoEntity): Long

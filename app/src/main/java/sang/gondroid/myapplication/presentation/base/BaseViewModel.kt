@@ -1,10 +1,10 @@
 package sang.gondroid.myapplication.presentation.base
 
-import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import sang.gondroid.myapplication.util.TodoListSortFilter
 
 /**
  * ViewModel에서 공통적으로 사용될 사항들을 정의
@@ -18,7 +18,7 @@ open class BaseViewModel : ViewModel() {
      */
     //protected var stateBundle : Bundle? = null
 
-    open fun fetchData() : Job = viewModelScope.launch {  }
+    open fun fetchData(): Job = viewModelScope.launch {  }
 
     /*
     open fun storeState(stateBundle: Bundle) {

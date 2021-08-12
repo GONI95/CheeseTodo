@@ -10,8 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CheeseTodo">
-        <activity android:name=".presentation.todocategory.InsertTodoActivity"></activity>
-        <activity android:name=".presentation.MainActivity">
+        <activity android:name=".presentation.todocategory.DetailTodoActivity"></activity>
+        <activity android:name=".presentation.todocategory.InsertTodoActivity" />
+        <activity android:name=".presentation.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

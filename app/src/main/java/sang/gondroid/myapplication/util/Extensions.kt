@@ -1,6 +1,10 @@
 package sang.gondroid.myapplication.util
 
+import sang.gondroid.myapplication.CheeseTodoApplication
+import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.domain.model.BaseModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 1. 일반적인 Generic Function Body에서 타입 T는 런타임에는 Type erasure 때문에 접근이 불가능
@@ -12,3 +16,18 @@ import sang.gondroid.myapplication.domain.model.BaseModel
  */
 inline fun <reified T> List<BaseModel>.checkType() =
     all { it is T }
+
+
+fun Long.toDateFormat(): String {
+    val date = Date(this)
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault())
+    return dateFormat.format(date)
+}
+
+fun Int.toImportanceString(): String = when(this) {
+    0 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(0)
+    1 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(1)
+    2 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(2)
+    3 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(3)
+    else -> " "
+}
