@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.RadioGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.BindingAdapter
@@ -25,11 +26,14 @@ import java.util.*
 import kotlin.properties.Delegates
 
 
-class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>(), View.OnClickListener {
+class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>() {
 
     private val THIS_NAME = this::class.simpleName
-     var category : TodoCategory = TodoCategory.ANDROID
-     var importanceId by Delegates.notNull<Int>()
+    private lateinit var titleText : String
+    private lateinit var todoText : String
+    private val difficultText : String = ""
+    private var category : TodoCategory = TodoCategory.ANDROID
+    private var importanceId by Delegates.notNull<Int>()
 
     override val viewModel: InsertTodoViewModel by viewModel<InsertTodoViewModel>()
 
@@ -40,7 +44,6 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
         super.onCreate(savedInstanceState)
         binding.insertViewModel = viewModel
         binding.handler = this
-        binding.todoModel = TodoModel(null, 0, TodoCategory.OTHER, 0, "", "", "")
     }
 
     override fun initViews() {
@@ -60,11 +63,6 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 importanceSpinner.adapter = it
             }
-
-            /**
-             * Button에 대한 사용자 이벤트 처리하기 위해서 View 객체에 리스너 등록
-             */
-            insertButton.setOnClickListener(this@InsertTodoActivity)
 
 
             /**
@@ -89,7 +87,6 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
         importanceId = position
     }
 
-
     fun onCustomCheckChanged(group: RadioGroup?, checkedId: Int) {
         Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged")
 
@@ -106,27 +103,22 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
         }
     }
 
-    override fun onClick(v: View?) {
-        with(binding) {
-            if (titleEdit.text.isNullOrEmpty())
-                titleEditLayout.error = getString(R.string.please_enter_the_text)
+    fun onBtnClick(titleEditLayout : TextInputLayout, todoEditLayout : TextInputLayout) {
+        titleText = titleEditLayout.editText?.text.toString()
+        todoText = todoEditLayout.editText?.text.toString()
 
-            else if(todoEdit.text.isNullOrEmpty())
-                todoEditLayout.error = getString(R.string.please_enter_the_text)
+        if (titleEditLayout.editText?.text.isNullOrEmpty())
+            titleEditLayout.error = getString(R.string.please_enter_the_text)
 
-            else {
-                Log.d(Constants.TAG, "$THIS_NAME $category, $importanceId")
+        else if(todoEditLayout.editText?.text.isNullOrEmpty())
+            todoEditLayout.error = getString(R.string.please_enter_the_text)
 
-                val todoModel = when(v?.id) {
-                    R.id.insertButton ->
-                        TodoModel(null, System.currentTimeMillis(), category, importanceId, titleEdit.text.toString(), todoEdit.text.toString(), "")
+        else {
+            Log.d(Constants.TAG, "$THIS_NAME $category, $importanceId")
 
-                    else ->
-                        null
-                }
+            val todoModel = TodoModel(null, System.currentTimeMillis(), category, importanceId, titleText, todoText, difficultText)
 
-                todoModel?.let {  viewModel.insertData(it) }
-            }
+            todoModel.let {  viewModel.insertData(it) }
         }
     }
 

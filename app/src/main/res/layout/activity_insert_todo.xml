@@ -8,10 +8,6 @@
             type="sang.gondroid.myapplication.util.TodoCategory" />
 
         <variable
-            name="todoModel"
-            type="sang.gondroid.myapplication.domain.model.TodoModel" />
-
-        <variable
             name="insertViewModel"
             type="sang.gondroid.myapplication.presentation.todocategory.InsertTodoViewModel" />
 
@@ -173,6 +169,7 @@
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="@color/white"
                     android:text="@string/save"
+                    android:onClick="@{()-> handler.onBtnClick(titleEditLayout, todoEditLayout)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
