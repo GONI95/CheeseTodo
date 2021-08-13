@@ -8,7 +8,7 @@
             type="sang.gondroid.myapplication.util.TodoCategory" />
 
         <variable
-            name="viewModel"
+            name="detatilViewModel"
             type="sang.gondroid.myapplication.presentation.todocategory.DetailTodoViewModel" />
     </data>
 

@@ -38,7 +38,7 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.viewModel = viewModel
+        binding.insertViewModel = viewModel
         binding.handler = this
         binding.todoModel = TodoModel(null, 0, TodoCategory.OTHER, 0, "", "", "")
     }
@@ -125,7 +125,7 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
                         null
                 }
 
-                todoModel?.let {  viewModel!!.insertData(it) }
+                todoModel?.let {  viewModel.insertData(it) }
             }
         }
     }

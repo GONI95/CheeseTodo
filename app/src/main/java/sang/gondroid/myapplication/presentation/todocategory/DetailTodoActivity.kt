@@ -36,7 +36,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         override fun initViews() {
             super.initViews()
 
-            binding.viewModel = viewModel
+            binding.detatilViewModel = viewModel
 
             val bundle = this.intent.getBundleExtra("bundle")
             bundle?.let { model = bundle.getSerializable("TodoItemData") as TodoModel }
@@ -166,7 +166,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                         editModeDifficultEdit.text.toString()
                     )
 
-                    todoModel.let { viewModel!!.updateData(todoModel) }
+                    todoModel.let { viewModel.updateData(todoModel) }
                 }
 
                 true
