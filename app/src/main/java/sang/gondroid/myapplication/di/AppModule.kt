@@ -13,11 +13,14 @@ import sang.gondroid.myapplication.data.db.TodoDao
 import sang.gondroid.myapplication.data.db.TodoDatabase
 import sang.gondroid.myapplication.data.repository.TodoRepository
 import sang.gondroid.myapplication.data.repository.TodoRepositoryImpl
+import sang.gondroid.myapplication.domain.usecase.DeleteTodoUseCase
 import sang.gondroid.myapplication.domain.usecase.GetTodoListUseCase
 import sang.gondroid.myapplication.domain.usecase.InsertTodoUseCase
+import sang.gondroid.myapplication.domain.usecase.UpdateTodoUseCase
 import sang.gondroid.myapplication.presentation.home.HomeViewModel
 import sang.gondroid.myapplication.presentation.my.MyViewModel
 import sang.gondroid.myapplication.presentation.review.ReviewViewModel
+import sang.gondroid.myapplication.presentation.todocategory.DetailTodoViewModel
 import sang.gondroid.myapplication.presentation.todocategory.InsertTodoViewModel
 import sang.gondroid.myapplication.presentation.todocategory.TodoCategoryViewModel
 import sang.gondroid.myapplication.util.TodoCategory
@@ -37,6 +40,7 @@ val appModule = module {
     viewModel { MyViewModel() }
     viewModel { ReviewViewModel() }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
+    viewModel { DetailTodoViewModel(get(), get()) }
 
     viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory, get()) }
 
@@ -56,6 +60,8 @@ val appModule = module {
      */
     factory { InsertTodoUseCase(get()) }
     factory { GetTodoListUseCase(get()) }
+    factory { UpdateTodoUseCase(get()) }
+    factory { DeleteTodoUseCase(get()) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =

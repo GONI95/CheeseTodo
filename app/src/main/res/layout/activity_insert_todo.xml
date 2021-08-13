@@ -61,7 +61,6 @@
                         android:layout_marginEnd="10dp"
                         android:hint="@string/TITLE"
                         android:inputType="text"
-
                         android:maxLines="1"
                         android:maxLength="50"/>
 
