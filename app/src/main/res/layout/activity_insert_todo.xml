@@ -56,6 +56,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:hint="@string/TITLE"
+                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text, titleEditLayout)}"
                         android:inputType="text"
                         android:maxLines="1"
                         android:maxLength="50"/>
@@ -83,6 +84,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:hint="@string/todo"
+                        android:afterTextChanged="@{(text)-> handler.todoAfterTextChanged(text)}"
                         android:minLines="10"
                         android:maxLength="1000"
                         android:inputType="none" />
@@ -104,7 +106,7 @@
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:checkedButton="@id/androidRadioButton"
-                        android:onCheckedChanged="@{handler.onCustomCheckChanged}"
+                        android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -154,7 +156,7 @@
                     android:layout_height="55dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:onItemSelected="@{handler.onCustomItemSelected}"
+                    android:onItemSelected="@{handler::onImportanceItemSelected}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/titleEditLayout" />

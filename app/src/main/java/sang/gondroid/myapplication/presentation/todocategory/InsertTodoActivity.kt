@@ -29,8 +29,6 @@ import kotlin.properties.Delegates
 class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>() {
 
     private val THIS_NAME = this::class.simpleName
-    private lateinit var titleText : String
-    private lateinit var todoText : String
     private val difficultText : String = ""
     private var category : TodoCategory = TodoCategory.ANDROID
     private var importanceId by Delegates.notNull<Int>()
@@ -63,31 +61,27 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 importanceSpinner.adapter = it
             }
-
-
-            /**
-             * EditText에 입력되는 이벤트를 처리하기 위해서 무명 클래스를 생성해 Listener로 사용
-             */
-            titleEditLayout.editText?.addTextChangedListener {
-                if (!it.toString().isEmpty()) titleEditLayout.error = null
-            }
-            todoEditLayout.editText?.addTextChangedListener {
-                if (!it.toString().isEmpty()) todoEditLayout.error = null
-            }
         }
+    }
+
+    fun titleAfterTextChanged(editable : Editable?) : Boolean {
+        return !editable.toString().isEmpty()
+    }
+    fun todoAfterTextChanged(editable : Editable?, view: TextInputLayout) {
+        if (!editable.toString().isEmpty()) view.error = null
     }
 
     /**
      * initViews()에서 등록한 각각의 Listener Interface를 구현한 메서드
      */
-    fun onCustomItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+    fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         Log.d(Constants.TAG,
             "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
 
         importanceId = position
     }
 
-    fun onCustomCheckChanged(group: RadioGroup?, checkedId: Int) {
+    fun onCategoryCheckChanged(group: RadioGroup?, checkedId: Int) {
         Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged")
 
         category = when (checkedId) {
@@ -104,8 +98,8 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
     }
 
     fun onBtnClick(titleEditLayout : TextInputLayout, todoEditLayout : TextInputLayout) {
-        titleText = titleEditLayout.editText?.text.toString()
-        todoText = todoEditLayout.editText?.text.toString()
+        val titleText = titleEditLayout.editText?.text.toString()
+        val todoText = todoEditLayout.editText?.text.toString()
 
         if (titleEditLayout.editText?.text.isNullOrEmpty())
             titleEditLayout.error = getString(R.string.please_enter_the_text)
