@@ -56,7 +56,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:hint="@string/TITLE"
-                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text, titleEditLayout)}"
+                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text)}"
                         android:inputType="text"
                         android:maxLines="1"
                         android:maxLength="50"/>
@@ -91,6 +91,17 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Spinner
+                    android:id="@+id/importanceSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:onItemSelected="@{handler::onImportanceItemSelected}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/titleEditLayout" />
+
                 <HorizontalScrollView
                     android:id="@+id/horizontalScrollView"
                     android:layout_width="match_parent"
@@ -105,8 +116,8 @@
                         android:id="@+id/categoryRadioGroup"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-                        android:checkedButton="@id/androidRadioButton"
                         android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
+                        android:checkedButton="@id/androidRadioButton"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -150,17 +161,6 @@
 
                 </HorizontalScrollView>
 
-                <Spinner
-                    android:id="@+id/importanceSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:onItemSelected="@{handler::onImportanceItemSelected}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleEditLayout" />
-
                 <Button
                     android:id="@+id/insertButton"
                     style="?attr/buttonStyle"
@@ -171,7 +171,7 @@
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="@color/white"
                     android:text="@string/save"
-                    android:onClick="@{()-> handler.onBtnClick(titleEditLayout, todoEditLayout)}"
+                    android:onClick="@{handler::onBtnClick}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

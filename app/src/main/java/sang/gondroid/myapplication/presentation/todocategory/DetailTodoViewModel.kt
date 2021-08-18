@@ -48,6 +48,4 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
             println(e)
         }
     }
-
-    fun requestReview() { }
 }

@@ -10,6 +10,16 @@
         <variable
             name="detatilViewModel"
             type="sang.gondroid.myapplication.presentation.todocategory.DetailTodoViewModel" />
+
+        <variable
+            name="handler"
+            type="sang.gondroid.myapplication.presentation.todocategory.DetailTodoActivity" />
+
+        <variable
+            name="todoItem"
+            type="sang.gondroid.myapplication.domain.model.TodoModel" />
+
+        <import type="sang.gondroid.myapplication.util.ExtensionsKt"/>
     </data>
 
     <FrameLayout
@@ -35,6 +45,7 @@
                     android:id="@+id/readMode_titleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{todoItem.title}"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/bg_round_textview"
@@ -69,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
-                        android:text="주제 : "
+                        android:text="@string/category_text"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +90,7 @@
                         android:id="@+id/readMode_categoryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{todoItem.category.categoryNameId}"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/black"
@@ -94,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="28dp"
                         android:layout_marginTop="10dp"
-                        android:text="중요도 : "
+                        android:text="@string/importance_text"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@+id/readMode_categoryTextView"
@@ -104,6 +116,7 @@
                         android:id="@+id/readMode_importanceTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/black"
@@ -121,7 +134,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="15dp"
-                        android:text="할 일"
+                        android:text="@string/todo_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/readMode_category" />
@@ -130,6 +143,7 @@
                         android:id="@+id/readMode_todoTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:text="@{todoItem.todo}"
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="15dp"
@@ -151,7 +165,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="15dp"
-                        android:text="어려운 것"
+                        android:text="@string/difficult_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/readMode_todoTextView" />
@@ -160,6 +174,7 @@
                         android:id="@+id/readMode_difficultTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:text="@{todoItem.difficult}"
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="15dp"
@@ -222,7 +237,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/three_dimensional_hatch"
-                        android:hint="제목"
+                        android:hint="@string/title_hint_text"
+                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text)}"
+                        android:text="@{readModeTitleTextView.text}"
                         android:inputType="text"
                         android:maxLength="50"
                         android:minLines="1"
@@ -233,6 +250,21 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.appcompat.widget.Toolbar>
+
+
+            <Spinner
+                android:id="@+id/editMode_importanceSpinner"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:onItemSelected="@{handler::onImportanceItemSelected}"
+                app:selectPosition="@{todoItem.importanceId}"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editMode_toolbar" />
+            <!-- setSelection : DataBinding에서 제공하는 bindingAdapter를 이용해 todoItem의 importanceId 값을 가져옵니다. -->
 
             <HorizontalScrollView
                 android:id="@+id/editMode_horizontalScrollView"
@@ -245,11 +277,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editMode_importanceSpinner">
 
-
                 <RadioGroup
                     android:id="@+id/editMode_categoryRadioGroup"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
+                    android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
+                    app:changedId="@{todoItem.category.ordinal - 1}"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -323,6 +356,8 @@
                             android:id="@+id/editMode_todoEdit"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:afterTextChanged="@{(text)-> handler.todoAfterTextChanged(text)}"
+                            android:text="@{readModeTodoTextView.text}"
                             android:hint="@string/todo"
                             android:inputType="none"
                             android:minLines="5"
@@ -349,25 +384,16 @@
                             android:layout_height="wrap_content"
                             android:minLines="5"
                             android:maxLength="1000"
-                            android:hint="어려웠던 것"
+                            android:hint="@string/difficult_text"
+                            android:text="@{readModeDifficultTextView.text}"
                             android:inputType="none" />
 
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.core.widget.NestedScrollView>
 
-            <Spinner
-                android:id="@+id/editMode_importanceSpinner"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editMode_toolbar" />
+            </androidx.core.widget.NestedScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

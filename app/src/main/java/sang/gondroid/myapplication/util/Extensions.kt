@@ -1,5 +1,9 @@
 package sang.gondroid.myapplication.util
 
+import android.view.View
+import android.widget.RadioGroup
+import android.widget.Spinner
+import androidx.databinding.BindingAdapter
 import sang.gondroid.myapplication.CheeseTodoApplication
 import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.domain.model.BaseModel
@@ -30,4 +34,18 @@ fun Int.toImportanceString(): String = when(this) {
     2 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(2)
     3 -> CheeseTodoApplication.appContext!!.resources.getStringArray(R.array.importance_array).get(3)
     else -> " "
+}
+
+object BindingAdapters {
+    @JvmStatic
+    @BindingAdapter("selectPosition")
+    fun setSelection(view : Spinner, position : Int) {
+        view.setSelection(position)
+    }
+
+    @JvmStatic
+    @BindingAdapter("changedId")
+    fun check(view : RadioGroup, id : Int) {
+        view.check(view.getChildAt(id).id)
+    }
 }

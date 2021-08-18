@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="todoItem"
@@ -8,9 +10,7 @@
         <import type="sang.gondroid.myapplication.util.ExtensionsKt"/>
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -24,8 +24,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -40,15 +40,15 @@
                         android:id="@+id/todoItemTile"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="20dp"
                         android:fontFamily="@font/three_dimensional_hatch"
+                        android:text="@{todoItem.title}"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:text="@{todoItem.title}"
                         app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -59,39 +59,40 @@
                         android:id="@+id/todoItemDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="40dp"
+                        android:layout_marginEnd="25dp"
                         android:layout_marginBottom="8dp"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
                         android:text="@{ExtensionsKt.toDateFormat(todoItem.date)}"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:text="날짜" />
 
                     <TextView
                         android:id="@+id/todoItemCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
                         android:text="@{todoItem.category.categoryNameId}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/todoItemImportance"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/todoItemTile"
                         tools:text="카테고리" />
 
                     <TextView
                         android:id="@+id/todoItemImportance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="40dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
                         android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
+                        app:layout_constraintStart_toEndOf="@+id/todoItemCategory"
+                        app:layout_constraintTop_toBottomOf="@+id/todoItemTile"
                         tools:text="중요도" />
 
 
@@ -110,7 +111,7 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_cheese"
                 app:layout_constraintStart_toStartOf="parent"

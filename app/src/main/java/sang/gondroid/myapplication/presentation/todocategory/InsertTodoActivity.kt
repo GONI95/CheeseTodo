@@ -3,16 +3,11 @@ package sang.gondroid.myapplication.presentation.todocategory
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.RadioGroup
-import androidx.core.widget.addTextChangedListener
-import androidx.databinding.BindingAdapter
-import com.google.android.material.textfield.TextInputLayout
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.myapplication.R
 import sang.gondroid.myapplication.databinding.ActivityInsertTodoBinding
@@ -24,7 +19,6 @@ import sang.gondroid.myapplication.util.JobState
 import sang.gondroid.myapplication.util.TodoCategory
 import java.util.*
 import kotlin.properties.Delegates
-
 
 class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoBinding>() {
 
@@ -64,55 +58,58 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
         }
     }
 
-    fun titleAfterTextChanged(editable : Editable?) : Boolean {
-        return !editable.toString().isEmpty()
-    }
-    fun todoAfterTextChanged(editable : Editable?, view: TextInputLayout) {
-        if (!editable.toString().isEmpty()) view.error = null
+    /**
+     * 1, 2. addtextchangedlistener의 afterTextChanged() 이벤트 핸들러 메서드(리스너 바인딩 방식)
+     *
+     * 3. OnItemSelectedListener의 onItemSelected() 이벤트 핸들러 메서드(메서드 참조 방식, Spinner)
+     *
+     * 4. OnCheckedChangeListener의 onCheckedChanged() 이벤트 핸들러 메서드(메서드 참조 방식, RadioButton)
+     *
+     * 5. OnClickListener onClick() 이벤트 핸들러 메서드(메서드 참조 방식, Button)
+     */
+    fun titleAfterTextChanged(editable : Editable?) {
+        if (!editable.toString().isEmpty()) binding.titleEditLayout.error = null
     }
 
-    /**
-     * initViews()에서 등록한 각각의 Listener Interface를 구현한 메서드
-     */
+    fun todoAfterTextChanged(editable : Editable?) {
+        if (!editable.toString().isEmpty()) binding.todoEditLayout.error = null
+    }
+
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        Log.d(Constants.TAG,
-            "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
+        Log.d(Constants.TAG, "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
 
         importanceId = position
     }
 
     fun onCategoryCheckChanged(group: RadioGroup?, checkedId: Int) {
-        Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged")
+        Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged : $checkedId")
 
         category = when (checkedId) {
             R.id.androidRadioButton -> TodoCategory.ANDROID
-
             R.id.lauguageRadioButton -> TodoCategory.LANGUAGE
-
             R.id.dbRadioButton -> TodoCategory.DB
-
             R.id.otherRadioButton -> TodoCategory.OTHER
 
             else -> TodoCategory.ALL
         }
     }
 
-    fun onBtnClick(titleEditLayout : TextInputLayout, todoEditLayout : TextInputLayout) {
-        val titleText = titleEditLayout.editText?.text.toString()
-        val todoText = todoEditLayout.editText?.text.toString()
+    fun onBtnClick(view: View?) {
+        with(binding) {
+            val titleText = titleEditLayout.editText?.text
+            val todoText = todoEditLayout.editText?.text
 
-        if (titleEditLayout.editText?.text.isNullOrEmpty())
-            titleEditLayout.error = getString(R.string.please_enter_the_text)
+            if (titleText.isNullOrEmpty())
+                titleEditLayout.error = getString(R.string.please_enter_the_text)
 
-        else if(todoEditLayout.editText?.text.isNullOrEmpty())
-            todoEditLayout.error = getString(R.string.please_enter_the_text)
+            else if(todoText.isNullOrEmpty())
+                todoEditLayout.error = getString(R.string.please_enter_the_text)
 
-        else {
-            Log.d(Constants.TAG, "$THIS_NAME $category, $importanceId")
+            else {
+                val todoModel = TodoModel(null, System.currentTimeMillis(), category, importanceId, titleText.toString(), todoText.toString(), difficultText)
 
-            val todoModel = TodoModel(null, System.currentTimeMillis(), category, importanceId, titleText, todoText, difficultText)
-
-            todoModel.let {  viewModel.insertData(it) }
+                todoModel.let {  viewModel.insertData(it) }
+            }
         }
     }
 
