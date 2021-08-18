@@ -119,7 +119,6 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         }
 
         R.id.check_item -> {
-
             with(binding) {
                 val (titleText, todoText) = editModeTitleEditLayout.editText?.text to editModeTodoEditLayout.editText?.text
 
