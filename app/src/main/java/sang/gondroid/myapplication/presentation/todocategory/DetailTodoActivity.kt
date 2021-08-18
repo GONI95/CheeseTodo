@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.addTextChangedListener
 import sang.gondroid.myapplication.widget.custom.CustomDialogClickListener
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.myapplication.R
@@ -59,6 +60,13 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 readModeImportanceTextView.text = model.importanceId.toImportanceString()
                 readModeTodoTextView.text =  model.todo
                 readModeDifficultTextView.text =  model.difficult
+
+                editModeTitleEditLayout.editText?.addTextChangedListener {
+                    if (!it.toString().isEmpty()) editModeTitleEditLayout.error = null
+                }
+                editModeTodoEditLayout.editText?.addTextChangedListener {
+                    if (!it.toString().isEmpty()) editModeTodoEditLayout.error = null
+                }
             }
         }
 
@@ -156,19 +164,26 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
             R.id.check_item -> {
 
                 with(binding) {
-                    val todoModel = TodoModel(
-                        model.id,
-                        model.date,
-                        category,
-                        importanceId,
-                        editModeTitleEdit.text.toString(),
-                        editModeTodoEdit.text.toString(),
-                        editModeDifficultEdit.text.toString()
-                    )
+                    if (editModeTitleEditLayout.editText?.text.isNullOrEmpty())
+                        editModeTitleEditLayout.error = getString(R.string.please_enter_the_text)
 
-                    todoModel.let { viewModel.updateData(todoModel) }
+                    else if(editModeTodoEditLayout.editText?.text.isNullOrEmpty())
+                        editModeTodoEditLayout.error = getString(R.string.please_enter_the_text)
+
+                    else {
+                        val todoModel = TodoModel(
+                            model.id,
+                            model.date,
+                            category,
+                            importanceId,
+                            editModeTitleEdit.text.toString(),
+                            editModeTodoEdit.text.toString(),
+                            editModeDifficultEdit.text.toString()
+                        )
+
+                        todoModel.let { viewModel.updateData(todoModel) }
+                    }
                 }
-
                 true
             }
 
