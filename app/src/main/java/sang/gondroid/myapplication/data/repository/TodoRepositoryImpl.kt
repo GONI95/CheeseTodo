@@ -25,13 +25,11 @@ class TodoRepositoryImpl(
     override suspend fun insertTodoItem(todoEntity: TodoEntity): Long
         = withContext(ioDispatcher) { todoDao.insert(todoEntity) }
 
-    override suspend fun updateTodoItem(todoEntity: TodoEntity) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateTodoItem(todoEntity: TodoEntity)
+        = withContext(ioDispatcher) { todoDao.update(todoEntity) }
 
-    override suspend fun deleteTodoItem(id: Long) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteTodoItem(id: Long)
+        = withContext(ioDispatcher) { todoDao.delete(id) }
 
     override suspend fun deleteAll() {
         TODO("Not yet implemented")

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import sang.gondroid.myapplication.util.TodoListSortFilter
 
 /**
  * ViewModel에서 공통적으로 사용될 사항들을 정의

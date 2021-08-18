@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import sang.gondroid.myapplication.domain.model.BaseModel
 import sang.gondroid.myapplication.domain.model.TodoModel
 import sang.gondroid.myapplication.domain.usecase.InsertTodoUseCase
 import sang.gondroid.myapplication.presentation.base.BaseViewModel
