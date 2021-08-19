@@ -5,15 +5,15 @@
     <data>
         <variable
             name="todoCategory"
-            type="sang.gondroid.myapplication.util.TodoCategory" />
+            type="sang.gondroid.cheesetodo.util.TodoCategory" />
 
         <variable
             name="insertViewModel"
-            type="sang.gondroid.myapplication.presentation.todocategory.InsertTodoViewModel" />
+            type="sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoViewModel" />
 
         <variable
             name="handler"
-            type="sang.gondroid.myapplication.presentation.todocategory.InsertTodoActivity" />
+            type="sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

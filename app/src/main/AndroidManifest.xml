@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="sang.gondroid.myapplication">
+    package="sang.gondroid.cheesetodo">
 
     <application
-        android:name=".CheeseTodoApplication"
+        android:name="sang.gondroid.cheesetodo.CheeseTodoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CheeseTodo">
-        <activity android:name=".presentation.todocategory.DetailTodoActivity"></activity>
-        <activity android:name=".presentation.todocategory.InsertTodoActivity" />
-        <activity android:name=".presentation.MainActivity"
+        <activity android:name="sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoActivity"/>
+        <activity android:name="sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity" />
+        <activity android:name="sang.gondroid.cheesetodo.presentation.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

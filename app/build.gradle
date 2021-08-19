@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "sang.gondroid.myapplication"
+        applicationId "sang.gondroid.cheesetodo"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
