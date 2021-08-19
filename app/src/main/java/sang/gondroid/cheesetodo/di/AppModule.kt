@@ -2,6 +2,7 @@ package sang.gondroid.cheesetodo.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
@@ -11,6 +12,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import sang.gondroid.cheesetodo.data.db.TodoDao
 import sang.gondroid.cheesetodo.data.db.TodoDatabase
+import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.data.repository.TodoRepositoryImpl
 import sang.gondroid.cheesetodo.domain.usecase.DeleteTodoUseCase
@@ -37,7 +39,7 @@ val appModule = module {
      * ViewModel
      */
     viewModel { HomeViewModel() }
-    viewModel { MyViewModel() }
+    viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io"))) }
     viewModel { ReviewViewModel() }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get()) }
@@ -62,9 +64,21 @@ val appModule = module {
     factory { GetTodoListUseCase(get()) }
     factory { UpdateTodoUseCase(get()) }
     factory { DeleteTodoUseCase(get()) }
+
+    /**
+     * FirebaseAuth
+     */
+    single<FirebaseAuth> { provideFirebaseAuth() }
+
+    /**
+     * AppPreferenceManager
+     */
+    single<AppPreferenceManager> { AppPreferenceManager(androidApplication()) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =
     Room.databaseBuilder(context, TodoDatabase::class.java, TodoDatabase.DB_NAME).build()
 
 private fun provideTodoDao(database: TodoDatabase) = database.todoDao()
+
+private fun provideFirebaseAuth() : FirebaseAuth = FirebaseAuth.getInstance()
