@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
@@ -78,4 +79,12 @@ dependencies {
 
     // Room table을 확인하기 위해 추가 : https://medium.com/harrythegreat/android-room-database-%EB%94%94%EB%B2%84%EA%B9%85%ED%95%98%EA%B8%B0%EC%A2%8B%EC%9D%80-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-a1909aee3f4d
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    //파이어베이스
+    implementation platform('com.google.firebase:firebase-bom:28.3.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // 구글 로그인
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
 }
