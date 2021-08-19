@@ -89,7 +89,7 @@
             android:id="@+id/loginRequireGroup"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:constraint_referenced_ids="loginButton,loginTextView"
             tools:visibility="visible" />
 

@@ -7,6 +7,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.ActivityMainBinding
+import sang.gondroid.cheesetodo.presentation.home.HomeFragment
+import sang.gondroid.cheesetodo.presentation.my.MyFragment
+import sang.gondroid.cheesetodo.presentation.review.ReviewFragment
 import sang.gondroid.cheesetodo.util.Constants
 
 

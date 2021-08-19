@@ -6,10 +6,12 @@ import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.RadioGroup
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.ActivityInsertTodoBinding
+import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.presentation.base.BaseActivity
 import sang.gondroid.cheesetodo.presentation.home.HomeFragment
 import sang.gondroid.cheesetodo.util.Constants

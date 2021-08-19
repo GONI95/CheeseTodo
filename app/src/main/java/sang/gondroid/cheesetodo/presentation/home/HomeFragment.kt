@@ -5,13 +5,16 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentHomeBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity
+import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
+import sang.gondroid.cheesetodo.util.TodoCategory
 import sang.gondroid.cheesetodo.util.TodoListSortFilter
 import sang.gondroid.cheesetodo.widget.page.FragmentViewPagerAdapter
 

@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "347689674259",
-    "project_id": "cheesetodo-aa3c9",
-    "storage_bucket": "cheesetodo-aa3c9.appspot.com"
+    "project_number": "55316927850",
+    "project_id": "cheesetodo-a6e4a",
+    "storage_bucket": "cheesetodo-a6e4a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:347689674259:android:46d2191a12f04f016181e6",
+        "mobilesdk_app_id": "1:55316927850:android:300ad30faa91ed6d638113",
         "android_client_info": {
-          "package_name": "sang.gondroid.myapplication"
+          "package_name": "sang.gondroid.cheesetodo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "347689674259-fsd0vssr7o8v7klru4mp45kqaqsng788.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "sang.gondroid.myapplication",
-            "certificate_hash": "662aef912a08153eea390e51101d5b53d8b363e4"
-          }
-        },
-        {
-          "client_id": "347689674259-vmdrn071id1nti2g2j9ugu4ordiu73s0.apps.googleusercontent.com",
+          "client_id": "55316927850-0c3k6lv3u1tio9ul72un89kn7ist0kml.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBOa2rmB7V01uBLh9S6l6FaNUaevZVH5sA"
+          "current_key": "AIzaSyDmU8UQo_7DeVD4vBxva3MPaWE_MuWsHFM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "347689674259-vmdrn071id1nti2g2j9ugu4ordiu73s0.apps.googleusercontent.com",
+              "client_id": "55316927850-0c3k6lv3u1tio9ul72un89kn7ist0kml.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
