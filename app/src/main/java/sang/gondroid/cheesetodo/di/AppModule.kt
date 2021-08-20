@@ -12,6 +12,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import sang.gondroid.cheesetodo.data.db.TodoDao
 import sang.gondroid.cheesetodo.data.db.TodoDatabase
+import sang.gondroid.cheesetodo.data.firebase.CheckFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.data.repository.TodoRepositoryImpl
@@ -39,7 +40,7 @@ val appModule = module {
      * ViewModel
      */
     viewModel { HomeViewModel() }
-    viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io"))) }
+    viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io")), get()) }
     viewModel { ReviewViewModel() }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get()) }
@@ -74,6 +75,11 @@ val appModule = module {
      * AppPreferenceManager
      */
     single<AppPreferenceManager> { AppPreferenceManager(androidApplication()) }
+
+    /**
+     *
+     */
+    single { CheckFirebaseAuth(get()) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =
