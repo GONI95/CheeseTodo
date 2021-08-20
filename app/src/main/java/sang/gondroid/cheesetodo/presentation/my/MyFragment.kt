@@ -91,7 +91,70 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         }
     }
 
+    /**
+     * Preference 또는 Firebase의 현재 유저 정보를 기초로 MyState를 관리하고 그에 맞는 메서드를 실행
+     */
     override fun observeData() {
+        viewModel.myStateLiveData.observe(viewLifecycleOwner, Observer {
+            Log.d(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
+            when (it) {
+                is MyState.Loading -> handleLoadingState()
+                is MyState.Success -> handleSuccessState(it)
+                is MyState.Login -> handleLoginState(it)
+                is MyState.Error -> handleErrorState(it)
+            }
+        })
+    }
+
+    private fun handleLoadingState() {
+        Log.d(Constants.TAG, "$THIS_NAME handleLoadingState() : Loading...")
+        binding.loginRequireGroup.isGone = true
+        binding.loginPrograssBar.isVisible = true
+    }
+
+    private fun handleSuccessState(state: MyState.Success) = with(binding) {
+        Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() called")
+
+        loginPrograssBar.isGone = true
+
+        when(state) {
+            is MyState.Success.Registered<*, *> -> {
+                Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
+                handleRegisteredState(state as MyState.Success.Registered<String, Uri>)
+            }
+
+            is MyState.Success.NotRegistered -> {
+                Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() : NotRegistered")
+                profileGroup.isGone = true
+                loginRequireGroup.isVisible = true
+            }
+        }
+    }
+
+    private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
+
+    }
+
+    private fun handleLoginState(state: MyState.Login) {
+        Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
+
+        binding.loginPrograssBar.isGone = true
+
+        // idData는 token (이곳에서 파베에 등록함)
+        val credential = GoogleAuthProvider.getCredential(state.idData, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    Log.d(Constants.TAG, "$THIS_NAME handleLoginState() isSuccessful")
+
+                }else {
+                    Log.d(Constants.TAG, "$THIS_NAME handleLoginState() !isSuccessful")
+
+                }
+            }
+    }
+
+    private fun handleErrorState(state: MyState.Error) {
 
     }
 
