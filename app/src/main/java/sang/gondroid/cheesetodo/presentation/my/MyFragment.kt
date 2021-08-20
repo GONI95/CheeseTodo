@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -117,6 +118,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         binding.loginPrograssBar.isVisible = true
     }
 
+    /**
+     * handleSuccessState() : Registered - "validateCurrentUser()로부터 받은 User 정보를 전달하며 hanlderRegisteredState() 호출"
+     */
     private fun handleSuccessState(state: MyState.Success) = with(binding) {
         Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() called")
 
@@ -137,12 +141,22 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * 로그인 완료 상태의 UI를 표시
+     * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
      */
     private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
         Log.d(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
+        profileGroup.isVisible = true
+        loginRequireGroup.isGone = true
 
+        state.userImageUri.let {
+            Glide.with(requireContext())
+                .load(it)
+                .circleCrop()
+                .into(userImageView)
+        }
+
+        userNameTextView.text = state.userName
     }
 
     /**

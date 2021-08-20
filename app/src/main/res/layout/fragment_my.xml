@@ -34,8 +34,7 @@
             app:layout_constraintBottom_toTopOf="@+id/userNameBottomGuideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/userNameTopGuideline"
-            tools:text="이  름" />
+            app:layout_constraintTop_toTopOf="@+id/userNameTopGuideline" />
 
         <TextView
             android:id="@+id/logoutButton"
@@ -123,10 +122,6 @@
             app:layout_constraintTop_toTopOf="@+id/middleGuideline"
             android:orientation="vertical">
 
-
-
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/userReviewPlanCountLayout"
                 android:layout_weight="1"
@@ -159,7 +154,7 @@
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
                     android:paddingStart="20dp"
-                    android:text="나의 검증된 계획 갯수는?"
+                    android:text="@string/what_are_my_todos"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/verticalGuideline1"
@@ -173,7 +168,6 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="4개"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -215,7 +209,7 @@
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
                     android:paddingStart="20dp"
-                    android:text="나의 랭크는 뭘까?"
+                    android:text="@string/what_is_my_rank"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/verticalGuideline2"
@@ -229,7 +223,6 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="풋내기"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -272,7 +265,7 @@
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
                     android:paddingStart="20dp"
-                    android:text="나의 점수는 뭘까?"
+                    android:text="@string/what_is_my_score"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/verticalGuideline3"
@@ -286,7 +279,6 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="5점"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
