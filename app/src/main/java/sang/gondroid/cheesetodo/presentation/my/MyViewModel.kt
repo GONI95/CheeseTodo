@@ -25,6 +25,9 @@ class MyViewModel(
     val myStateLiveData : LiveData<MyState>
         get() = _myStateLiveData
 
+    /**
+     * Preference에 저장된 Token 유무에 따라 현재 로그인이 되었는지 체크하는 작업 : Loading, Login, NotRegistered 핸들링
+     */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatchers) {
         Log.d(Constants.TAG, "$THIS_NAME fetchData() called")
         _myStateLiveData.postValue(MyState.Loading)
@@ -38,13 +41,31 @@ class MyViewModel(
         }
     }
 
+    /**
+     * Preference에 Token 저장 후 fetchData() 호출
+     */
     fun saveToken(idToken: String, disPlayName: String) = viewModelScope.launch(ioDispatchers){
         withContext(Dispatchers.IO) {
             Log.d(Constants.TAG, "$THIS_NAME saveToken() called")
+
             appPreferenceManager.putIdToken(idToken)
             appPreferenceManager.setUserNameString(disPlayName)
 
             fetchData()
+        }
+    }
+
+    /**
+     * Firebase Current User 정보를 가져오는 validateCurrentUser() : Registered, NotRegistered 핸들링
+     */
+    fun validateCurrentUser(fireBaseUser: FirebaseUser?) = viewModelScope.launch(Dispatchers.IO) {
+        Log.d(Constants.TAG, "$THIS_NAME validateCurrentUser() called")
+
+        fireBaseUser?.let {
+            val myState = checkFirebaseAuth.validateCurrentUser(fireBaseUser)
+
+            if (myState is MyState.Success.Registered<*,*>) _myStateLiveData.postValue(myState)
+            else _myStateLiveData.postValue(myState)
         }
     }
 }

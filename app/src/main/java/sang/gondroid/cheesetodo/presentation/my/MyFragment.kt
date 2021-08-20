@@ -102,8 +102,13 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 is MyState.Success -> handleSuccessState(it)
                 is MyState.Login -> handleLoginState(it)
                 is MyState.Error -> handleErrorState(it)
+                is MyState.Uninitialized -> handleUninitialized()
             }
         })
+    }
+
+    private fun handleUninitialized() {
+        Log.d(Constants.TAG, "$THIS_NAME handleUninitialized() called")
     }
 
     private fun handleLoadingState() {
@@ -131,31 +136,43 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         }
     }
 
+    /**
+     * 로그인 완료 상태의 UI를 표시
+     */
     private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
+        Log.d(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
+
 
     }
 
+    /**
+     * Firebase Authentication에 google email 등록 후 실질적인 로그인 작업 요청
+     * 1. getCredential() : Goodle 로그인 ID 또는 AccessToken을 래핑하는 인스턴스를 반환
+     * 2. signInWithCredential() : 지정된 User Token으로 Firebase 인증 시스템에 로그인하며, 성공 시 getCurrentUser로 사용자 정보를 가져올 수 있습니다.
+     */
     private fun handleLoginState(state: MyState.Login) {
         Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
         binding.loginPrograssBar.isGone = true
 
-        // idData는 token (이곳에서 파베에 등록함)
         val credential = GoogleAuthProvider.getCredential(state.idData, null)
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    Log.d(Constants.TAG, "$THIS_NAME handleLoginState() isSuccessful")
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
+            if (task.isSuccessful) {
+                Log.d(Constants.TAG, "$THIS_NAME handleLoginState() isSuccessful")
 
-                }else {
-                    Log.d(Constants.TAG, "$THIS_NAME handleLoginState() !isSuccessful")
+                val user = firebaseAuth.currentUser
+                viewModel.validateCurrentUser(user)
+            }else {
+                Log.d(Constants.TAG, "$THIS_NAME handleLoginState() !isSuccessful")
 
-                }
+                firebaseAuth.signOut()
+                viewModel.validateCurrentUser(null)
             }
+        }
     }
 
     private fun handleErrorState(state: MyState.Error) {
-
+        Log.d(Constants.TAG, "$THIS_NAME handleErrorState() called")
     }
 
     companion object {

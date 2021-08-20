@@ -40,4 +40,5 @@
     <string name="logout">로그아웃</string>
     <string name="revoke">회원탈퇴</string>
     <string name="google_login_require">로그인이 필요합니다.</string>
+    <string name="request_error">요청했지만 예상치 못한 이슈가 발생했습니다 : %s</string>
 </resources>
