@@ -27,6 +27,7 @@ import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryViewModel
 import sang.gondroid.cheesetodo.util.TodoCategory
+import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 
 val appModule = module {
 
@@ -77,7 +78,7 @@ val appModule = module {
     single<AppPreferenceManager> { AppPreferenceManager(androidApplication()) }
 
     /**
-     *
+     * CheckFirebaseAuth : Preference, Firebase Current User를 이용해 Token 저장 유무, User 정보를 확인하는 Class
      */
     single { CheckFirebaseAuth(get()) }
 }

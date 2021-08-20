@@ -58,7 +58,7 @@ class MyViewModel(
     /**
      * Firebase Current User 정보를 가져오는 validateCurrentUser() : Registered, NotRegistered 핸들링
      */
-    fun validateCurrentUser(fireBaseUser: FirebaseUser?) = viewModelScope.launch(Dispatchers.IO) {
+    fun validateCurrentUser(fireBaseUser: FirebaseUser?) = viewModelScope.launch(ioDispatchers) {
         Log.d(Constants.TAG, "$THIS_NAME validateCurrentUser() called")
 
         fireBaseUser?.let {
@@ -67,5 +67,17 @@ class MyViewModel(
             if (myState is MyState.Success.Registered<*,*>) _myStateLiveData.postValue(myState)
             else _myStateLiveData.postValue(myState)
         }
+    }
+
+    /**
+     * Preference에 Token 삭제 후 fetchData() 호출
+     */
+    fun signOut() = viewModelScope.launch(ioDispatchers){
+        withContext(Dispatchers.IO) {
+            appPreferenceManager.removeIdToken()    // 토큰 지우기()
+            appPreferenceManager.removeUserNameString()
+        }
+
+        fetchData()
     }
 }

@@ -25,17 +25,11 @@
     <string name="delete">삭제하기</string>
     <string name="update">변경하기</string>
 
-    <string name="delete_todo_dialog_title">데이터 삭제</string>
-    <string name="delete_todo_dialog_description">데이터를 삭제하시겠습니까?</string>
-
     <string name="category_text">주제 :</string>
     <string name="importance_text">중요도 :</string>
     <string name="todo_text">할 일</string>
     <string name="difficult_text">어려웠던 것</string>
     <string name="title_hint_text">제목</string>
-
-    <string name="yes">확인</string>
-    <string name="no">취소</string>
 
     <string name="request_error">요청했지만 예상치 못한 이슈가 발생했습니다 : %s</string>
 </resources>

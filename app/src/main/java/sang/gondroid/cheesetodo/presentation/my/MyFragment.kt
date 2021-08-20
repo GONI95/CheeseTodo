@@ -20,6 +20,8 @@ import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.MyState
+import sang.gondroid.cheesetodo.widget.custom.CustomDialog
+import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import java.lang.Exception
 
 
@@ -29,6 +31,10 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     override val viewModel: MyViewModel by viewModel()
 
+    /**
+     * FirebaseAuth :
+     * FirebaseUser : Firebase 프로젝트의 사용자 데이터베이스에 있는 사용자의 프로필 정보를 의미
+     */
     private val firebaseAuth : FirebaseAuth by inject()
 
     override fun getDataBinding(): FragmentMyBinding
@@ -36,8 +42,8 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     /**
      * Google login 기능을 구현하기위한 인스턴스
-     * 1. Google 로그인 옵션 구성 : requestIdToken 요청, default_web_clien_id엔 자신의 client id가 있다.
-     * 2. Google 로그인 관리 클라이언트
+     * - GoogleSignInOptions : 사용자의 아이디, 이메일 주소, 기본 정보를 요청하기 위한 로그인 설정
+     *                          (default_web_clien_id엔 자신의 client id 있음 / DEFAULT_SIGN_IN에 기본 프로필이 포함되어 있음)
      */
     private val gso : GoogleSignInOptions by lazy {
         Log.d(Constants.TAG, "$THIS_NAME initializing gso : GoogleSignInOptions")
@@ -48,6 +54,10 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
             .build()
     }
 
+    /**
+     * Google login 기능을 구현하기위한 인스턴스
+     * - GoogleSignInClient : Google Sign In API와 상호작용하기 위한 클라이언트(Google 로그인 관리 클라이언트)
+     */
     private val gsc by lazy {
         Log.d(Constants.TAG, "$THIS_NAME initializing gsc : GoogleSignInClient")
 
@@ -78,17 +88,67 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * 1. getSignInIntent() : registerForActivityResult를 호출하여 Google 로그인 흐름을 시작하기 위한 Intent를 가져옵니다.
-     * 2. launch() : ActivityResultContract를 실행합니다.
+     * - getSignInIntent() : registerForActivityResult를 호출하여 Google 로그인 흐름을 시작하기 위한 Intent를 가져옵니다.
+     * - launch() : ActivityResultContract를 실행합니다.
      */
     private fun signInGoogle() {
         val signInIntent = gsc.signInIntent
         loginLauncher.launch(signInIntent)
     }
 
+    /**
+     * - FirebaseAuth.getInstance().signOut() : 현재 사용자를 로그아웃하고 디스크 캐시에서 삭제
+     * - GoogleSignInClient.signOut() : 앱에 연결된 계정을 지우는 작업(매번 계정 선택가능)
+     */
+    private fun signOutGoogle() {
+        viewModel.signOut()
+        firebaseAuth.signOut()
+        gsc.signOut()
+    }
+
+    /**
+     * - FirebaseAuth.getInstance().currentUser.delete() : Firebase 프로젝트의 데이터베이스에서 사용자 레코드를 삭제
+     * - GoogleSignInClient.revokeAccess() : 현재 애플리케이션에 부여된 액세스 권한을 취소
+     */
+    private fun deleteGoogleMember() {
+        viewModel.signOut()
+        firebaseAuth.currentUser?.delete()
+        gsc.revokeAccess()
+    }
+
     override fun initViews() = with(binding) {
         loginButton.setOnClickListener {
             signInGoogle()
+        }
+
+        logoutButton.setOnClickListener {
+            CustomDialog(requireContext(),
+                getString(R.string.logout_dialog_title),
+                getString(R.string.logout_dialog_description),
+                object : CustomDialogClickListener {
+                    override fun onPositiveClick() {
+                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                        signOutGoogle()
+                    }
+                    override fun onNegativeClick() {
+                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                    }
+                }).show()
+        }
+
+        deleteButton.setOnClickListener {
+            CustomDialog(requireContext(),
+                getString(R.string.delete_user_dialog_title),
+                getString(R.string.delete_user_dialog_description),
+                object : CustomDialogClickListener {
+                    override fun onPositiveClick() {
+                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                        deleteGoogleMember()
+                    }
+                    override fun onNegativeClick() {
+                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                    }
+                }).show()
         }
     }
 
