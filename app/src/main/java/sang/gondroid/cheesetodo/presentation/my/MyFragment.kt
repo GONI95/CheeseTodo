@@ -221,33 +221,16 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         loginRequireGroup.isGone = true
     }
 
-    /**
-     * Firebase Authentication에 google email 등록 후 실질적인 로그인 작업 요청
-     * 1. getCredential() : Goodle 로그인 ID 또는 AccessToken을 래핑하는 인스턴스를 반환
-     * 2. signInWithCredential() : 지정된 User Token으로 Firebase 인증 시스템에 로그인하며, 성공 시 getCurrentUser로 사용자 정보를 가져올 수 있습니다.
-     */
     private fun handleLoginState(state: MyState.Login) {
         Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
-        val credential = GoogleAuthProvider.getCredential(state.idData, null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
-
-            if (task.isSuccessful) {
-                Log.d(Constants.TAG, "$THIS_NAME handleLoginState() isSuccessful")
-
-                val user = firebaseAuth.currentUser
-                viewModel.validateCurrentUser(user)
-            }else {
-                Log.d(Constants.TAG, "$THIS_NAME handleLoginState() !isSuccessful")
-
-                firebaseAuth.signOut()
-                viewModel.validateCurrentUser(null)
-            }
-        }
+        viewModel.validateCurrentUser()
     }
 
     private fun handleErrorState(state: MyState.Error) {
         Log.d(Constants.TAG, "$THIS_NAME handleErrorState() called")
+        binding.loginPrograssBar.isGone = true
+        binding.loginRequireGroup.isVisible = true
     }
 
     companion object {

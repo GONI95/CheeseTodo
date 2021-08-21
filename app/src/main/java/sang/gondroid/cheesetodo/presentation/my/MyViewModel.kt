@@ -39,13 +39,15 @@ class MyViewModel(
 
         val myState = checkFirebaseAuth.checkToken()
 
-        if (myState is MyState.Login) {
-            Log.d(Constants.TAG, "$THIS_NAME fetchData() Login")
+        if (myState is MyState.Login)
             _myStateLiveData.postValue(MyState.Login(myState.idData, myState.nameData)) // idToken이 저장된 경우 : Login 상태
-        } else {
-            Log.d(Constants.TAG, "$THIS_NAME fetchData() NotRegistered")
-            _myStateLiveData.postValue(MyState.Success.NotRegistered)
-        }
+
+        else if(myState is MyState.Error)
+            _myStateLiveData.postValue(myState)
+
+        else
+            _myStateLiveData.postValue(myState)
+
     }
 
     /**
@@ -65,17 +67,15 @@ class MyViewModel(
     /**
      * Firebase Current User 정보를 가져오는 validateCurrentUser() : Registered, NotRegistered 핸들링
      */
-    fun validateCurrentUser(fireBaseUser: FirebaseUser?) = viewModelScope.launch(ioDispatchers) {
+    fun validateCurrentUser() = viewModelScope.launch(ioDispatchers) {
         Log.d(Constants.TAG, "$THIS_NAME validateCurrentUser() called")
 
-        fireBaseUser?.let {
-            val myState = checkFirebaseAuth.validateCurrentUser(fireBaseUser)
+            val myState = checkFirebaseAuth.validateCurrentUser()
 
             if (myState is MyState.Success.Registered<*, *>) _myStateLiveData.postValue(myState)
+            else if(myState is MyState.Error) _myStateLiveData.postValue(myState)
             else _myStateLiveData.postValue(myState)
-        } ?: kotlin.run {
-            _myStateLiveData.postValue(MyState.Success.NotRegistered)
-        }
+
     }
 
     /**

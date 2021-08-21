@@ -40,7 +40,7 @@ val appModule = module {
     /**
      * ViewModel
      */
-    viewModel { HomeViewModel() }
+    viewModel { HomeViewModel(get()) }
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io")), get()) }
     viewModel { ReviewViewModel() }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
@@ -80,7 +80,7 @@ val appModule = module {
     /**
      * CheckFirebaseAuth : Preference, Firebase Current User를 이용해 Token 저장 유무, User 정보를 확인하는 Class
      */
-    single { CheckFirebaseAuth(get()) }
+    single { CheckFirebaseAuth(get(), get()) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =

@@ -44,6 +44,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
             = FragmentHomeBinding.inflate(layoutInflater)
 
     override fun initViews() {
+        super.initViews()
+
         initViewPager()
 
         /**
