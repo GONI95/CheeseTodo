@@ -117,6 +117,8 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     override fun initViews() = with(binding) {
+        super.initViews()
+
         loginButton.setOnClickListener {
             signInGoogle()
         }
@@ -184,8 +186,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private fun handleSuccessState(state: MyState.Success) = with(binding) {
         Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() called")
 
-        loginPrograssBar.isGone = true
-
         when(state) {
             is MyState.Success.Registered<*, *> -> {
                 Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
@@ -198,6 +198,8 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 loginRequireGroup.isVisible = true
             }
         }
+
+        loginPrograssBar.isGone = true
     }
 
     /**
@@ -205,9 +207,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      */
     private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
         Log.d(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
-
-        profileGroup.isVisible = true
-        loginRequireGroup.isGone = true
 
         state.userImageUri.let {
             Glide.with(requireContext())
@@ -217,6 +216,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         }
 
         userNameTextView.text = state.userName
+
+        profileGroup.isVisible = true
+        loginRequireGroup.isGone = true
     }
 
     /**
@@ -227,10 +229,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private fun handleLoginState(state: MyState.Login) {
         Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
-        binding.loginPrograssBar.isGone = true
-
         val credential = GoogleAuthProvider.getCredential(state.idData, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
+
             if (task.isSuccessful) {
                 Log.d(Constants.TAG, "$THIS_NAME handleLoginState() isSuccessful")
 

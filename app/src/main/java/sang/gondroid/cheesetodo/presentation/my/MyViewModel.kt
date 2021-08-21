@@ -4,8 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.*
+import org.koin.ext.getScopeId
+import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.firebase.CheckFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
@@ -25,6 +29,7 @@ class MyViewModel(
     val myStateLiveData : LiveData<MyState>
         get() = _myStateLiveData
 
+
     /**
      * Preference에 저장된 Token 유무에 따라 현재 로그인이 되었는지 체크하는 작업 : Loading, Login, NotRegistered 핸들링
      */
@@ -35,8 +40,10 @@ class MyViewModel(
         val myState = checkFirebaseAuth.checkToken()
 
         if (myState is MyState.Login) {
+            Log.d(Constants.TAG, "$THIS_NAME fetchData() Login")
             _myStateLiveData.postValue(MyState.Login(myState.idData, myState.nameData)) // idToken이 저장된 경우 : Login 상태
         } else {
+            Log.d(Constants.TAG, "$THIS_NAME fetchData() NotRegistered")
             _myStateLiveData.postValue(MyState.Success.NotRegistered)
         }
     }
@@ -64,8 +71,10 @@ class MyViewModel(
         fireBaseUser?.let {
             val myState = checkFirebaseAuth.validateCurrentUser(fireBaseUser)
 
-            if (myState is MyState.Success.Registered<*,*>) _myStateLiveData.postValue(myState)
+            if (myState is MyState.Success.Registered<*, *>) _myStateLiveData.postValue(myState)
             else _myStateLiveData.postValue(myState)
+        } ?: kotlin.run {
+            _myStateLiveData.postValue(MyState.Success.NotRegistered)
         }
     }
 
