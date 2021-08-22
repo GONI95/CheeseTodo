@@ -10,6 +10,9 @@ sealed class MyState {
     object Uninitialized : MyState()    // 초기화되지 않은 상태
     object Loading : MyState()  // 로딩 중인 상태
 
+    object True : MyState()
+    object False : MyState()
+
     // 로그인 상태 (idToken을 가짐)
     data class Login(
         val idData : String,

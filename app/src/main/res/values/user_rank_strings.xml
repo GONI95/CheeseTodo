@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="level1">왕초보</string>
+    <string name="level2">초보</string>
+    <string name="level3">코린이</string>
+    <string name="level4">풋내기</string>
+    <string name="level5">견습자</string>
+    <string name="level6">초급 개발자</string>
+    <string name="level7">중급 개발자</string>
+    <string name="level8">상급 개발자</string>
+    <string name="level9">수석 개발자</string>
+    <string name="level10">특급 개발자</string>
+    <string name="level11">일류 개발자</string>
+    <string name="level12">마스터 개발자</string>
+</resources>

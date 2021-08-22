@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
@@ -31,10 +30,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     override val viewModel: MyViewModel by viewModel()
 
-    /**
-     * FirebaseAuth :
-     * FirebaseUser : Firebase 프로젝트의 사용자 데이터베이스에 있는 사용자의 프로필 정보를 의미
-     */
     private val firebaseAuth : FirebaseAuth by inject()
 
     override fun getDataBinding(): FragmentMyBinding
@@ -165,6 +160,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 is MyState.Success -> handleSuccessState(it)
                 is MyState.Login -> handleLoginState(it)
                 is MyState.Error -> handleErrorState(it)
+                is MyState.False -> handleFalseState()
                 is MyState.Uninitialized -> handleUninitialized()
             }
         })
@@ -224,13 +220,21 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private fun handleLoginState(state: MyState.Login) {
         Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
-        viewModel.validateCurrentUser()
+        viewModel.validateUser()
     }
 
     private fun handleErrorState(state: MyState.Error) {
-        Log.d(Constants.TAG, "$THIS_NAME handleErrorState() called")
-        binding.loginPrograssBar.isGone = true
+        Log.d(Constants.TAG, "$THIS_NAME handleErrorState() : ${state.messageId}")
+
         binding.loginRequireGroup.isVisible = true
+        binding.loginPrograssBar.isGone = true
+    }
+
+    private fun handleFalseState() {
+        Log.d(Constants.TAG, "$THIS_NAME handleFalseState() called")
+
+        binding.loginRequireGroup.isVisible = true
+        binding.loginPrograssBar.isGone = true
     }
 
     companion object {
