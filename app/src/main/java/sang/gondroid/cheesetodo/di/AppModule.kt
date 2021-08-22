@@ -15,8 +15,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import sang.gondroid.cheesetodo.data.db.TodoDao
 import sang.gondroid.cheesetodo.data.db.TodoDatabase
-import sang.gondroid.cheesetodo.data.firebase.CheckFirebaseAuth
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.data.repository.TodoRepositoryImpl
@@ -88,7 +88,7 @@ val appModule = module {
     /**
      * CheckFirebaseAuth : Preference, Firebase Current User를 이용해 Token 저장 유무, User 정보를 확인하는 Class
      */
-    single { CheckFirebaseAuth(get(), get(), get(named("io"))) }
+    single { HandlerFirebaseAuth(get(), get(), get(named("io"))) }
 
     /**
      * HandleFireStore

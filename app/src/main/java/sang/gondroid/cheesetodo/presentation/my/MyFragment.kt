@@ -30,8 +30,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     override val viewModel: MyViewModel by viewModel()
 
-    private val firebaseAuth : FirebaseAuth by inject()
-
     override fun getDataBinding(): FragmentMyBinding
             = FragmentMyBinding.inflate(layoutInflater)
 
@@ -95,19 +93,19 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * - FirebaseAuth.getInstance().signOut() : 현재 사용자를 로그아웃하고 디스크 캐시에서 삭제
      * - GoogleSignInClient.signOut() : 앱에 연결된 계정을 지우는 작업(매번 계정 선택가능)
      */
-    private fun signOutGoogle() {
-        viewModel.signOut()
-        firebaseAuth.signOut()
+    private fun signOut() {
+        viewModel.removeToken()
         gsc.signOut()
+        gsc.revokeAccess()
     }
 
     /**
      * - FirebaseAuth.getInstance().currentUser.delete() : Firebase 프로젝트의 데이터베이스에서 사용자 레코드를 삭제
      * - GoogleSignInClient.revokeAccess() : 현재 애플리케이션에 부여된 액세스 권한을 취소
      */
-    private fun deleteGoogleMember() {
-        viewModel.signOut()
-        firebaseAuth.currentUser?.delete()
+    private fun disjoin() {
+        viewModel.disjoinMembership()
+        gsc.signOut()
         gsc.revokeAccess()
     }
 
@@ -125,7 +123,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 object : CustomDialogClickListener {
                     override fun onPositiveClick() {
                         Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
-                        signOutGoogle()
+                        signOut()
                     }
                     override fun onNegativeClick() {
                         Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
@@ -140,7 +138,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 object : CustomDialogClickListener {
                     override fun onPositiveClick() {
                         Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
-                        deleteGoogleMember()
+                        disjoin()
                     }
                     override fun onNegativeClick() {
                         Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
@@ -220,7 +218,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private fun handleLoginState(state: MyState.Login) {
         Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
-        viewModel.validateUser()
+        viewModel.validateMembership()
     }
 
     private fun handleErrorState(state: MyState.Error) {
