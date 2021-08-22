@@ -17,8 +17,7 @@
     <string name="please_enter_the_text">글을 입력해주세요.</string>
 
     <string name="success">작업이 완료되었습니다.</string>
-    <string name="error">오류로 인해 작업이 실패했습니다.</string>
-    <string name="an_error_occurred">오류로 인해 데이터를 가져올 수 없습니다.</string>
+    <string name="an_error_occurred">오류가 발생했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
 
     <string name="edit">편집하기</string>
     <string name="request_a_review">검토 요청</string>
@@ -31,5 +30,6 @@
     <string name="difficult_text">어려웠던 것</string>
     <string name="title_hint_text">제목</string>
 
-    <string name="request_error">요청했지만 예상치 못한 이슈가 발생했습니다 : %s</string>
+    <string name="request_error">Error Message( %s )</string>
+    <string name="request_false">작업이 완료되었지만, 성공적으로 이루어지지 못했습니다.</string>
 </resources>

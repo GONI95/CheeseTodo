@@ -36,14 +36,11 @@ class MyViewModel(
 
         val myState = handlerFirebaseAuth.validateToken()
 
-        if (myState is MyState.Login)
-            _myStateLiveData.postValue(MyState.Login(myState.idData, myState.nameData)) // idToken이 저장된 경우 : Login 상태
+        if (myState is MyState.Login) _myStateLiveData.postValue(MyState.Login(myState.idData, myState.nameData))
 
-        else if(myState is MyState.Error)
-            _myStateLiveData.postValue(myState)
+        else if(myState is MyState.Error) _myStateLiveData.postValue(myState)
 
-        else
-            _myStateLiveData.postValue(myState)
+        else _myStateLiveData.postValue(myState)
 
     }
 
@@ -68,24 +65,21 @@ class MyViewModel(
         Log.d(Constants.TAG, "$THIS_NAME validateMembership() called")
 
         /**
-         * 1. Firebase Current User 정보를 가져오는 메서드
+         * 1. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 가져오는 메서드
          * 2. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보가 있는지 확인하고 Firestore에 추가하는 메서드
          */
         val membershipState = handlerFireStore.validateMembership()
         val userState = handlerFirebaseAuth.getCurrentUser()
 
-        if (userState is MyState.Success.Registered<*, *> && membershipState is MyState.True) {
-            Log.d(Constants.TAG, "$THIS_NAME validateMembership() Complete")
-            _myStateLiveData.postValue(userState)
-        }
-        else if(userState is MyState.Error) {
-            Log.d(Constants.TAG, "$THIS_NAME validateMembership() userState Error")
-            _myStateLiveData.postValue(userState)
+        if (userState is MyState.Success.Registered<*, *> && membershipState is MyState.True) _myStateLiveData.postValue(userState)
 
-        } else {
-            Log.d(Constants.TAG, "$THIS_NAME validateMembership() membershipState Error")
-            _myStateLiveData.postValue(membershipState)
-        }
+        else if(membershipState is MyState.False) _myStateLiveData.postValue(membershipState)
+
+        else if(membershipState is MyState.Error) _myStateLiveData.postValue(membershipState)
+
+        else if(userState is MyState.Error) _myStateLiveData.postValue(userState)
+
+        else Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() else : $membershipState, $userState")
     }
 
     /**
@@ -106,16 +100,25 @@ class MyViewModel(
      * Firebase Auth, Firestore User Collection에서 현재 로그인한 User 정보의 삭제를 요청하는 메서드
      */
     fun disjoinMembership() = viewModelScope.launch(ioDispatchers){
+
+        /**
+         * 1. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보를 제거하는 메서드
+         * 2. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 제거하는 메서드
+         */
         val disjoinMembershipState = handlerFireStore.disjoinMembership()
         val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()
 
-        if (disjoinMembershipState is MyState.True && deleteCurrentUserState is MyState.True) {
-            Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() true : $disjoinMembershipState, $deleteCurrentUserState")
-            removeToken()
-        }
-        else if(disjoinMembershipState is MyState.False || deleteCurrentUserState is MyState.False)
-            Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() false : $disjoinMembershipState, $deleteCurrentUserState")
-        else
-            Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
+        if (disjoinMembershipState is MyState.True && deleteCurrentUserState is MyState.True) removeToken()
+
+        else if(disjoinMembershipState is MyState.False) _myStateLiveData.postValue(disjoinMembershipState)
+
+        else if(deleteCurrentUserState is MyState.False) _myStateLiveData.postValue(deleteCurrentUserState)
+
+        else if(disjoinMembershipState is MyState.Error) _myStateLiveData.postValue(disjoinMembershipState)
+
+        else if(deleteCurrentUserState is MyState.Error) _myStateLiveData.postValue(deleteCurrentUserState)
+
+        else Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
+
     }
 }

@@ -46,25 +46,21 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
 
             try {
                 val credential = GoogleAuthProvider.getCredential(appPreferenceManager.getIdToken(), null)
-                firebaseAuth.signInWithCredential(credential).await().apply {
-                    this.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
+                firebaseAuth.signInWithCredential(credential).await().let { result ->
+                    result.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
                 }
 
-                Log.d(Constants.TAG, "$THIS_NAME validateToken() : Registered")
-                return@withContext MyState.Login(
-                    appPreferenceManager.getIdToken()!!,
-                    appPreferenceManager.getUserNameString()!!
-                )
+                Log.d(Constants.TAG, "$THIS_NAME validateToken() : Login")
+                return@withContext MyState.Login(appPreferenceManager.getIdToken()!!, appPreferenceManager.getUserNameString()!!)
 
             }catch (e : Exception) {
-
                 Log.d(Constants.TAG, "$THIS_NAME validateToken() : Error")
-                return@withContext MyState.Error(R.string.an_error_occurred, e)
+                return@withContext MyState.Error(R.string.request_error, e)
             }
 
 
         } else {
-            Log.d(Constants.TAG, "$THIS_NAME validateToken() : No Token")
+            Log.d(Constants.TAG, "$THIS_NAME validateToken() : NotRegistered")
 
             firebaseAuth.signOut()
             return@withContext MyState.Success.NotRegistered
@@ -80,11 +76,12 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
 
         return firebaseUser.let {
             try {
-                MyState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
-                    .also { Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() : 프로필 요청 성공 : Registered") }
+                Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() Registered")
+                return@let MyState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
 
             } catch (e : Exception) {
-                MyState.Error(R.string.request_error, e)
+                Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() Error")
+                return@let MyState.Error(R.string.request_error, e)
             }
         }
     }
@@ -100,13 +97,17 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
         return@withContext firebaseUser.email.let { email ->
             try {
                 firebaseUser.delete().addOnCompleteListener { task ->
-                    myState = if (task.isSuccessful) { MyState.True } else { MyState.False }
+
+                    myState = if (task.isSuccessful) MyState.True else MyState.False
+
                 }.await()
 
-                myState
+                Log.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $myState")
+                return@let myState
 
             } catch (e : Exception) {
-                return@withContext MyState.Error(R.string.request_error, e)
+                Log.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Error")
+                return@let  MyState.Error(R.string.request_error, e)
             }
         }
     }

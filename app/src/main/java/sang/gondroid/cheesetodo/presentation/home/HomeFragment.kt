@@ -34,7 +34,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
                 when (jobState) {
                     JobState.SUCCESS -> { Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show() }
-                    JobState.ERROR -> { Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show() }
+                    JobState.ERROR -> { Toast.makeText(requireContext(), getString(R.string.an_error_occurred), Toast.LENGTH_LONG).show() }
                 }
             }
         }

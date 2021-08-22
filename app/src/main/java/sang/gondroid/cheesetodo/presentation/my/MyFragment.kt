@@ -3,6 +3,7 @@ package sang.gondroid.cheesetodo.presentation.my
 import android.app.Activity
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -222,16 +223,18 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     private fun handleErrorState(state: MyState.Error) {
-        Log.d(Constants.TAG, "$THIS_NAME handleErrorState() : ${state.messageId}")
+        Log.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
+        Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
-        binding.loginRequireGroup.isVisible = true
+        //binding.loginRequireGroup.isVisible = true
         binding.loginPrograssBar.isGone = true
     }
 
     private fun handleFalseState() {
         Log.d(Constants.TAG, "$THIS_NAME handleFalseState() called")
+        Toast.makeText(requireContext(), R.string.request_false, Toast.LENGTH_LONG).show()
 
-        binding.loginRequireGroup.isVisible = true
+        //binding.loginRequireGroup.isVisible = true
         binding.loginPrograssBar.isGone = true
     }
 

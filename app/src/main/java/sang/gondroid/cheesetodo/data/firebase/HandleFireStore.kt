@@ -9,10 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.R
-import sang.gondroid.cheesetodo.util.Constants
-import sang.gondroid.cheesetodo.util.JobState
-import sang.gondroid.cheesetodo.util.MyState
-import sang.gondroid.cheesetodo.util.UserRank
+import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
 import java.util.function.BiPredicate
 
@@ -47,22 +44,22 @@ class HandleFireStore(
 
         firebaseAuth.currentUser?.let { firebaseUser = it }
 
-        firebaseUser.email.let { email ->
+        return@withContext firebaseUser.email.let { email ->
             try {
                 val result = firestore.collection(getFireStoreString(R.string.user_collection))
                     .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
 
                 if (result.isEmpty) {
                     Log.d(Constants.TAG, "$THIS_NAME validateMembership() ${joinMembership()}")
-                    return@withContext joinMembership()
+                    return@let joinMembership()
                 }
                 else {
                     Log.d(Constants.TAG, "$THIS_NAME validateMembership() True")
-                    return@withContext MyState.True
+                    return@let MyState.True
                 }
 
             } catch (e : Exception) {
-                return@withContext MyState.Error(R.string.request_error, e)
+                return@let MyState.Error(R.string.request_error, e)
             }
         }
     }
@@ -75,7 +72,7 @@ class HandleFireStore(
 
         var myState : MyState = MyState.Uninitialized
 
-        firebaseUser.email.let { email ->
+        return@withContext firebaseUser.email.let { email ->
             try {
                 firestore.collection(getFireStoreString(R.string.user_collection))
                     .document(email!!)
@@ -88,14 +85,18 @@ class HandleFireStore(
                             getFireStoreString(R.string.user_rank) to getFireStoreString(UserRank.Level1.userRankStringId),
                             getFireStoreString(R.string.user_score) to 0
                         )).addOnCompleteListener { task ->
-                            if (task.isSuccessful) myState = MyState.True
-                            else MyState.False
-                    }.await()
 
-                return@withContext myState
+                        myState = if (task.isSuccessful) MyState.True else MyState.False
+
+                        }.await()
+
+                Log.d(Constants.TAG, "$THIS_NAME joinMembership() $myState")
+                return@let myState
 
             } catch (e: Exception) {
-                return@withContext MyState.Error(R.string.request_error, e)
+                Log.d(Constants.TAG, "$THIS_NAME joinMembership() Error")
+
+                return@let MyState.Error(R.string.request_error, e)
             }
         }
     }
@@ -103,7 +104,7 @@ class HandleFireStore(
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User의 Email과 동일한 Firestore Users Collection에서 삭제하는 메서드
      */
-    suspend fun disjoinMembership() = withContext(ioDispatchers) {
+    suspend fun disjoinMembership() : MyState = withContext(ioDispatchers) {
         Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() called")
 
         var myState : MyState = MyState.Uninitialized
@@ -111,13 +112,17 @@ class HandleFireStore(
        return@withContext firebaseUser.email.let { email ->
             try {
                 firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).delete().addOnCompleteListener { task ->
-                    myState = if (task.isSuccessful) { MyState.True } else { MyState.False }
+
+                    myState = if (task.isSuccessful) MyState.True else MyState.False
+
                 }.await()
 
-                myState
+                Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() $myState")
+                return@let myState
 
             } catch (e : Exception) {
-                return@withContext MyState.Error(R.string.request_error, e)
+                Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() Error")
+                return@let  MyState.Error(R.string.request_error, e)
             }
         }
     }
