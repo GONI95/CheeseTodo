@@ -19,6 +19,7 @@ import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.MyState
 import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
@@ -40,7 +41,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      *                          (default_web_clien_id엔 자신의 client id 있음 / DEFAULT_SIGN_IN에 기본 프로필이 포함되어 있음)
      */
     private val gso : GoogleSignInOptions by lazy {
-        Log.d(Constants.TAG, "$THIS_NAME initializing gso : GoogleSignInOptions")
+        LogUtil.v(Constants.TAG, "$THIS_NAME initializing GoogleSignInOptions")
 
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -53,7 +54,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * - GoogleSignInClient : Google Sign In API와 상호작용하기 위한 클라이언트(Google 로그인 관리 클라이언트)
      */
     private val gsc by lazy {
-        Log.d(Constants.TAG, "$THIS_NAME initializing gsc : GoogleSignInClient")
+        LogUtil.v(Constants.TAG, "$THIS_NAME initializing GoogleSignInClient")
 
         GoogleSignIn.getClient(requireActivity(), gso)
     }
@@ -123,11 +124,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 getString(R.string.logout_dialog_description),
                 object : CustomDialogClickListener {
                     override fun onPositiveClick() {
-                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
                         signOut()
                     }
                     override fun onNegativeClick() {
-                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
                     }
                 }).show()
         }
@@ -138,11 +139,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 getString(R.string.delete_user_dialog_description),
                 object : CustomDialogClickListener {
                     override fun onPositiveClick() {
-                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
                         disjoin()
                     }
                     override fun onNegativeClick() {
-                        Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
                     }
                 }).show()
         }
@@ -153,7 +154,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      */
     override fun observeData() {
         viewModel.myStateLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
             when (it) {
                 is MyState.Loading -> handleLoadingState()
                 is MyState.Success -> handleSuccessState(it)
@@ -166,11 +167,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     private fun handleUninitialized() {
-        Log.d(Constants.TAG, "$THIS_NAME handleUninitialized() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleUninitialized() called")
     }
 
     private fun handleLoadingState() {
-        Log.d(Constants.TAG, "$THIS_NAME handleLoadingState() : Loading...")
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleLoadingState() called")
         binding.loginRequireGroup.isGone = true
         binding.loginPrograssBar.isVisible = true
     }
@@ -179,16 +180,16 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * handleSuccessState() : Registered - "validateCurrentUser()로부터 받은 User 정보를 전달하며 hanlderRegisteredState() 호출"
      */
     private fun handleSuccessState(state: MyState.Success) = with(binding) {
-        Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleSuccessState() called")
 
         when(state) {
             is MyState.Success.Registered<*, *> -> {
-                Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
+                LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
                 handleRegisteredState(state as MyState.Success.Registered<String, Uri>)
             }
 
             is MyState.Success.NotRegistered -> {
-                Log.d(Constants.TAG, "$THIS_NAME handleSuccessState() : NotRegistered")
+                LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : NotRegistered")
                 profileGroup.isGone = true
                 loginRequireGroup.isVisible = true
             }
@@ -201,7 +202,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
      */
     private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
-        Log.d(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
         state.userImageUri.let {
             Glide.with(requireContext())
@@ -217,18 +218,18 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     private fun handleLoginState(state: MyState.Login) {
-        Log.d(Constants.TAG, "$THIS_NAME handleLoginState() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
         viewModel.validateMembership()
     }
 
     private fun handleErrorState(state: MyState.Error) {
-        Log.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
+        LogUtil.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
         Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
     }
 
     private fun handleFalseState() {
-        Log.d(Constants.TAG, "$THIS_NAME handleFalseState() called")
+        LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
         Toast.makeText(requireContext(), R.string.request_false, Toast.LENGTH_LONG).show()
     }
 

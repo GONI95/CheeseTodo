@@ -9,6 +9,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Job
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 
 
 /**
@@ -44,7 +45,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
+        LogUtil.d(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
         initViews()
         observeData()
     }

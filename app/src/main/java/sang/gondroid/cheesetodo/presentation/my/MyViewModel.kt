@@ -10,6 +10,7 @@ import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.MyState
 
 class MyViewModel(
@@ -31,7 +32,7 @@ class MyViewModel(
      * Preference에 저장된 Token 유무에 따라 현재 로그인이 되었는지 체크하는 작업 : Loading, Login, NotRegistered 핸들링
      */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatchers) {
-        Log.d(Constants.TAG, "$THIS_NAME fetchData() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() called")
         _myStateLiveData.postValue(MyState.Loading)
 
         val myState = handlerFirebaseAuth.validateToken()
@@ -49,7 +50,8 @@ class MyViewModel(
      */
     fun saveToken(idToken: String, disPlayName: String) = viewModelScope.launch(ioDispatchers){
         withContext(Dispatchers.IO) {
-            Log.d(Constants.TAG, "$THIS_NAME saveToken() called : $disPlayName")
+            LogUtil.v(Constants.TAG, "$THIS_NAME saveToken() called")
+            LogUtil.d(Constants.TAG, "$THIS_NAME saveToken() : $idToken, $disPlayName")
 
             appPreferenceManager.putIdToken(idToken)
             appPreferenceManager.setUserNameString(disPlayName)
@@ -62,7 +64,7 @@ class MyViewModel(
      * Token이 Preference에 저장되어 있어, Firebase currentUser와 Firestore Users 정보를 검증
      */
     fun validateMembership() = viewModelScope.launch(ioDispatchers) {
-        Log.d(Constants.TAG, "$THIS_NAME validateMembership() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called")
 
         /**
          * 1. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 가져오는 메서드
@@ -79,14 +81,14 @@ class MyViewModel(
 
         else if(userState is MyState.Error) _myStateLiveData.postValue(userState)
 
-        else Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() else : $membershipState, $userState")
+        else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $membershipState, $userState")
     }
 
     /**
      * Preference에 Token 삭제 후 fetchData() 호출
      */
     fun removeToken() = viewModelScope.launch(ioDispatchers){
-        Log.d(Constants.TAG, "$THIS_NAME removeToken() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME removeToken() called")
 
         appPreferenceManager.removeIdToken()
         appPreferenceManager.removeUserNameString()
@@ -118,7 +120,7 @@ class MyViewModel(
 
         else if(deleteCurrentUserState is MyState.Error) _myStateLiveData.postValue(deleteCurrentUserState)
 
-        else Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
+        else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
 
     }
 }

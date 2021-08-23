@@ -32,7 +32,7 @@ class HandleFireStore(
     private lateinit var firebaseUser : FirebaseUser
 
     private fun getFireStoreString(stringId : Int) : String {
-        Log.d(Constants.TAG, "$THIS_NAME getFireStoreString() : ${context.getString(stringId)}")
+        LogUtil.i(Constants.TAG, "$THIS_NAME getFireStoreString() : ${context.getString(stringId)}")
         return context.getString(stringId)
     }
 
@@ -40,7 +40,7 @@ class HandleFireStore(
      * Email Field를 기준으로 Firestore 테이블에서 회원 조회
      */
     suspend fun validateMembership() : MyState = withContext(ioDispatchers) {
-        Log.d(Constants.TAG, "$THIS_NAME validateMembership() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called")
 
         firebaseAuth.currentUser?.let { firebaseUser = it }
 
@@ -50,15 +50,16 @@ class HandleFireStore(
                     .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
 
                 if (result.isEmpty) {
-                    Log.d(Constants.TAG, "$THIS_NAME validateMembership() ${joinMembership()}")
+                    LogUtil.d(Constants.TAG, "$THIS_NAME validateMembership() ${joinMembership()}")
                     return@let joinMembership()
                 }
                 else {
-                    Log.d(Constants.TAG, "$THIS_NAME validateMembership() True")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() MyState.True")
                     return@let MyState.True
                 }
 
             } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME validateMembership() MyState.Error")
                 return@let MyState.Error(R.string.request_error, e)
             }
         }
@@ -68,7 +69,7 @@ class HandleFireStore(
      * FireStore에 회원 추가
      */
     suspend fun joinMembership() : MyState = withContext(ioDispatchers) {
-        Log.d(Constants.TAG, "$THIS_NAME joinMembership() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME joinMembership() called")
 
         var myState : MyState = MyState.Uninitialized
 
@@ -90,12 +91,11 @@ class HandleFireStore(
 
                         }.await()
 
-                Log.d(Constants.TAG, "$THIS_NAME joinMembership() $myState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME joinMembership() $myState")
                 return@let myState
 
             } catch (e: Exception) {
-                Log.d(Constants.TAG, "$THIS_NAME joinMembership() Error")
-
+                LogUtil.e(Constants.TAG, "$THIS_NAME joinMembership() MyState.Error")
                 return@let MyState.Error(R.string.request_error, e)
             }
         }
@@ -105,7 +105,7 @@ class HandleFireStore(
      * Firebase 인증 시스템에 로그인한 User인 현재 User의 Email과 동일한 Firestore Users Collection에서 삭제하는 메서드
      */
     suspend fun disjoinMembership() : MyState = withContext(ioDispatchers) {
-        Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME disjoinMembership() called")
 
         var myState : MyState = MyState.Uninitialized
 
@@ -117,11 +117,11 @@ class HandleFireStore(
 
                 }.await()
 
-                Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() $myState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME disjoinMembership() $myState")
                 return@let myState
 
             } catch (e : Exception) {
-                Log.d(Constants.TAG, "$THIS_NAME disjoinMembership() Error")
+                LogUtil.e(Constants.TAG, "$THIS_NAME disjoinMembership() MyState.Error")
                 return@let  MyState.Error(R.string.request_error, e)
             }
         }

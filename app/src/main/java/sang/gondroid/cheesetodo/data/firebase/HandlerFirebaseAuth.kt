@@ -11,6 +11,7 @@ import kotlinx.coroutines.tasks.await
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.MyState
 import java.lang.Exception
 
@@ -21,10 +22,6 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
                         private val ioDispatchers: CoroutineDispatcher) {
 
     private val THIS_NAME = this::class.simpleName
-
-    init {
-        Log.d(Constants.TAG, "$THIS_NAME init() : ${hashCode()}")
-    }
 
     /**
      * FirebaseAuth :
@@ -40,7 +37,7 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
      * 2. signInWithCredential() : 지정된 User Token으로 Firebase 인증 시스템에 로그인하며, 성공 시 getCurrentUser로 사용자 정보를 가져올 수 있습니다.
      */
     suspend fun validateToken(): MyState = withContext(ioDispatchers){
-        Log.d(Constants.TAG, "$THIS_NAME validateToken() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME validateToken() called")
 
         if (!appPreferenceManager.getIdToken().isNullOrEmpty() && !appPreferenceManager.getUserNameString().isNullOrEmpty()) {
 
@@ -50,17 +47,17 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
                     result.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
                 }
 
-                Log.d(Constants.TAG, "$THIS_NAME validateToken() : Login")
+                LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.Login")
                 return@withContext MyState.Login(appPreferenceManager.getIdToken()!!, appPreferenceManager.getUserNameString()!!)
 
             }catch (e : Exception) {
-                Log.d(Constants.TAG, "$THIS_NAME validateToken() : Error")
+                LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.Error")
                 return@withContext MyState.Error(R.string.request_error, e)
             }
 
 
         } else {
-            Log.d(Constants.TAG, "$THIS_NAME validateToken() : NotRegistered")
+            LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.NotRegistered")
 
             firebaseAuth.signOut()
             return@withContext MyState.Success.NotRegistered
@@ -72,15 +69,15 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 가져오는 메서드 : Registered, NotRegistered 반환
      */
     fun getCurrentUser(): MyState {
-        Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentUser() called")
 
         return firebaseUser.let {
             try {
-                Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() Registered")
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Registered")
                 return@let MyState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
 
             } catch (e : Exception) {
-                Log.d(Constants.TAG, "$THIS_NAME getCurrentUser() Error")
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
                 return@let MyState.Error(R.string.request_error, e)
             }
         }
@@ -90,7 +87,7 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 Firebase 인증 시스템으로부터 삭제하는 메서드
      */
     suspend fun deleteCurrentUser() : MyState = withContext(ioDispatchers){
-        Log.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME deleteCurrentUser() called")
 
         var myState : MyState = MyState.Uninitialized
 
@@ -102,11 +99,11 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
 
                 }.await()
 
-                Log.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $myState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $myState")
                 return@let myState
 
             } catch (e : Exception) {
-                Log.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Error")
+                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() MyState.Error")
                 return@let  MyState.Error(R.string.request_error, e)
             }
         }
