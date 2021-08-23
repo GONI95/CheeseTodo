@@ -5,9 +5,13 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.databinding.FragmentHomeBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity
@@ -44,7 +48,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initViews()
 
         initViewPager()
-
         /**
          * 무명 클래스로 클릭한 Chip(정렬) 이벤트 처리
          */
@@ -119,7 +122,17 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         }.attach()
     }
 
-    override fun observeData() {}
+    override fun observeData() {
+        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { jobState ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
+
+            when(jobState) {
+                is JobState.Login -> binding.welcomeUserTextView.text = String.format(getString(R.string.use_as_a_member, jobState.nameData))
+                is JobState.Success.NotRegistered -> binding.welcomeUserTextView.text = getString(R.string.use_as_a_non_member)
+                else -> binding.welcomeUserTextView.text = getString(R.string.checking_member_info)
+            }
+        })
+    }
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -127,3 +140,4 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         const val TAG = "HomeFragment"
     }
 }
+

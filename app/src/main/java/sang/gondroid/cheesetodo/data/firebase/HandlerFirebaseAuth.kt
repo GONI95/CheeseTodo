@@ -65,22 +65,25 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 가져오는 메서드 : Registered, NotRegistered 반환
      */
-    /*
+     /*
      fun getCurrentUser(): JobState {
          LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentUser() called")
 
-         return firebaseUser.let {
-             try {
-                 LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Registered")
-                 return@let JobState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
+        if (!appPreferenceManager.getIdToken().isNullOrEmpty() && !appPreferenceManager.getUserNameString().isNullOrEmpty()) {
+            try {
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Registered")
+                return JobState.Success.Registered(data = appPreferenceManager.getUserNameString())
 
-             } catch (e : Exception) {
-                 LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
-                 return@let JobState.Error(R.string.request_error, e)
-             }
-         }
+            } catch (e : Exception) {
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
+                return JobState.Error(R.string.request_error, e)
+            }
+        } else {
+            return JobState.Success.NotRegistered
+        }
      }
-     */
+      */
+
 
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 Firebase 인증 시스템으로부터 삭제하는 메서드

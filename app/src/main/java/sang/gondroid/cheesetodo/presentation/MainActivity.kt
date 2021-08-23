@@ -91,12 +91,10 @@ class MainActivity : AppCompatActivity() {
         findFragment?.let {
             LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Show ${tag}")
             supportFragmentManager.beginTransaction().show(it).commitAllowingStateLoss()
-
+            //supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commitAllowingStateLoss()
         } ?: kotlin.run {
             LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Add ${tag}")
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainer, fragment, tag)
-                .commitAllowingStateLoss()
+            supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment, tag).commitAllowingStateLoss()
         }
     }
 }

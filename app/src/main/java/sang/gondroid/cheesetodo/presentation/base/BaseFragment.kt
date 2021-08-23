@@ -48,12 +48,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtil.v(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
+        initViews()
     }
 
     override fun onResume() {
         LogUtil.v(Constants.TAG, "$THIS_NAME, onResume() called : ${hashCode()}")
-        initViews()
         super.onResume()
+
+        fetchJob = viewModel.fetchData()
+        observeData()
     }
 
     /**
@@ -61,10 +64,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
      * 2. LiveData를 처리하는 observeData()
      * 3. 해당 Activity가 종료될 때 coroutine이 살아있으면 중지
      */
-    open fun initViews() {
-        fetchJob = viewModel.fetchData()
-        observeData()
-    }
+    open fun initViews() = Unit
 
     abstract fun observeData()
 
