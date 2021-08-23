@@ -9,4 +9,7 @@
     <string name="user_todo_info">userTodoInfo</string>
     <string name="user_rank">userRank</string>
     <string name="user_score">userScore</string>
+
+    <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
+    <string name="use_as_a_member">%s님 반갑습니다.</string>
 </resources>

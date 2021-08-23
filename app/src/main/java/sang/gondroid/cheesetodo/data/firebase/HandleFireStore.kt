@@ -1,7 +1,9 @@
 package sang.gondroid.cheesetodo.data.firebase
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
 import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
 
@@ -124,5 +127,38 @@ class HandleFireStore(
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
+    }
+
+    suspend fun getCurrentMembership() : JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMembership() called")
+
+        return@withContext firebaseUser.email.let { email ->
+            try {
+                val result = firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).get().await()
+
+                if (result.exists()) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMembership() MyState.Registered")
+                    return@let JobState.Success.Registered(
+                        FireStoreMembershipInfo(
+                            userName = result.get(getFireStoreString(R.string.user_name)) as String,
+                            userEmail = result.get(getFireStoreString(R.string.user_email)) as String,
+                            userPhoto = (result.get(getFireStoreString(R.string.user_photo)) as String).toUri() as Uri,
+                            userTodoCount = result.get(getFireStoreString(R.string.user_todo_count)) as Number,
+                            userScore = result.get(getFireStoreString(R.string.user_score)) as Number,
+                            userRank = result.get(getFireStoreString(R.string.user_rank)) as String
+                        )
+                    )
+                }
+                else {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMembership() MyState.NotRegistered")
+                    return@let JobState.Success.NotRegistered
+                }
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME getCurrentMembership() MyState.Error")
+                return@let  JobState.Error(R.string.request_error, e)
+            }
+        }
+
     }
 }

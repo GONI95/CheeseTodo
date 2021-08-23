@@ -163,13 +163,11 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 }
                 is JobState.True -> {
                     LogUtil.v(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
-                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
                     finish()
                 }
                 else -> {
-                    LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else")
-                    Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()
+                    LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else $jobState")
                 }
             }
         }

@@ -15,6 +15,7 @@ import com.google.android.gms.common.api.ApiException
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
+import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
@@ -181,9 +182,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleSuccessState() called")
 
         when(state) {
-            is JobState.Success.Registered<*, *> -> {
+            is JobState.Success.Registered<*> -> {
                 LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
-                handleRegisteredState(state as JobState.Success.Registered<String, Uri>)
+                handleRegisteredState(state as JobState.Success.Registered<FireStoreMembershipInfo>)
             }
 
             is JobState.Success.NotRegistered -> {
@@ -199,17 +200,20 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     /**
      * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
      */
-    private fun handleRegisteredState(state: JobState.Success.Registered<String, Uri>) = with(binding) {
+    private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMembershipInfo>) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
-        state.userImageUri.let {
+        state.data.userPhoto.toString().let {
             Glide.with(requireContext())
                 .load(it)
                 .circleCrop()
                 .into(userImageView)
         }
 
-        userNameTextView.text = state.userName
+        userNameTextView.text = state.data.userName
+        userReviewTodoCountTv.text = state.data.userTodoCount.toString()
+        userScoreTv.text = state.data.userScore.toString()
+        userRankTv.text = state.data.userRank
 
         profileGroup.isVisible = true
         loginRequireGroup.isGone = true

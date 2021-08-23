@@ -125,7 +125,7 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/userReviewPlanCountLayout"
+                android:id="@+id/userReviewTodoCountLayout"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_border"
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/planImageView"
+                    android:id="@+id/todoImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingStart="30dp"
@@ -160,12 +160,12 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/verticalGuideline1"
-                    app:layout_constraintStart_toEndOf="@+id/planImageView"
+                    app:layout_constraintStart_toEndOf="@+id/todoImageView"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
                 <TextView
-                    android:id="@+id/userReviewPlanCountTv"
+                    android:id="@+id/userReviewTodoCountTv"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"

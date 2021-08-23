@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
+import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
@@ -22,7 +23,7 @@ class MyViewModel(
     private val THIS_NAME = this::class.simpleName
 
     // MyState의 상태가 초기화되지 않은 값으로 초기화
-    private var _myStateLiveData = MutableLiveData<JobState>(JobState.Uninitialized)
+    private var _myStateLiveData = MutableLiveData<JobState>()
     val jobStateLiveData : LiveData<JobState>
         get() = _myStateLiveData
 
@@ -70,17 +71,22 @@ class MyViewModel(
          * 2. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보가 있는지 확인하고 Firestore에 추가하는 메서드
          */
         val membershipState = handlerFireStore.validateMembership()
-        val userState = handlerFirebaseAuth.getCurrentUser()
+        //val userState = handlerFirebaseAuth.getCurrentUser()
+        val userState =  handlerFireStore.getCurrentMembership()
 
-        if (userState is JobState.Success.Registered<*, *> && membershipState is JobState.True) _myStateLiveData.postValue(userState)
+        LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called! $membershipState")
 
-        else if(membershipState is JobState.False) _myStateLiveData.postValue(membershipState)
+        if (userState is JobState.Success.Registered<*> && membershipState is JobState.True) _myStateLiveData.postValue(userState)
 
         else if(membershipState is JobState.Error) _myStateLiveData.postValue(membershipState)
 
         else if(userState is JobState.Error) _myStateLiveData.postValue(userState)
 
-        else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $membershipState, $userState")
+        else if(membershipState is JobState.False) _myStateLiveData.postValue(membershipState)
+
+        else if(userState is JobState.Success.NotRegistered) _myStateLiveData.postValue(userState)
+
+        else LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState, $userState")
     }
 
     /**

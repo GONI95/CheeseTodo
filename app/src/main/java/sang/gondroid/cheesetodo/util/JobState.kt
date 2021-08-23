@@ -1,6 +1,7 @@
 package sang.gondroid.cheesetodo.util
 
 import androidx.annotation.StringRes
+import sang.gondroid.cheesetodo.R
 import java.io.Serializable
 
 /**
@@ -23,9 +24,8 @@ sealed class JobState : Serializable {
     // 반환이 성공적으로 이루어진 상태
     sealed class Success : JobState() {
         // 로그인이 된 상태
-        data class Registered<out T, R>(
-            val userName: T,
-            val userImageUri: R?
+        data class Registered<out T>(
+            val data: T
         ) : Success()
 
         // 로그인이 되지않은 상태

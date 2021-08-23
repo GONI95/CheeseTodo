@@ -49,9 +49,9 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
      * API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리 / 클릭 이벤트 애니메이션 처리
      */
     private fun getBudle(v : View) : Bundle
-        = ActivityOptions.makeSceneTransitionAnimation(
-            requireActivity(), Pair.create(v, resources.getString(R.string.title_transition_name))
-        ).toBundle()
+            = ActivityOptions.makeSceneTransitionAnimation(
+        requireActivity(), Pair.create(v, resources.getString(R.string.title_transition_name))
+    ).toBundle()
 
 
     override fun getDataBinding(): FragmentTodoCategoryBinding
@@ -63,6 +63,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun initViews() = with(binding) {
+        super.initViews()
         todoCategoryRecyclerView.adapter = adapter
     }
 
