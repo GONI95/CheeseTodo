@@ -16,6 +16,7 @@ import sang.gondroid.cheesetodo.domain.model.BaseModel
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.TodoCategory
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
 import sang.gondroid.cheesetodo.widget.todo.TodoListener
@@ -31,7 +32,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     private val adapter by lazy {
         BaseAdapter<TodoModel>( modelList = listOf(), adapterListener = object : TodoListener {
             override fun onClickItem(view: View, position: Int, model: BaseModel) {
-                Log.d(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
                 val bundle = Bundle()
                 bundle.putSerializable("TodoItemData", model)
@@ -78,7 +79,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
                 TODO_CATEGORY_KEY to todoCategory
             )
 
-            Log.d(Constants.TAG, "$THIS_NAME newInstance() : $arguments, $TODO_CATEGORY_KEY")
+            LogUtil.i(Constants.TAG, "$THIS_NAME newInstance() : $arguments, $TODO_CATEGORY_KEY")
         }
     }
 }

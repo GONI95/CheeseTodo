@@ -12,10 +12,7 @@ import sang.gondroid.cheesetodo.databinding.FragmentHomeBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryFragment
-import sang.gondroid.cheesetodo.util.Constants
-import sang.gondroid.cheesetodo.util.JobState
-import sang.gondroid.cheesetodo.util.TodoCategory
-import sang.gondroid.cheesetodo.util.TodoListSortFilter
+import sang.gondroid.cheesetodo.util.*
 import sang.gondroid.cheesetodo.widget.page.FragmentViewPagerAdapter
 
 
@@ -30,11 +27,11 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     private val getStartActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
         if (activityResult.resultCode == RESULT_OK) {
             activityResult.data?.extras?.getSerializable("jobState").let { jobState ->
-                Log.d(Constants.TAG, "$THIS_NAME jobState : $jobState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME jobState : $jobState")
 
                 when (jobState) {
-                    JobState.SUCCESS -> { Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show() }
-                    JobState.ERROR -> { Toast.makeText(requireContext(), getString(R.string.an_error_occurred), Toast.LENGTH_LONG).show() }
+                    is JobState.True -> { Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show() }
+                    is JobState.Error -> { Toast.makeText(requireContext(), getString(R.string.an_error_occurred), Toast.LENGTH_LONG).show() }
                 }
             }
         }
@@ -63,7 +60,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                     changeTodoListSortFilter(TodoListSortFilter.FAST_DATE)
 
                 else ->
-                    Log.d(Constants.TAG, "$THIS_NAME 해당하는 Chip 없음")
+                    LogUtil.w(Constants.TAG, "$THIS_NAME 해당하는 Chip 없음")
             }
         }
 
@@ -79,8 +76,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
      * 각 Fragment의 ViewModel의 변수인 filter 값을 변경
      */
     private fun changeTodoListSortFilter(filter: TodoListSortFilter) {
+        LogUtil.i(Constants.TAG, "$THIS_NAME changeTodoListSortFilter() called : $filter")
+
         viewPagerAdapter.fragmentList.forEach {
-            Log.d(Constants.TAG, "$THIS_NAME viewPagerAdapter : $it, ${it.hashCode()}")
+            LogUtil.i(Constants.TAG, "$THIS_NAME viewPagerAdapter : $it, ${it.hashCode()}")
             it.viewModel.setTodoListFilter(filter)
         }
     }
@@ -99,13 +98,13 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
      *
      */
     private fun initViewPager() = with(binding) {
-        Log.d(Constants.TAG, "$THIS_NAME initViewPager called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME initViewPager called")
         val todoCategories = TodoCategory.values()
 
         if (::viewPagerAdapter.isInitialized.not()) {
             val fragmentList = todoCategories.map {
                 TodoCategoryFragment.newInstance(it).also {
-                    Log.d(Constants.TAG, "$THIS_NAME Create TodoCategoryFragment : $it")
+                    LogUtil.i(Constants.TAG, "$THIS_NAME Create TodoCategoryFragment : $it")
                 }
             }
 

@@ -1,8 +1,5 @@
 package sang.gondroid.cheesetodo.data.firebase
 
-import android.util.Log
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -12,7 +9,7 @@ import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
-import sang.gondroid.cheesetodo.util.MyState
+import sang.gondroid.cheesetodo.util.JobState
 import java.lang.Exception
 
 /**
@@ -36,23 +33,23 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
      * 1. getCredential() : Goodle 로그인 ID 또는 AccessToken을 래핑하는 인스턴스를 반환
      * 2. signInWithCredential() : 지정된 User Token으로 Firebase 인증 시스템에 로그인하며, 성공 시 getCurrentUser로 사용자 정보를 가져올 수 있습니다.
      */
-    suspend fun validateToken(): MyState = withContext(ioDispatchers){
+    suspend fun validateToken(): JobState = withContext(ioDispatchers){
         LogUtil.v(Constants.TAG, "$THIS_NAME validateToken() called")
 
         if (!appPreferenceManager.getIdToken().isNullOrEmpty() && !appPreferenceManager.getUserNameString().isNullOrEmpty()) {
 
             try {
-                val credential = GoogleAuthProvider.getCredential(appPreferenceManager.getIdToken(), null)
+                val credential = GoogleAuthProvider.getCredential(appPreferenceManager.getIdToken()!!, null)
                 firebaseAuth.signInWithCredential(credential).await().let { result ->
                     result.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
                 }
 
                 LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.Login")
-                return@withContext MyState.Login(appPreferenceManager.getIdToken()!!, appPreferenceManager.getUserNameString()!!)
+                return@withContext JobState.Login(appPreferenceManager.getIdToken()!!, appPreferenceManager.getUserNameString()!!)
 
             }catch (e : Exception) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.Error")
-                return@withContext MyState.Error(R.string.request_error, e)
+                LogUtil.e(Constants.TAG, "$THIS_NAME validateToken() : MyState.Error")
+                return@withContext JobState.Error(R.string.request_error, e)
             }
 
 
@@ -60,7 +57,7 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
             LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.NotRegistered")
 
             firebaseAuth.signOut()
-            return@withContext MyState.Success.NotRegistered
+            return@withContext JobState.Success.NotRegistered
         }
     }
 
@@ -68,17 +65,17 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 가져오는 메서드 : Registered, NotRegistered 반환
      */
-    fun getCurrentUser(): MyState {
+    fun getCurrentUser(): JobState {
         LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentUser() called")
 
         return firebaseUser.let {
             try {
                 LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Registered")
-                return@let MyState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
+                return@let JobState.Success.Registered(userName = it.displayName ?: "익명", userImageUri = it.photoUrl)
 
             } catch (e : Exception) {
                 LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
-                return@let MyState.Error(R.string.request_error, e)
+                return@let JobState.Error(R.string.request_error, e)
             }
         }
     }
@@ -86,25 +83,25 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 Firebase 인증 시스템으로부터 삭제하는 메서드
      */
-    suspend fun deleteCurrentUser() : MyState = withContext(ioDispatchers){
+    suspend fun deleteCurrentUser() : JobState = withContext(ioDispatchers){
         LogUtil.v(Constants.TAG, "$THIS_NAME deleteCurrentUser() called")
 
-        var myState : MyState = MyState.Uninitialized
+        var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseUser.email.let { email ->
             try {
                 firebaseUser.delete().addOnCompleteListener { task ->
 
-                    myState = if (task.isSuccessful) MyState.True else MyState.False
+                    jobState = if (task.isSuccessful) JobState.True else JobState.False
 
                 }.await()
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $myState")
-                return@let myState
+                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $jobState")
+                return@let jobState
 
             } catch (e : Exception) {
                 LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() MyState.Error")
-                return@let  MyState.Error(R.string.request_error, e)
+                return@let  JobState.Error(R.string.request_error, e)
             }
         }
     }

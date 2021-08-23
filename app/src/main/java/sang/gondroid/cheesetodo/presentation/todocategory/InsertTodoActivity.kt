@@ -16,6 +16,7 @@ import sang.gondroid.cheesetodo.presentation.base.BaseActivity
 import sang.gondroid.cheesetodo.presentation.home.HomeFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.TodoCategory
 import java.util.*
 import kotlin.properties.Delegates
@@ -76,13 +77,13 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
     }
 
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        Log.d(Constants.TAG, "$THIS_NAME onItemSelected : ${parent.getItemAtPosition(position)} $view, $position, $id")
+        LogUtil.v(Constants.TAG, "$THIS_NAME onImportanceItemSelected() called : ${parent.getItemAtPosition(position)} $view, $position, $id")
 
         importanceId = position
     }
 
     fun onCategoryCheckChanged(group: RadioGroup?, checkedId: Int) {
-        Log.d(Constants.TAG, "$THIS_NAME onCustomCheckChanged : $checkedId")
+        LogUtil.v(Constants.TAG, "$THIS_NAME onCustomCheckChanged called :  $checkedId")
 
         category = when (checkedId) {
             R.id.androidRadioButton -> TodoCategory.ANDROID
@@ -115,17 +116,20 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
 
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
     override fun observeData() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME observeData() called")
+
         viewModel.jobState.observe(this) { jobState ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData() JobState : $jobState")
             val resultIntent = Intent(this, HomeFragment::class.java)
 
             when(jobState) {
-                JobState.ERROR -> {
-                    resultIntent.putExtra("jobState", JobState.ERROR)
+                is JobState.Error -> {
+                    resultIntent.putExtra("jobState", jobState)
                     setResult(RESULT_OK, resultIntent)
                     finish()
                 }
-                JobState.SUCCESS -> {
-                    resultIntent.putExtra("jobState", JobState.SUCCESS)
+                is JobState.True -> {
+                    resultIntent.putExtra("jobState", jobState)
                     setResult(RESULT_OK, resultIntent)
                     finish()
                 }

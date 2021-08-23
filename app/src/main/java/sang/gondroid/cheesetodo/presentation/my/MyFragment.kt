@@ -12,15 +12,13 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
-import sang.gondroid.cheesetodo.util.MyState
+import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import java.lang.Exception
@@ -153,15 +151,15 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * Preference 또는 Firebase의 현재 유저 정보를 기초로 MyState를 관리하고 그에 맞는 메서드를 실행
      */
     override fun observeData() {
-        viewModel.myStateLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer {
             LogUtil.i(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
             when (it) {
-                is MyState.Loading -> handleLoadingState()
-                is MyState.Success -> handleSuccessState(it)
-                is MyState.Login -> handleLoginState(it)
-                is MyState.Error -> handleErrorState(it)
-                is MyState.False -> handleFalseState()
-                is MyState.Uninitialized -> handleUninitialized()
+                is JobState.Loading -> handleLoadingState()
+                is JobState.Success -> handleSuccessState(it)
+                is JobState.Login -> handleLoginState(it)
+                is JobState.Error -> handleErrorState(it)
+                is JobState.False -> handleFalseState()
+                is JobState.Uninitialized -> handleUninitialized()
             }
         })
     }
@@ -179,16 +177,16 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     /**
      * handleSuccessState() : Registered - "validateCurrentUser()로부터 받은 User 정보를 전달하며 hanlderRegisteredState() 호출"
      */
-    private fun handleSuccessState(state: MyState.Success) = with(binding) {
+    private fun handleSuccessState(state: JobState.Success) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleSuccessState() called")
 
         when(state) {
-            is MyState.Success.Registered<*, *> -> {
+            is JobState.Success.Registered<*, *> -> {
                 LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
-                handleRegisteredState(state as MyState.Success.Registered<String, Uri>)
+                handleRegisteredState(state as JobState.Success.Registered<String, Uri>)
             }
 
-            is MyState.Success.NotRegistered -> {
+            is JobState.Success.NotRegistered -> {
                 LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : NotRegistered")
                 profileGroup.isGone = true
                 loginRequireGroup.isVisible = true
@@ -201,7 +199,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     /**
      * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
      */
-    private fun handleRegisteredState(state: MyState.Success.Registered<String, Uri>) = with(binding) {
+    private fun handleRegisteredState(state: JobState.Success.Registered<String, Uri>) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
         state.userImageUri.let {
@@ -217,15 +215,18 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         loginRequireGroup.isGone = true
     }
 
-    private fun handleLoginState(state: MyState.Login) {
+    private fun handleLoginState(state: JobState.Login) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleLoginState() called")
 
         viewModel.validateMembership()
     }
 
-    private fun handleErrorState(state: MyState.Error) {
+    private fun handleErrorState(state: JobState.Error) {
         LogUtil.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
         Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
+
+        binding.loginPrograssBar.isGone = true
+        binding.loginRequireGroup.isVisible = true
     }
 
     private fun handleFalseState() {

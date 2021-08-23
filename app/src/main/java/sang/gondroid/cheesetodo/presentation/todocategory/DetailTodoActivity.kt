@@ -14,6 +14,7 @@ import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.presentation.base.BaseActivity
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.TodoCategory
 import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 import kotlin.properties.Delegates
@@ -125,15 +126,8 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 else if (todoText.isNullOrEmpty())  editModeTodoEditLayout.error = getString(R.string.please_enter_the_text)
 
                 else {
-                    TodoModel(
-                        model.id,
-                        model.date,
-                        category,
-                        importanceId,
-                        titleText.toString(),
-                        todoText.toString(),
-                        editModeDifficultEdit.text.toString()
-                    ).let { viewModel.updateData(it) }
+                    TodoModel(model.id, model.date, category, importanceId, titleText.toString(), todoText.toString(),
+                        editModeDifficultEdit.text.toString()).let { viewModel.updateData(it) }
                 }
             }
             true
@@ -148,11 +142,11 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         CustomDialog(this, getString(R.string.delete_todo_dialog_title), getString(R.string.delete_todo_dialog_description),
             object : CustomDialogClickListener {
                 override fun onPositiveClick() {
-                    Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
                     viewModel.deleteData(model.id)
                 }
                 override fun onNegativeClick() {
-                    Log.d(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
                 }
             }).show()
     }
@@ -161,18 +155,21 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         viewModel.jobState.observe(this) { jobState ->
 
             when (jobState) {
-                JobState.ERROR -> {
-                    Toast.makeText(this, "오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                is JobState.Error -> {
+                    LogUtil.e(Constants.TAG, "$THIS_NAME observeData() jobState : ${getString(jobState.messageId, jobState.e)}")
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
                     finish()
                 }
-                JobState.SUCCESS -> {
-                    Toast.makeText(this, "작업 성공.", Toast.LENGTH_SHORT).show()
+                is JobState.True -> {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
                     finish()
                 }
                 else -> {
-                    Toast.makeText(this, "작업 진행이 되지않습니다.", Toast.LENGTH_SHORT).show()
+                    LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else")
+                    Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -1,6 +1,5 @@
 package sang.gondroid.cheesetodo.presentation.my
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,7 +10,7 @@ import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
-import sang.gondroid.cheesetodo.util.MyState
+import sang.gondroid.cheesetodo.util.JobState
 
 class MyViewModel(
     private val appPreferenceManager: AppPreferenceManager,
@@ -23,8 +22,8 @@ class MyViewModel(
     private val THIS_NAME = this::class.simpleName
 
     // MyState의 상태가 초기화되지 않은 값으로 초기화
-    private var _myStateLiveData = MutableLiveData<MyState>(MyState.Uninitialized)
-    val myStateLiveData : LiveData<MyState>
+    private var _myStateLiveData = MutableLiveData<JobState>(JobState.Uninitialized)
+    val jobStateLiveData : LiveData<JobState>
         get() = _myStateLiveData
 
 
@@ -33,13 +32,13 @@ class MyViewModel(
      */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() called")
-        _myStateLiveData.postValue(MyState.Loading)
+        _myStateLiveData.postValue(JobState.Loading)
 
         val myState = handlerFirebaseAuth.validateToken()
 
-        if (myState is MyState.Login) _myStateLiveData.postValue(MyState.Login(myState.idData, myState.nameData))
+        if (myState is JobState.Login) _myStateLiveData.postValue(JobState.Login(myState.idData, myState.nameData))
 
-        else if(myState is MyState.Error) _myStateLiveData.postValue(myState)
+        else if(myState is JobState.Error) _myStateLiveData.postValue(myState)
 
         else _myStateLiveData.postValue(myState)
 
@@ -73,13 +72,13 @@ class MyViewModel(
         val membershipState = handlerFireStore.validateMembership()
         val userState = handlerFirebaseAuth.getCurrentUser()
 
-        if (userState is MyState.Success.Registered<*, *> && membershipState is MyState.True) _myStateLiveData.postValue(userState)
+        if (userState is JobState.Success.Registered<*, *> && membershipState is JobState.True) _myStateLiveData.postValue(userState)
 
-        else if(membershipState is MyState.False) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.False) _myStateLiveData.postValue(membershipState)
 
-        else if(membershipState is MyState.Error) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.Error) _myStateLiveData.postValue(membershipState)
 
-        else if(userState is MyState.Error) _myStateLiveData.postValue(userState)
+        else if(userState is JobState.Error) _myStateLiveData.postValue(userState)
 
         else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $membershipState, $userState")
     }
@@ -110,15 +109,15 @@ class MyViewModel(
         val disjoinMembershipState = handlerFireStore.disjoinMembership()
         val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()
 
-        if (disjoinMembershipState is MyState.True && deleteCurrentUserState is MyState.True) removeToken()
+        if (disjoinMembershipState is JobState.True && deleteCurrentUserState is JobState.True) removeToken()
 
-        else if(disjoinMembershipState is MyState.False) _myStateLiveData.postValue(disjoinMembershipState)
+        else if(disjoinMembershipState is JobState.False) _myStateLiveData.postValue(disjoinMembershipState)
 
-        else if(deleteCurrentUserState is MyState.False) _myStateLiveData.postValue(deleteCurrentUserState)
+        else if(deleteCurrentUserState is JobState.False) _myStateLiveData.postValue(deleteCurrentUserState)
 
-        else if(disjoinMembershipState is MyState.Error) _myStateLiveData.postValue(disjoinMembershipState)
+        else if(disjoinMembershipState is JobState.Error) _myStateLiveData.postValue(disjoinMembershipState)
 
-        else if(deleteCurrentUserState is MyState.Error) _myStateLiveData.postValue(deleteCurrentUserState)
+        else if(deleteCurrentUserState is JobState.Error) _myStateLiveData.postValue(deleteCurrentUserState)
 
         else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
 

@@ -11,6 +11,7 @@ import sang.gondroid.cheesetodo.presentation.home.HomeFragment
 import sang.gondroid.cheesetodo.presentation.my.MyFragment
 import sang.gondroid.cheesetodo.presentation.review.ReviewFragment
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
-        Log.d(Constants.TAG, "$THIS_NAME, initViews() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME, initViews() called")
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             return@setOnItemSelectedListener when (item.itemId) {
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
      *                           이러한 UI 상태가 예기치 않게 변경되어도 괜찮은 경우에 사용해야한다.
      */
     private fun showFragment(fragment: Fragment, tag: String) {
-        Log.d(Constants.TAG, "$THIS_NAME, showFragment() called")
+        LogUtil.v(Constants.TAG, "$THIS_NAME, showFragment() called")
         /**
          * 1. 주어진 Tag를 가진 Fragment가 가져옴
          * 2. FragmentTransaction을 가져와 각종 Transaction 작업을 할 수 있도록 함
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
          * Fragment가 교체되기전 모든 Fragment들을 화면에서 숨김
          */
         supportFragmentManager.fragments.forEach { fm ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Hide ${fm.tag}")
             supportFragmentManager.beginTransaction().hide(fm).commitAllowingStateLoss()
         }
 
@@ -87,8 +89,11 @@ class MainActivity : AppCompatActivity() {
          * 주어진 Tag를 가진 Fragment가 있으면 show(), 없다면 add
          */
         findFragment?.let {
+            LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Show ${tag}")
             supportFragmentManager.beginTransaction().show(it).commitAllowingStateLoss()
+
         } ?: kotlin.run {
+            LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Add ${tag}")
             supportFragmentManager.beginTransaction()
                 .add(R.id.fragmentContainer, fragment, tag)
                 .commitAllowingStateLoss()
