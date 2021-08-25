@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.R
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
+import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
 
@@ -139,7 +139,7 @@ class HandleFireStore(
                 if (result.exists()) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMembership() MyState.Registered")
                     return@let JobState.Success.Registered(
-                        FireStoreMembershipInfo(
+                        FireStoreMembershipModel(
                             userName = result.get(getFireStoreString(R.string.user_name)) as String,
                             userEmail = result.get(getFireStoreString(R.string.user_email)) as String,
                             userPhoto = (result.get(getFireStoreString(R.string.user_photo)) as String).toUri(),

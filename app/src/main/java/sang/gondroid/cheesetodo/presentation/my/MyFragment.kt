@@ -13,7 +13,7 @@ import com.google.android.gms.common.api.ApiException
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
+import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
@@ -109,7 +109,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     override fun initViews() = with(binding) {
-        super.initViews()
 
         loginButton.setOnClickListener {
             signInGoogle()
@@ -182,7 +181,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         when(state) {
             is JobState.Success.Registered<*> -> {
                 LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
-                handleRegisteredState(state as JobState.Success.Registered<FireStoreMembershipInfo>)
+                handleRegisteredState(state as JobState.Success.Registered<FireStoreMembershipModel>)
             }
 
             is JobState.Success.NotRegistered -> {
@@ -198,10 +197,10 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     /**
      * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
      */
-    private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMembershipInfo>) = with(binding) {
+    private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMembershipModel>) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
-        binding.fireStoreMembershipInfo = state.data
+        binding.fireStoreMembershipModel = state.data
 
         profileGroup.isVisible = true
         loginRequireGroup.isGone = true

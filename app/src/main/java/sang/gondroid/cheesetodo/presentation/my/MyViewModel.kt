@@ -7,7 +7,6 @@ import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
