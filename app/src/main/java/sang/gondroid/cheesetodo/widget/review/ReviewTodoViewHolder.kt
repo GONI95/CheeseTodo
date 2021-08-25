@@ -1,9 +1,7 @@
 package sang.gondroid.cheesetodo.widget.review
 
-import android.util.Log
 import android.view.View
 import sang.gondroid.cheesetodo.databinding.LayoutReviewTodoItemBinding
-import sang.gondroid.cheesetodo.domain.model.BaseModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
