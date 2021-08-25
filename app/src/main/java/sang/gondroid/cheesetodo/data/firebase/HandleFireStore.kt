@@ -142,7 +142,7 @@ class HandleFireStore(
                         FireStoreMembershipInfo(
                             userName = result.get(getFireStoreString(R.string.user_name)) as String,
                             userEmail = result.get(getFireStoreString(R.string.user_email)) as String,
-                            userPhoto = (result.get(getFireStoreString(R.string.user_photo)) as String).toUri() as Uri,
+                            userPhoto = (result.get(getFireStoreString(R.string.user_photo)) as String).toUri(),
                             userTodoCount = result.get(getFireStoreString(R.string.user_todo_count)) as Number,
                             userScore = result.get(getFireStoreString(R.string.user_score)) as Number,
                             userRank = result.get(getFireStoreString(R.string.user_rank)) as String

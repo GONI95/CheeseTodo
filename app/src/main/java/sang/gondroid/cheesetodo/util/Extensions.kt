@@ -1,8 +1,10 @@
 package sang.gondroid.cheesetodo.util
 
+import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.BaseModel
@@ -46,5 +48,14 @@ object BindingAdapters {
     @BindingAdapter("changedId")
     fun check(view : RadioGroup, id : Int) {
         view.check(view.getChildAt(id).id)
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageUrl")
+    fun load(imageView: ImageView, loadImage: String?) {
+        Glide.with(imageView.context)
+            .load(loadImage)
+            .circleCrop()
+            .into(imageView)
     }
 }
