@@ -1,14 +1,12 @@
 package sang.gondroid.cheesetodo.presentation.my
 
 import android.app.Activity
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -203,17 +201,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMembershipInfo>) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
-        state.data.userPhoto.toString().let {
-            Glide.with(requireContext())
-                .load(it)
-                .circleCrop()
-                .into(userImageView)
-        }
-
-        userNameTextView.text = state.data.userName
-        userReviewTodoCountTv.text = state.data.userTodoCount.toString()
-        userScoreTv.text = state.data.userScore.toString()
-        userRankTv.text = state.data.userRank
+        binding.fireStoreMembershipInfo = state.data
 
         profileGroup.isVisible = true
         loginRequireGroup.isGone = true
