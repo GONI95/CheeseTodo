@@ -1,6 +1,7 @@
 package sang.gondroid.cheesetodo.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,18 +14,19 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.data.db.TodoDao
 import sang.gondroid.cheesetodo.data.db.TodoDatabase
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
+import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.data.repository.TodoRepositoryImpl
 import sang.gondroid.cheesetodo.domain.usecase.DeleteTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.GetTodoListUseCase
 import sang.gondroid.cheesetodo.domain.usecase.InsertTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.UpdateTodoUseCase
-import sang.gondroid.cheesetodo.presentation.home.HomeViewModel
 import sang.gondroid.cheesetodo.presentation.my.MyViewModel
 import sang.gondroid.cheesetodo.presentation.review.ReviewViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
@@ -43,7 +45,6 @@ val appModule = module {
     /**
      * ViewModel
      */
-    viewModel { HomeViewModel(get()) }
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io")), get(), get()) }
     viewModel { ReviewViewModel() }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
@@ -83,7 +84,7 @@ val appModule = module {
     /**
      * AppPreferenceManager
      */
-    single<AppPreferenceManager> { AppPreferenceManager(androidApplication()) }
+    single<AppPreferenceManager> { AppPreferenceManager(getPreferences(androidApplication())) }
 
     /**
      * CheckFirebaseAuth : Preference, Firebase Current User를 이용해 Token 저장 유무, User 정보를 확인하는 Class
@@ -94,6 +95,8 @@ val appModule = module {
      * HandleFireStore
      */
     single { HandleFireStore(get(), get(), get(named("io")), androidApplication()) }
+
+    single { LiveSharedPreferences(getPreferences(androidApplication())) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =
@@ -102,3 +105,7 @@ private fun provideDB(context : Context) : TodoDatabase =
 private fun provideTodoDao(database: TodoDatabase) = database.todoDao()
 
 private fun provideFirebaseAuth() : FirebaseAuth = FirebaseAuth.getInstance()
+
+private fun getPreferences(context: Context): SharedPreferences {
+    return context.getSharedPreferences(BuildConfig.PREFERENCES_NAME, Context.MODE_PRIVATE)
+}

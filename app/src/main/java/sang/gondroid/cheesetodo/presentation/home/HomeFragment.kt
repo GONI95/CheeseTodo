@@ -2,28 +2,32 @@ package sang.gondroid.cheesetodo.presentation.home
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.util.Log
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.R
-import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
-import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
+import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.databinding.FragmentHomeBinding
-import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryFragment
 import sang.gondroid.cheesetodo.util.*
 import sang.gondroid.cheesetodo.widget.page.FragmentViewPagerAdapter
 
 
-class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
+class HomeFragment : Fragment() {
     private val THIS_NAME = this::class.simpleName
 
-    override val viewModel: HomeViewModel by viewModel()
+    private val liveSharedPreferences: LiveSharedPreferences by inject()
+
+    private lateinit var binding : FragmentHomeBinding
 
     // Fragment에 하위 뷰를 삽입하기위해 FragmentStateAdapter를 상속받는 Adapter 선언
     private lateinit var viewPagerAdapter: FragmentViewPagerAdapter
@@ -41,11 +45,13 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         }
     }
 
-    override fun getDataBinding(): FragmentHomeBinding
-            = FragmentHomeBinding.inflate(layoutInflater)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHomeBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
-    override fun initViews() {
-        super.initViews()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initViewPager()
         /**
@@ -72,6 +78,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 getStartActivityForResult.launch(this)
             }
         }
+
+        liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
+
+            if (displayName != null) binding.welcomeUserTextView.text = String.format(getString(R.string.use_as_a_member, displayName))
+
+            else binding.welcomeUserTextView.text = getString(R.string.use_as_a_non_member)
+        })
     }
 
     /**
@@ -120,18 +134,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getString(todoCategories[position].categoryNameId)
         }.attach()
-    }
-
-    override fun observeData() {
-        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { jobState ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
-
-            when(jobState) {
-                is JobState.Login -> binding.welcomeUserTextView.text = String.format(getString(R.string.use_as_a_member, jobState.nameData))
-                is JobState.Success.NotRegistered -> binding.welcomeUserTextView.text = getString(R.string.use_as_a_non_member)
-                else -> binding.welcomeUserTextView.text = getString(R.string.checking_member_info)
-            }
-        })
     }
 
     companion object {
