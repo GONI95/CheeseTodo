@@ -7,6 +7,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.data.preference.LivePreference
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.databinding.FragmentReviewBinding
 import sang.gondroid.cheesetodo.domain.model.BaseModel
@@ -24,6 +25,8 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>() {
     private val THIS_NAME = this::class.simpleName
 
     override val viewModel: ReviewViewModel by viewModel()
+
+    private val liveSharedPreferences: LiveSharedPreferences by inject()
 
     private val reviewAdapter by lazy {
         BaseAdapter<ReviewTodoModel>(
@@ -45,6 +48,12 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>() {
     override fun initViews() = with(binding) {
 
         binding.adapter = reviewAdapter
+
+        liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
+
+            binding.displayName = displayName
+        })
     }
 
     override fun observeData() {

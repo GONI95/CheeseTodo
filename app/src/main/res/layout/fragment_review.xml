@@ -7,6 +7,10 @@
         <variable
             name="adapter"
             type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
+
+        <variable
+            name="displayName"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +38,7 @@
                 android:paddingBottom="10dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:text="@{displayName != null ? String.format(@string/use_as_a_member, displayName) : @string/use_as_a_non_member}"
                 tools:text="어서오세요." />
         </androidx.appcompat.widget.Toolbar>
 

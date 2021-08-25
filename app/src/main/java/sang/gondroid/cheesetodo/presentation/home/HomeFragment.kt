@@ -82,9 +82,7 @@ class HomeFragment : Fragment() {
         liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
 
-            if (displayName != null) binding.welcomeUserTextView.text = String.format(getString(R.string.use_as_a_member, displayName))
-
-            else binding.welcomeUserTextView.text = getString(R.string.use_as_a_non_member)
+            binding.displayName = displayName
         })
     }
 
