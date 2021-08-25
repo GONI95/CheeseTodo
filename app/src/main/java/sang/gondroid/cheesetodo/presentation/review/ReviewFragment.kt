@@ -6,6 +6,7 @@ import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 
 
 class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>() {
+
     override val viewModel: ReviewViewModel by viewModel()
 
     override fun getDataBinding(): FragmentReviewBinding

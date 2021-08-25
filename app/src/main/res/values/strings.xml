@@ -32,4 +32,7 @@
 
     <string name="request_error">Error Message( %s )</string>
     <string name="request_false">작업이 완료되었지만, 성공적으로 이루어지지 못했습니다.</string>
+
+    <string name="search_history_clear">모두 삭제</string>
+    <string name="search_history_save">저장 모드</string>
 </resources>
