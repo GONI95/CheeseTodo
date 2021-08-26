@@ -13,4 +13,16 @@
     <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
     <string name="use_as_a_member">%s님 반갑습니다.</string>
     <string name="checking_member_info">회원 정보 확인 중…</string>
+
+    <string name="review_todo_collection">ReviewTodo</string>
+    <string name="review_id">modelId</string>
+    <string name="review_date">date</string>
+    <string name="review_category">category</string>
+    <string name="review_title">title</string>
+    <string name="review_todo">todo</string>
+    <string name="review_difficult">difficult</string>
+    <string name="review_passornot">passOrNot</string>
+    <string name="review_comments">Comments</string>
+
+
 </resources>

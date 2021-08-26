@@ -1,7 +1,6 @@
 package sang.gondroid.cheesetodo.presentation.todocategory
 
 import android.text.Editable
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -109,6 +108,12 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         }
 
         R.id.upload_item -> {
+            with(binding) {
+                if (readModeDifficultTextView.text.isNullOrEmpty())
+                    Toast.makeText(this@DetailTodoActivity, R.string.there_are_blank_entries, Toast.LENGTH_LONG).show()
+                else
+                    viewModel.uploadReviewTodo(model)
+            }
             true
         }
 
@@ -168,6 +173,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 }
                 else -> {
                     LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else $jobState")
+                    Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()
                 }
             }
         }

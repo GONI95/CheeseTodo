@@ -35,4 +35,6 @@
 
     <string name="search_history_clear">모두 삭제</string>
     <string name="search_history_save">저장 모드</string>
+
+    <string name="there_are_blank_entries">빈 항목이 있습니다.</string>
 </resources>
