@@ -171,6 +171,10 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
 
                     finish()
                 }
+                is JobState.Uninitialized -> {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
+                    Toast.makeText(this, R.string.login_is_required, Toast.LENGTH_LONG).show()
+                }
                 else -> {
                     LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else $jobState")
                     Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()

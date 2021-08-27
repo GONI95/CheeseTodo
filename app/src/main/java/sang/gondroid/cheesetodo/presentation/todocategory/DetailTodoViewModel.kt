@@ -98,6 +98,6 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
             }
             else if (existState is JobState.False) _jobState.postValue(existState)
             else _jobState.postValue(existState)
-        }
+        } ?: kotlin.run { _jobState.postValue(JobState.Uninitialized) }
     }
 }

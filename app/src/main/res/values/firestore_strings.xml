@@ -13,6 +13,7 @@
     <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
     <string name="use_as_a_member">%s님 반갑습니다.</string>
     <string name="checking_member_info">회원 정보 확인 중…</string>
+    <string name="login_is_required">서비스 이용은 로그인이 필요합니다.</string>
 
     <string name="review_todo_collection">ReviewTodo</string>
     <string name="review_id">modelId</string>

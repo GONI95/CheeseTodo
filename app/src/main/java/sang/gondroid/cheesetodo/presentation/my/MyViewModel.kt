@@ -3,6 +3,7 @@ package sang.gondroid.cheesetodo.presentation.my
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
@@ -14,9 +15,9 @@ import sang.gondroid.cheesetodo.util.JobState
 
 class MyViewModel(
     private val appPreferenceManager: AppPreferenceManager,
-    private val ioDispatchers: CoroutineDispatcher,
     private val handlerFirebaseAuth: HandlerFirebaseAuth,
     private val handlerFireStore: HandleFireStore,
+    private val ioDispatchers: CoroutineDispatcher
 ) : BaseViewModel() {
 
     private val THIS_NAME = this::class.simpleName
