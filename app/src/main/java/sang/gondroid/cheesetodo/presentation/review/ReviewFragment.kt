@@ -1,10 +1,12 @@
 package sang.gondroid.cheesetodo.presentation.review
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.BuildConfig
@@ -52,6 +54,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>() {
     override fun initViews() = with(binding) {
 
         binding.adapter = reviewAdapter
+        binding.reviewViewModel = viewModel
 
         liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
@@ -59,6 +62,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>() {
             binding.displayName = displayName
         })
     }
+
 
     override fun observeData() {
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->

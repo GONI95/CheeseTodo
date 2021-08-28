@@ -5,6 +5,14 @@
 
     <data>
         <variable
+            name="handler"
+            type="sang.gondroid.cheesetodo.presentation.review.ReviewFragment" />
+
+        <variable
+            name="reviewViewModel"
+            type="sang.gondroid.cheesetodo.presentation.review.ReviewViewModel" />
+
+        <variable
             name="adapter"
             type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
 
@@ -46,6 +54,8 @@
             android:id="@+id/reviewRefreshLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:onRefreshListener="@{() -> reviewViewModel.refresh()}"
+            app:refreshing="@{reviewViewModel.isLoading}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
