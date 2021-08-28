@@ -7,4 +7,5 @@ import sang.gondroid.cheesetodo.util.JobState
 interface ReviewTodoRepository {
     suspend fun insertReviewTodo(model: ReviewTodoModel): JobState
     suspend fun validateReviewTodoExist(model: TodoModel): JobState
+    suspend fun getReviewTodo() : JobState
 }

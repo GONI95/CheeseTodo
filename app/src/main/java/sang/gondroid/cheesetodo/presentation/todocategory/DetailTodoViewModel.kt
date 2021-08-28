@@ -67,25 +67,31 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
         }
     }
 
+    /**
+     * Firestore의 ReviewTodo 컬렉션에 추가할 ReviewTodoModel 생성
+     */
     private fun createReviewTodoModel(model: TodoModel, firebaseUser: FirebaseUser) : ReviewTodoModel {
-        val commentModel = ArrayList<HashMap<String, CommentModel>>()
         val currentMillis = System.currentTimeMillis()
 
         return ReviewTodoModel(
-            id = model.id,
-            userEmail = firebaseUser.email,
-            userName = firebaseUser.displayName,
-            userPhoto = firebaseUser.photoUrl.toString(),
+            id = null,
+            modelId = model.id!!,
+            userEmail = firebaseUser.email!!,
+            userName = firebaseUser.displayName!!,
+            userPhoto = firebaseUser.photoUrl!!,
             category = model.category,
             passOrNot = false,
             date = currentMillis,
             title = model.title,
-            todo= model.todo,
-            difficult = model.difficult,
-            comments = commentModel
+            todo = model.todo,
+            difficult = model.difficult!!,
+            comments = null
         )
     }
 
+    /**
+     * Firebase 인증 시스템에 로그인한 User가 있으면 ReviewTodo 컬렉션에 document를 추가하는 작업을 요청
+     */
     fun uploadReviewTodo(model: TodoModel) = viewModelScope.launch(ioDispatcher) {
         LogUtil.v(Constants.TAG, "$THIS_NAME uploadReviewTodo() called")
 

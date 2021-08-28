@@ -2,7 +2,7 @@
 <resources>
     <string name="user_collection">Users</string>
     <string name="user_email">userEmail</string>
-    <string name="user_name">userNmae</string>
+    <string name="user_name">userName</string>
     <string name="user_photo">userPhoto</string>
     <string name="user_uid">userUid</string>
     <string name="user_todo_count">userTodoCount</string>
@@ -25,5 +25,6 @@
     <string name="review_passornot">passOrNot</string>
     <string name="review_comments">Comments</string>
 
-
+    <string name="review_pass">통과 완료</string>
+    <string name="review_nonpass">대기 중…</string>
 </resources>

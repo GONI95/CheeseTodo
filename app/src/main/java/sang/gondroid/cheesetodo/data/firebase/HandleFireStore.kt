@@ -89,9 +89,7 @@ class HandleFireStore(
                             getFireStoreString(R.string.user_rank) to getFireStoreString(UserRank.Level1.userRankStringId),
                             getFireStoreString(R.string.user_score) to 0
                         )).addOnCompleteListener { task ->
-
-                        jobState = if (task.isSuccessful) JobState.True else JobState.False
-
+                            jobState = if (task.isSuccessful) JobState.True else JobState.False
                         }.await()
 
                 LogUtil.d(Constants.TAG, "$THIS_NAME joinMembership() $jobState")
@@ -139,6 +137,7 @@ class HandleFireStore(
 
                 if (result.exists()) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMembership() JobState.Registered")
+
                     return@let JobState.Success.Registered(
                         FireStoreMembershipModel(
                             userName = result.get(getFireStoreString(R.string.user_name)) as String,
@@ -200,22 +199,6 @@ class HandleFireStore(
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
                     .add(model)
 
-                /*
-                hashMapOf(
-                        getFireStoreString(R.string.review_id) to model.id,
-                        getFireStoreString(R.string.user_email) to model.userEmail,
-                        getFireStoreString(R.string.user_name) to model.userName,
-                        getFireStoreString(R.string.user_photo) to model.userPhoto.toString(),
-                        getFireStoreString(R.string.review_category) to model.category,
-                        getFireStoreString(R.string.review_passornot) to model.passOrNot,
-                        getFireStoreString(R.string.review_date) to model.date,
-                        getFireStoreString(R.string.review_title) to model.title,
-                        getFireStoreString(R.string.review_todo) to model.todo,
-                        getFireStoreString(R.string.review_difficult) to model.difficult,
-                        getFireStoreString(R.string.review_comments) to model.comments
-                    )
-                 */
-
                 if (result.isSuccessful) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.True")
                     return@let JobState.True
@@ -227,6 +210,31 @@ class HandleFireStore(
 
             } catch (e : Exception) {
                 LogUtil.e(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.Error")
+                return@let  JobState.Error(R.string.request_error, e)
+            }
+        }
+    }
+
+    suspend fun getReviewTodo() : JobState = withContext(ioDispatchers) {
+        return@withContext firebaseUser.let { firebaseUser ->
+            try {
+                LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo()")
+
+                val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .get().await()
+
+                if (!result.isEmpty) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.True")
+
+                    return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java) )
+                }
+                else {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.False")
+                    return@let JobState.False
+                }
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }

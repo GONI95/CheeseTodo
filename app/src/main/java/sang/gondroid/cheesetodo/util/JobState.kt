@@ -1,6 +1,7 @@
 package sang.gondroid.cheesetodo.util
 
 import androidx.annotation.StringRes
+import com.google.firebase.firestore.DocumentSnapshot
 import sang.gondroid.cheesetodo.R
 import java.io.Serializable
 
@@ -12,7 +13,11 @@ sealed class JobState : Serializable {
     object Uninitialized : JobState()    // 초기화되지 않은 상태
     object Loading : JobState()  // 로딩 중인 상태
 
-    object True : JobState()
+    object True : JobState() {
+        data class Result <out T>(
+            val data: T?
+        ) : JobState()
+    }
     object False : JobState()
 
     // 로그인 상태 (idToken을 가짐)

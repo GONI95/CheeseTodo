@@ -21,23 +21,23 @@ class HomeViewModel(
     private val THIS_NAME = this::class.simpleName
 
     // MyState의 상태가 초기화되지 않은 값으로 초기화
-    private var _myStateLiveData = MutableLiveData<JobState>()
+    private var _jobStateLiveData = MutableLiveData<JobState>()
     val jobStateLiveData : LiveData<JobState>
-        get() = _myStateLiveData
+        get() = _jobStateLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
         val myState = handlerFirebaseAuth.validateToken()
         val membershipState = handlerFireStore.validateMembership()
 
-        if (myState is JobState.Login && membershipState is JobState.True) _myStateLiveData.postValue(JobState.Login(myState.idData, myState.nameData))
+        if (myState is JobState.Login && membershipState is JobState.True) _jobStateLiveData.postValue(JobState.Login(myState.idData, myState.nameData))
 
-        else if(membershipState is JobState.False) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.False) _jobStateLiveData.postValue(membershipState)
 
-        else if(myState is JobState.Success.NotRegistered) _myStateLiveData.postValue(myState)
+        else if(myState is JobState.Success.NotRegistered) _jobStateLiveData.postValue(myState)
 
-        else if(myState is JobState.Error) _myStateLiveData.postValue(myState)
+        else if(myState is JobState.Error) _jobStateLiveData.postValue(myState)
 
-        else if(membershipState is JobState.Error) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.Error) _jobStateLiveData.postValue(membershipState)
 
         else LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState, $myState")
     }

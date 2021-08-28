@@ -23,9 +23,9 @@ class MyViewModel(
     private val THIS_NAME = this::class.simpleName
 
     // MyState의 상태가 초기화되지 않은 값으로 초기화
-    private var _myStateLiveData = MutableLiveData<JobState>()
+    private var _jobStateLiveData = MutableLiveData<JobState>()
     val jobStateLiveData : LiveData<JobState>
-        get() = _myStateLiveData
+        get() = _jobStateLiveData
 
 
     /**
@@ -33,15 +33,15 @@ class MyViewModel(
      */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() called")
-        _myStateLiveData.postValue(JobState.Loading)
+        _jobStateLiveData.postValue(JobState.Loading)
 
         val myState = handlerFirebaseAuth.validateToken()
 
-        if (myState is JobState.Login) _myStateLiveData.postValue(JobState.Login(myState.idData, myState.nameData))
+        if (myState is JobState.Login) _jobStateLiveData.postValue(myState)
 
-        else if(myState is JobState.Error) _myStateLiveData.postValue(myState)
+        else if(myState is JobState.Error) _jobStateLiveData.postValue(myState)
 
-        else _myStateLiveData.postValue(myState)
+        else _jobStateLiveData.postValue(myState)
 
     }
 
@@ -76,15 +76,15 @@ class MyViewModel(
 
         LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called! $membershipState")
 
-        if (userState is JobState.Success.Registered<*> && membershipState is JobState.True) _myStateLiveData.postValue(userState)
+        if (userState is JobState.Success.Registered<*> && membershipState is JobState.True) _jobStateLiveData.postValue(userState)
 
-        else if(membershipState is JobState.Error) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.Error) _jobStateLiveData.postValue(membershipState)
 
-        else if(userState is JobState.Error) _myStateLiveData.postValue(userState)
+        else if(userState is JobState.Error) _jobStateLiveData.postValue(userState)
 
-        else if(membershipState is JobState.False) _myStateLiveData.postValue(membershipState)
+        else if(membershipState is JobState.False) _jobStateLiveData.postValue(membershipState)
 
-        else if(userState is JobState.Success.NotRegistered) _myStateLiveData.postValue(userState)
+        else if(userState is JobState.Success.NotRegistered) _jobStateLiveData.postValue(userState)
 
         else LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState, $userState")
     }
@@ -117,13 +117,13 @@ class MyViewModel(
 
         if (disjoinMembershipState is JobState.True && deleteCurrentUserState is JobState.True) removeToken()
 
-        else if(disjoinMembershipState is JobState.False) _myStateLiveData.postValue(disjoinMembershipState)
+        else if(disjoinMembershipState is JobState.False) _jobStateLiveData.postValue(disjoinMembershipState)
 
-        else if(deleteCurrentUserState is JobState.False) _myStateLiveData.postValue(deleteCurrentUserState)
+        else if(deleteCurrentUserState is JobState.False) _jobStateLiveData.postValue(deleteCurrentUserState)
 
-        else if(disjoinMembershipState is JobState.Error) _myStateLiveData.postValue(disjoinMembershipState)
+        else if(disjoinMembershipState is JobState.Error) _jobStateLiveData.postValue(disjoinMembershipState)
 
-        else if(deleteCurrentUserState is JobState.Error) _myStateLiveData.postValue(deleteCurrentUserState)
+        else if(deleteCurrentUserState is JobState.Error) _jobStateLiveData.postValue(deleteCurrentUserState)
 
         else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
 

@@ -40,6 +40,15 @@ fun Int.toImportanceString(): String = when(this) {
     else -> " "
 }
 
+
+fun String.toTodoCategory() : TodoCategory = when(this) {
+    TodoCategory.ANDROID.name -> TodoCategory.ANDROID
+    TodoCategory.LANGUAGE.name -> TodoCategory.LANGUAGE
+    TodoCategory.DB.name -> TodoCategory.DB
+    TodoCategory.OTHER.name -> TodoCategory.OTHER
+    else -> TodoCategory.ALL
+}
+
 object BindingAdapters {
     @JvmStatic
     @BindingAdapter("selectPosition")
