@@ -37,4 +37,7 @@
     <string name="search_history_save">저장 모드</string>
 
     <string name="there_are_blank_entries">빈 항목이 있습니다.</string>
+
+    <string name="search">검색하기</string>
+    <string name="search_for_review_plan">리뷰 검색하기</string>
 </resources>
