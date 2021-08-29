@@ -28,12 +28,14 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="?attr/toolbarStyle"
+            app:menu="@menu/review_plan_menu"
             android:layout_width="0dp"
             android:background="@color/cheese_light_lv"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:theme="@style/Widget.CheeseTodo.SearchView">
 
             <TextView
                 android:id="@+id/welcomeUserTextView"
@@ -104,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:checked="false"
-                    android:theme="@style/MySwitchButton"
+                    android:theme="@style/Widget.CheeseTodo.SwitchButton"
                     app:layout_constraintBottom_toTopOf="@+id/view3"
                     app:layout_constraintStart_toEndOf="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent" />

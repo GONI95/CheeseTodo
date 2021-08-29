@@ -2,10 +2,19 @@
 <resources>
 
     <!-- Toolbar 설정 -->
-    <style name="Widget.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
-        <item name="android:title">@null</item>
-        <item name="android:background">@color/white</item>
+    <style name="Widget.CheeseTodo.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:layout_height">45dp</item>
+    </style>
+
+    <style name="Widget.CheeseTodo.SearchView" parent="Widget.AppCompat.SearchView" >
+        <!-- Query Text Color -->
+        <item name="android:textColorPrimary">@color/gray_thick</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/cute_light</item>
+        <!-- Drawable Color -->
+        <item name="android:drawableTint">@color/gray_thick</item>
+        <!-- Icon Color -->
+        <item name="android:tint">@color/gray_thick</item>
     </style>
 
     <!-- Chip 스타일 설정 -->
@@ -45,7 +54,7 @@
         <item name="cornerRadius">10dp</item>
     </style>
 
-    <style name="MySwitchButton" parent="">
+    <style name="Widget.CheeseTodo.SwitchButton" parent="">
         <item name="colorSwitchThumbNormal">@color/light_gray</item>
         <item name="colorControlActivated">@color/black</item>
     </style>
