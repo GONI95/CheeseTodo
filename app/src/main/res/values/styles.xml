@@ -6,6 +6,10 @@
         <item name="android:layout_height">45dp</item>
     </style>
 
+    <style name="ThemeOverlay.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:layout_height">45dp</item>
+    </style>
+
     <style name="Widget.CheeseTodo.SearchView" parent="Widget.AppCompat.SearchView" >
         <!-- Query Text Color -->
         <item name="android:textColorPrimary">@color/gray_thick</item>

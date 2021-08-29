@@ -13,7 +13,11 @@
             type="sang.gondroid.cheesetodo.presentation.review.ReviewViewModel" />
 
         <variable
-            name="adapter"
+            name="reviewAdapter"
+            type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
+
+        <variable
+            name="historyAdapter"
             type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
 
         <variable
@@ -27,7 +31,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="?attr/toolbarStyle"
+            style="@style/Widget.CheeseTodo.Toolbar"
             app:menu="@menu/review_plan_menu"
             android:layout_width="0dp"
             android:background="@color/cheese_light_lv"
@@ -56,19 +60,21 @@
             android:id="@+id/reviewRefreshLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:onRefreshListener="@{() -> reviewViewModel.refresh()}"
-            app:refreshing="@{reviewViewModel.isLoading}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintVertical_bias="0.0"
+            app:onRefreshListener="@{() -> reviewViewModel.refresh()}"
+            app:refreshing="@{reviewViewModel.isLoading}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/reviewTodoRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:setAdapter="@{adapter}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:setAdapter="@{reviewAdapter}" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -95,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/search_history_save"
-                    app:layout_constraintBottom_toTopOf="@+id/view3"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintEnd_toStartOf="@+id/searchHistorySaveMode"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -107,7 +113,7 @@
                     android:layout_marginStart="3dp"
                     android:checked="false"
                     android:theme="@style/Widget.CheeseTodo.SwitchButton"
-                    app:layout_constraintBottom_toTopOf="@+id/view3"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintStart_toEndOf="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -119,12 +125,12 @@
                     android:drawableEnd="@drawable/ic_delete"
                     android:text="@string/search_history_clear"
                     android:textColor="@color/gray"
-                    app:layout_constraintBottom_toTopOf="@+id/view3"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
-                    android:id="@+id/view3"
+                    android:id="@+id/recyclerViewTopLine"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/light_gray"
@@ -138,10 +144,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewBottomLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view3" />
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewTopLine"
+                    app:setAdapter="@{historyAdapter}" />
+
+                <View
+                    android:id="@+id/recyclerViewBottomLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

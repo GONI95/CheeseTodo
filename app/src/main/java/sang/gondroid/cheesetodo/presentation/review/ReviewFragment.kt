@@ -22,16 +22,14 @@ import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.preference.LivePreference
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.databinding.FragmentReviewBinding
-import sang.gondroid.cheesetodo.domain.model.BaseModel
-import sang.gondroid.cheesetodo.domain.model.CommentModel
-import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
-import sang.gondroid.cheesetodo.domain.model.TodoModel
+import sang.gondroid.cheesetodo.domain.model.*
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.TodoCategory
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
+import sang.gondroid.cheesetodo.widget.history.SearchHistoryListener
 import sang.gondroid.cheesetodo.widget.review.ReviewTodoListener
 
 
@@ -49,10 +47,8 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         binding.toolbar.menu.findItem(R.id.search_menu_item)?.actionView as androidx.appcompat.widget.SearchView
     }
 
-    private val reviewAdapter by lazy {
-        BaseAdapter<ReviewTodoModel>(
-            modelList = listOf(),
-            adapterListener = object : ReviewTodoListener {
+    private val reviewTodoAdapter by lazy {
+        BaseAdapter<ReviewTodoModel>(modelList = listOf(), adapterListener = object : ReviewTodoListener {
                 override fun onClickItem(view: View, position: Int, model: BaseModel) {
                     LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
@@ -63,12 +59,27 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         )
     }
 
+    private val searchHistoryAdapter by lazy {
+        BaseAdapter<SearchHistoryModel>(modelList = listOf(), adapterListener = object : SearchHistoryListener {
+            override fun onClickItem(v: View, model: BaseModel) {
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() ")
+                //removeSearchHistoryItem(model)
+            }
+
+            override fun onClickItem(v: View, query: String) {
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() ")
+                //viewModel.getSearchData(query)
+            }
+        })
+    }
+
     override fun getDataBinding(): FragmentReviewBinding
             = FragmentReviewBinding.inflate(layoutInflater)
 
     override fun initViews() = with(binding) {
 
-        binding.adapter = reviewAdapter
+        binding.reviewAdapter = reviewTodoAdapter
+        binding.historyAdapter = searchHistoryAdapter
         binding.reviewViewModel = viewModel
 
         /**
@@ -90,7 +101,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
 
             when (state) {
                 is JobState.True.Result<*> -> {
-                    reviewAdapter.submitList(state.data as List<ReviewTodoModel>)
+                    reviewTodoAdapter.submitList(state.data as List<ReviewTodoModel>)
                 }
                 is JobState.False -> {
                     LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
@@ -102,6 +113,14 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
                 }
             }
         })
+
+        searchHistoryAdapter.submitList(
+            listOf(
+                SearchHistoryModel(1, "입", "2020"),
+                SearchHistoryModel(2, "력", "2021"),
+                SearchHistoryModel(3, "값", "2021")
+            )
+        )
     }
 
     /**
