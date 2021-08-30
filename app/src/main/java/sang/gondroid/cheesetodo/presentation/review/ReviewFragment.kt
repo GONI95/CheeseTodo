@@ -36,6 +36,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     private val liveSharedPreferences: LiveSharedPreferences by inject()
 
     private var searchHistoryList = ArrayList<SearchHistoryModel>()
+    private var reviewTodoList = ArrayList<ReviewTodoModel>()
     private var saveModeState by Delegates.notNull<Boolean>()
 
     private val mSearchView: androidx.appcompat.widget.SearchView by lazy {
@@ -58,10 +59,12 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         BaseAdapter<SearchHistoryModel>(modelList = listOf(), adapterListener = object : SearchHistoryListener {
             override fun onClickItem(v: View, model: BaseModel) {
                 LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
+                viewModel.removeSearchHistory(searchHistoryList, model)
             }
 
             override fun onClickItem(v: View, query: String) {
                 LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
+                viewModel.filterSearchHistory(reviewTodoList, query)
             }
         })
     }
@@ -123,7 +126,8 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is JobState.True.Result<*> -> {
-                    reviewTodoAdapter.submitList(state.data as List<ReviewTodoModel>)
+                    reviewTodoList = state.data as ArrayList<ReviewTodoModel>
+                    reviewTodoAdapter.submitList(reviewTodoList)
                 }
                 is JobState.False -> {
                     LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
@@ -157,6 +161,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
 
         if (!query.isNullOrEmpty()) {
             viewModel.insertSearchTermHistory(query, searchHistoryList, saveModeState)
+            viewModel.filterSearchHistory(reviewTodoList, query)
         }
 
         mSearchView.setQuery("", false)    // SearchView의 입력값을 빈값으로 초기화

@@ -3,6 +3,8 @@ package sang.gondroid.cheesetodo.widget.base
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import sang.gondroid.cheesetodo.databinding.LayoutEmptyItemBinding
 import sang.gondroid.cheesetodo.databinding.LayoutReviewTodoItemBinding
@@ -74,11 +76,15 @@ class BaseAdapter<M : BaseModel>(
                 onItemClick = { view, adapterPosition ->
                     Log.d(Constants.TAG, "$THIS_NAME, onItemClick() called : ViHolder로부터 응답을 받았습니다.")
 
-                    if (adapterListener is SearchHistoryListener) {
+                    if (adapterListener is SearchHistoryListener && view is TextView) {
+                        Log.d(Constants.TAG, "$THIS_NAME, onItemClick() called : 구현체에 값을 전달합니다.")
+
+                        adapterListener.onClickItem(view, (modelList[adapterPosition] as SearchHistoryModel).value)
+
+                    } else if(adapterListener is SearchHistoryListener && view is ImageView) {
                         Log.d(Constants.TAG, "$THIS_NAME, onItemClick() called : 구현체에 값을 전달합니다.")
 
                         adapterListener.onClickItem(view, modelList[adapterPosition])
-                        adapterListener.onClickItem(view, (modelList[adapterPosition] as SearchHistoryModel).value)
                     }
 
                 }) as BaseViewHolder<M>

@@ -226,7 +226,7 @@ class HandleFireStore(
                 if (!result.isEmpty) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.True")
 
-                    return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java) )
+                    return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java).sortedByDescending { it.date } )
                 }
                 else {
                     LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.False")

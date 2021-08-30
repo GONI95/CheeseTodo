@@ -1,6 +1,5 @@
 package sang.gondroid.cheesetodo.presentation.review
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
+import sang.gondroid.cheesetodo.domain.model.BaseModel
+import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.model.SearchHistoryModel
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetReviewTodoUseCase
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
@@ -32,10 +33,6 @@ class ReviewViewModel(
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean>
         get() = _isLoading
-
-    private var _searchHistoryListLiveData = MutableLiveData<ArrayList<SearchHistoryModel>>()
-    val searchHistoryListLiveData : LiveData<ArrayList<SearchHistoryModel>>
-        get() = _searchHistoryListLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
         val getReviewTodoState = getReviewTodoUseCase.invoke()
@@ -72,14 +69,16 @@ class ReviewViewModel(
     }
 
     /**
-     * Button 클릭 시 호출되는 메서드 (검색어 전체 삭제)
+     * Button 클릭 시 호출되는 메서드 (검색어 기록 List 삭제)
      */
     fun onHistoryDeleteBtnClick() {
         LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryDeleteBtnClick() called")
         appPreferenceManager.clearSearchHistoryList()
     }
 
-    // 검색어 저장
+    /**
+     * 검색어 기록 Item 추가
+     */
     fun insertSearchTermHistory(query: String, searchHistoryList: ArrayList<SearchHistoryModel>, saveModeState: Boolean) = viewModelScope.launch(ioDispatcher) {
         LogUtil.d(Constants.TAG, "$THIS_NAME, insertSearchTermHistory() called")
 
@@ -99,7 +98,7 @@ class ReviewViewModel(
             /**
              * searchHistoryList 값의 유무에 따라 id를
              */
-            var id : Long = 1
+            var id : Long = 0
             if (!searchHistoryList.isEmpty()) {
                 id = searchHistoryList.last().id!! + 1L
             }
@@ -110,5 +109,30 @@ class ReviewViewModel(
             // 기존 데이터에 덮어쓰기
             appPreferenceManager.setSearchHistory(searchHistoryList)
         }
+    }
+
+    /**
+     * 검색어 기록 Item 삭제
+     */
+    fun removeSearchHistory(searchHistoryList: ArrayList<SearchHistoryModel>, model: BaseModel) {
+        searchHistoryList.remove(model)
+        appPreferenceManager.setSearchHistory(searchHistoryList)
+    }
+
+    /**
+     * ReviewTodoList 결과를 filter하는 메서드
+     */
+    fun filterSearchHistory(reviewTodoList: List<ReviewTodoModel>, query: String) {
+        val regex = "([^#$]*)$query([^#\$]*)".toRegex()
+
+        val filterList = reviewTodoList.filter {
+            it.title.matches(regex)
+        }
+
+        filterList.sortedByDescending { it.date }
+
+        LogUtil.i(Constants.TAG, "$THIS_NAME, filterSearchHistory() ReviewTodoList : $filterList")
+        _jobStateLiveData.value = JobState.True.Result(filterList)
+
     }
 }

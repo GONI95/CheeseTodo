@@ -5,10 +5,6 @@
 
     <data>
         <variable
-            name="handler"
-            type="sang.gondroid.cheesetodo.presentation.review.ReviewFragment" />
-
-        <variable
             name="reviewViewModel"
             type="sang.gondroid.cheesetodo.presentation.review.ReviewViewModel" />
 
