@@ -1,25 +1,16 @@
 package sang.gondroid.cheesetodo.presentation.review
 
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
-import androidx.core.net.toUri
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.databinding.adapters.SearchViewBindingAdapter.setOnQueryTextListener
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.R
-import sang.gondroid.cheesetodo.data.preference.LivePreference
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.databinding.FragmentReviewBinding
 import sang.gondroid.cheesetodo.domain.model.*
@@ -27,10 +18,11 @@ import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
-import sang.gondroid.cheesetodo.util.TodoCategory
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
 import sang.gondroid.cheesetodo.widget.history.SearchHistoryListener
 import sang.gondroid.cheesetodo.widget.review.ReviewTodoListener
+import java.util.*
+import kotlin.properties.Delegates
 
 
 @Suppress("UNCHECKED_CAST")
@@ -42,6 +34,9 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     override val viewModel: ReviewViewModel by viewModel()
 
     private val liveSharedPreferences: LiveSharedPreferences by inject()
+
+    private var searchHistoryList = ArrayList<SearchHistoryModel>()
+    private var saveModeState by Delegates.notNull<Boolean>()
 
     private val mSearchView: androidx.appcompat.widget.SearchView by lazy {
         binding.toolbar.menu.findItem(R.id.search_menu_item)?.actionView as androidx.appcompat.widget.SearchView
@@ -62,13 +57,11 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     private val searchHistoryAdapter by lazy {
         BaseAdapter<SearchHistoryModel>(modelList = listOf(), adapterListener = object : SearchHistoryListener {
             override fun onClickItem(v: View, model: BaseModel) {
-                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() ")
-                //removeSearchHistoryItem(model)
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
             }
 
             override fun onClickItem(v: View, query: String) {
-                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() ")
-                //viewModel.getSearchData(query)
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
             }
         })
     }
@@ -88,17 +81,46 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         mSearchView.setOnQueryTextListener(this@ReviewFragment)
         mSearchView.setOnQueryTextFocusChangeListener(this@ReviewFragment)
 
+        /**
+         * AppPreferenceManager의 회원명 값을 관찰
+         */
         liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
 
             binding.displayName = displayName
+        })
+
+        /**
+         * AppPreferenceManager의 검색 히스토리 값을 관찰
+         */
+        liveSharedPreferences.getSearchHistoryList(BuildConfig.KEY_SEARCH_HISTORY, null).observe(viewLifecycleOwner, Observer { list ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME getSearchHistoryList() called : $list")
+
+            if(!list.isNullOrBlank()) {
+                /**
+                 * String -> ArrayList 변환 : fromJson() [json -> java]
+                 */
+                searchHistoryList = Gson().fromJson(list, Array<SearchHistoryModel>::class.java).toMutableList() as ArrayList<SearchHistoryModel>
+            } else {
+                searchHistoryList.clear()
+            }
+
+            searchHistoryAdapter.submitList(searchHistoryList)
+        })
+
+        /**
+         * AppPreferenceManager의 저장모드 값을 관찰
+         */
+        liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, null).observe(viewLifecycleOwner, Observer { state ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME getBoolean() called")
+            saveModeState = state
+            binding.switchState = saveModeState
         })
     }
 
 
     override fun observeData() {
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
-
             when (state) {
                 is JobState.True.Result<*> -> {
                     reviewTodoAdapter.submitList(state.data as List<ReviewTodoModel>)
@@ -113,24 +135,16 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
                 }
             }
         })
-
-        searchHistoryAdapter.submitList(
-            listOf(
-                SearchHistoryModel(1, "입", "2020"),
-                SearchHistoryModel(2, "력", "2021"),
-                SearchHistoryModel(3, "값", "2021")
-            )
-        )
     }
 
     /**
      * SearchView의 Focus 상태(활성화, 비활성화)가 변경되면 호출되는 메서드
      */
     override fun onFocusChange(v: View?, hasFocus: Boolean) = when (hasFocus) {
-        true -> { Log.v(Constants.TAG, "$THIS_NAME - onFocusChange() SearchView On ")
+        true -> { LogUtil.v(Constants.TAG, "$THIS_NAME - onFocusChange() SearchView On ")
             binding.searchHistoryLayout.isVisible = true
         }
-        false -> { Log.v(Constants.TAG, "$THIS_NAME - onFocusChange() SearchView Off")
+        false -> { LogUtil.v(Constants.TAG, "$THIS_NAME - onFocusChange() SearchView Off")
             binding.searchHistoryLayout.isInvisible = true
         }
     }
@@ -139,7 +153,11 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
      * 키보드 검색버튼 클릭 시 SearchView 입력값을 가져오는 메서드
      */
     override fun onQueryTextSubmit(query: String?): Boolean {
-        Log.i(Constants.TAG, "onQueryTextSubmit() quary : $query")
+        LogUtil.i(Constants.TAG, "onQueryTextSubmit() quary : $query")
+
+        if (!query.isNullOrEmpty()) {
+            viewModel.insertSearchTermHistory(query, searchHistoryList, saveModeState)
+        }
 
         mSearchView.setQuery("", false)    // SearchView의 입력값을 빈값으로 초기화
         binding.toolbar.collapseActionView()   // 액션뷰가 닫힌다.
@@ -151,7 +169,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
      * Toolbar의 SearchView 입력값이 변경되면 호출되는 메서드 (검색어 문자열 길이 제한)
      */
     override fun onQueryTextChange(newText: String?): Boolean {
-        Log.i(Constants.TAG, "$THIS_NAME onQueryTextChange() newText : $newText")
+        LogUtil.i(Constants.TAG, "$THIS_NAME onQueryTextChange() newText : $newText")
 
         if (newText?.count() == 50) Toast.makeText(requireContext(), getString(R.string.String_length_limit), Toast.LENGTH_SHORT).show()
 

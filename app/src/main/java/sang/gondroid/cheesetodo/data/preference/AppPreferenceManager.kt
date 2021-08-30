@@ -2,7 +2,12 @@ package sang.gondroid.cheesetodo.data.preference
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import com.google.gson.Gson
 import sang.gondroid.cheesetodo.BuildConfig
+import sang.gondroid.cheesetodo.domain.model.SearchHistoryModel
+import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 
 /**
  * 데이터 저장 및 로드 클래스
@@ -61,5 +66,67 @@ class AppPreferenceManager(
     fun removeUserNameString() {
         editor.putString(BuildConfig.KEY_USER_NAME, null)
         editor.apply()
+    }
+
+    /**
+     * 검색어 저장모드 설정
+     */
+    fun setSaveMode(isActivated: Boolean){
+        editor.putBoolean(BuildConfig.KEY_SAVE_MODE, isActivated)
+        editor.apply()
+    }
+
+    /**
+     * 검색어 저장모드 가져오기
+     */
+    fun getSaveMode() : Boolean {
+        return prefs.getBoolean(BuildConfig.KEY_SAVE_MODE, false)
+    }
+
+    /**
+     * SearchHistory List 설정
+     */
+    fun setSearchHistory(searchHistoryList: MutableList<SearchHistoryModel>) {
+
+        /**
+         * List -> String 변환 : toJson() [java -> json]
+         * 객체의 인스턴스를 Json으로 직렬화하는 것도 가능합니다.
+         */
+        val searchHistoryString : String = Gson().toJson(searchHistoryList)
+        LogUtil.d(Constants.TAG, "AppPreferenceManager setSearchHistory() setSearchHistory : $searchHistoryString")
+
+        editor.putString(BuildConfig.KEY_SEARCH_HISTORY, searchHistoryString)
+        editor.apply()  // 변경사항 저장
+    }
+
+    /**
+     * SearchHistory List 가져오기
+     */
+    fun getSearchHistory() : MutableList<SearchHistoryModel>? {
+        LogUtil.d(Constants.TAG, "AppPreferenceManager getSearchHistory() called")
+
+        val searchHistoryString = prefs.getString(BuildConfig.KEY_SEARCH_HISTORY, "")!!
+
+        var searchHistoryList = ArrayList<SearchHistoryModel>()
+
+        if(searchHistoryString.isNotEmpty()){
+            /**
+             * String -> ArrayList 변환 : fromJson() [json -> java]
+             */
+            searchHistoryList = Gson().fromJson(searchHistoryString, Array<SearchHistoryModel>::class.java).toMutableList() as ArrayList<SearchHistoryModel>
+        }
+
+        //sharedPreference editor 세팅
+        return searchHistoryList
+    }
+
+    /**
+     * SearchHistory List 지우기
+     */
+    fun clearSearchHistoryList(){
+        LogUtil.d(Constants.TAG, "AppPreferenceManager clearSearchHistoryList() called")
+
+        editor.putString(BuildConfig.KEY_SEARCH_HISTORY, null)
+        editor.apply()  // 변경사항 저장
     }
 }

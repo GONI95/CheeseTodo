@@ -53,7 +53,7 @@ val appModule = module {
      * ViewModel
      */
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(named("io"))) }
-    viewModel { ReviewViewModel(get(), get(named("io"))) }
+    viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
     viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }

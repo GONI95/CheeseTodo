@@ -23,6 +23,10 @@
         <variable
             name="displayName"
             type="String" />
+
+        <variable
+            name="switchState"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,8 +115,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:checked="false"
+                    android:checked="@{switchState}"
                     android:theme="@style/Widget.CheeseTodo.SwitchButton"
+                    android:onCheckedChanged="@{(switch, checked) -> reviewViewModel.onHistoryCheckedChanged(checked)}"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintStart_toEndOf="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -125,6 +130,7 @@
                     android:drawableEnd="@drawable/ic_delete"
                     android:text="@string/search_history_clear"
                     android:textColor="@color/gray"
+                    android:onClick="@{() -> reviewViewModel.onHistoryDeleteBtnClick()}"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

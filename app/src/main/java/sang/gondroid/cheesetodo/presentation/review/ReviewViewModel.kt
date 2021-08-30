@@ -1,20 +1,25 @@
 package sang.gondroid.cheesetodo.presentation.review
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
+import sang.gondroid.cheesetodo.domain.model.SearchHistoryModel
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetReviewTodoUseCase
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
+import sang.gondroid.cheesetodo.util.toDateFormat
+import java.util.*
 
 class ReviewViewModel(
     private val getReviewTodoUseCase: GetReviewTodoUseCase,
+    private val appPreferenceManager: AppPreferenceManager,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
     private val THIS_NAME = this::class.simpleName
@@ -27,6 +32,10 @@ class ReviewViewModel(
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean>
         get() = _isLoading
+
+    private var _searchHistoryListLiveData = MutableLiveData<ArrayList<SearchHistoryModel>>()
+    val searchHistoryListLiveData : LiveData<ArrayList<SearchHistoryModel>>
+        get() = _searchHistoryListLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
         val getReviewTodoState = getReviewTodoUseCase.invoke()
@@ -45,5 +54,61 @@ class ReviewViewModel(
         LogUtil.i(Constants.TAG, "$THIS_NAME onRefresh() called")
         fetchData()
         _isLoading.value = false
+    }
+
+    /**
+     * Switch 상태값 변경 시 호출되는 메서드 (검색어 저장모드)
+     */
+    fun onHistoryCheckedChanged(isChecked: Boolean) {
+        when (isChecked) {
+            true -> {
+                LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 활성화")
+                appPreferenceManager.setSaveMode(isActivated = true)
+            } false -> {
+                LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 비활성화")
+                appPreferenceManager.setSaveMode(isActivated = false)
+            }
+        }
+    }
+
+    /**
+     * Button 클릭 시 호출되는 메서드 (검색어 전체 삭제)
+     */
+    fun onHistoryDeleteBtnClick() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryDeleteBtnClick() called")
+        appPreferenceManager.clearSearchHistoryList()
+    }
+
+    // 검색어 저장
+    fun insertSearchTermHistory(query: String, searchHistoryList: ArrayList<SearchHistoryModel>, saveModeState: Boolean) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME, insertSearchTermHistory() called")
+
+        if (saveModeState) {
+
+            /**
+             * 중복 Item 삭제
+             */
+            val iter = searchHistoryList.iterator()
+            while (iter.hasNext()) {
+                if (query.equals(iter.next().value)) {
+                    iter.remove()
+                    break
+                }
+            }
+
+            /**
+             * searchHistoryList 값의 유무에 따라 id를
+             */
+            var id : Long = 1
+            if (!searchHistoryList.isEmpty()) {
+                id = searchHistoryList.last().id!! + 1L
+            }
+
+            searchHistoryList.add(SearchHistoryModel(id = id, timeSet = System.currentTimeMillis().toDateFormat(), value = query))
+            LogUtil.d(Constants.TAG, "$THIS_NAME, insertSearchTermHistory() SearchHistoryModel : $searchHistoryList.")
+
+            // 기존 데이터에 덮어쓰기
+            appPreferenceManager.setSearchHistory(searchHistoryList)
+        }
     }
 }
