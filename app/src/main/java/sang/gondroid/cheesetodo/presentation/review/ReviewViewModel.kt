@@ -35,13 +35,13 @@ class ReviewViewModel(
         get() = _isLoading
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
-        val getReviewTodoState = getReviewTodoUseCase.invoke()
 
-        if (getReviewTodoState is JobState.True.Result<*>) _jobStateLiveData.postValue(getReviewTodoState)
+        when (val getReviewTodoState = getReviewTodoUseCase.invoke()) {
 
-        else if(getReviewTodoState is JobState.Error) _jobStateLiveData.postValue(getReviewTodoState)
-
-        else _jobStateLiveData.postValue(getReviewTodoState)
+            is JobState.True.Result<*> -> _jobStateLiveData.postValue(getReviewTodoState)
+            is JobState.Error -> _jobStateLiveData.postValue(getReviewTodoState)
+            else -> _jobStateLiveData.postValue(getReviewTodoState)
+        }
     }
 
     /**
@@ -99,7 +99,7 @@ class ReviewViewModel(
              * searchHistoryList 값의 유무에 따라 id를
              */
             var id : Long = 0
-            if (!searchHistoryList.isEmpty()) {
+            if (searchHistoryList.isNotEmpty()) {
                 id = searchHistoryList.last().id!! + 1L
             }
 

@@ -4,6 +4,7 @@ import android.util.Log
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 
 
 class UpdateTodoUseCase(
@@ -13,7 +14,7 @@ class UpdateTodoUseCase(
 
     suspend operator fun invoke(todoModel: TodoModel) {
         val todoEntity = todoModel.toEntity().also {
-            Log.d(Constants.TAG, "$THIS_NAME todoEntity : $it")
+            LogUtil.d(Constants.TAG, "$THIS_NAME todoEntity : $it")
         }
 
         return todoRepository.updateTodoItem(todoEntity)

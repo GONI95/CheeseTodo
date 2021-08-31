@@ -26,19 +26,21 @@ class HomeViewModel(
         get() = _jobStateLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
-        val myState = handlerFirebaseAuth.validateToken()
-        val membershipState = handlerFireStore.validateMembership()
 
-        if (myState is JobState.Login && membershipState is JobState.True) _jobStateLiveData.postValue(JobState.Login(myState.idData, myState.nameData))
+        when (val myState = handlerFirebaseAuth.validateToken()) {
+            is JobState.Login -> {
 
-        else if(membershipState is JobState.False) _jobStateLiveData.postValue(membershipState)
+                when(val membershipState = handlerFireStore.validateMembership()) {
 
-        else if(myState is JobState.Success.NotRegistered) _jobStateLiveData.postValue(myState)
-
-        else if(myState is JobState.Error) _jobStateLiveData.postValue(myState)
-
-        else if(membershipState is JobState.Error) _jobStateLiveData.postValue(membershipState)
-
-        else LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState, $myState")
+                    is JobState.True -> _jobStateLiveData.postValue(myState)
+                    is JobState.False -> _jobStateLiveData.postValue(membershipState)
+                    is JobState.Error -> _jobStateLiveData.postValue(membershipState)
+                    else -> LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState")
+                }
+            }
+            is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(myState)
+            is JobState.Error -> _jobStateLiveData.postValue(myState)
+            else -> LogUtil.w(Constants.TAG, "$THIS_NAME validateToken() else : $myState")
+        }
     }
 }

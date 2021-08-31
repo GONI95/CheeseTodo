@@ -13,7 +13,7 @@ import sang.gondroid.cheesetodo.util.JobState
 import java.lang.Exception
 
 /**
- * ViewModel에서 메서드를 구현해 호출하면 Singleton이 아니어서, 모든 fragment에서 상태가 변할 때 마다 계속해서 checkMyState()를 호출해야하므로 class 생성
+ * ViewModel에서 메서드를 구현해 호출하면 Singleton이 아니어서, 모든 fragment에서 상태가 변할 때 마다 계속해서 checkJobState()를 호출해야하므로 class 생성
  */
 class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager, private val firebaseAuth: FirebaseAuth,
                           private val ioDispatchers: CoroutineDispatcher) {
@@ -44,17 +44,17 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
                     result.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
                 }
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.Login")
+                LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : JobState.Login")
                 return@withContext JobState.Login(appPreferenceManager.getIdToken()!!, appPreferenceManager.getUserNameString()!!)
 
             }catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME validateToken() : MyState.Error")
+                LogUtil.e(Constants.TAG, "$THIS_NAME validateToken() : JobState.Error")
                 return@withContext JobState.Error(R.string.request_error, e)
             }
 
 
         } else {
-            LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : MyState.NotRegistered")
+            LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : JobState.NotRegistered")
 
             firebaseAuth.signOut()
             return@withContext JobState.Success.NotRegistered
@@ -105,7 +105,7 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
                 return@let jobState
 
             } catch (e : Exception) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() MyState.Error")
+                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() JobState.Error")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }

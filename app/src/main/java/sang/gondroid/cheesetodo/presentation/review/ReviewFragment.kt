@@ -114,7 +114,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         /**
          * AppPreferenceManager의 저장모드 값을 관찰
          */
-        liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, null).observe(viewLifecycleOwner, Observer { state ->
+        liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, false).observe(viewLifecycleOwner, Observer { state ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getBoolean() called")
             saveModeState = state
             binding.switchState = saveModeState

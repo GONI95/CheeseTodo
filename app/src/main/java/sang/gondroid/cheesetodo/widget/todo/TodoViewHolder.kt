@@ -5,6 +5,7 @@ import android.view.View
 import sang.gondroid.cheesetodo.databinding.LayoutTodoItemBinding
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.util.Constants
+import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.widget.base.BaseViewHolder
 
 class TodoViewHolder(
@@ -19,10 +20,10 @@ class TodoViewHolder(
     }
 
     init {
-        Log.d(Constants.TAG, "$THIS_NAME, init() called ")
+        LogUtil.d(Constants.TAG, "$THIS_NAME, init() called ")
 
         binding.root.setOnClickListener {
-            Log.d(Constants.TAG, "$THIS_NAME, setOnClickListener() called : 사용자 이벤트가 발생했습니다.")
+            LogUtil.d(Constants.TAG, "$THIS_NAME, setOnClickListener() called : 사용자 이벤트가 발생했습니다.")
 
             onItemClick(binding.todoItemTitle, adapterPosition)
         }

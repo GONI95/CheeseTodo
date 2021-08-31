@@ -35,13 +35,12 @@ class MyViewModel(
         LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() called")
         _jobStateLiveData.postValue(JobState.Loading)
 
-        val myState = handlerFirebaseAuth.validateToken()
+        when (val myState = handlerFirebaseAuth.validateToken()) {
 
-        if (myState is JobState.Login) _jobStateLiveData.postValue(myState)
-
-        else if(myState is JobState.Error) _jobStateLiveData.postValue(myState)
-
-        else _jobStateLiveData.postValue(myState)
+            is JobState.Login -> _jobStateLiveData.postValue(myState)
+            is JobState.Error -> _jobStateLiveData.postValue(myState)
+            else -> _jobStateLiveData.postValue(myState)
+        }
 
     }
 
@@ -70,23 +69,21 @@ class MyViewModel(
          * 1. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 가져오는 메서드
          * 2. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보가 있는지 확인하고 Firestore에 추가하는 메서드
          */
-        val membershipState = handlerFireStore.validateMembership()
-        //val userState = handlerFirebaseAuth.getCurrentUser()
-        val userState =  handlerFireStore.getCurrentMembership()
+        when (val membershipState = handlerFireStore.validateMembership()) {
+            is JobState.True -> {
 
-        LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called! $membershipState")
+                when(val userState = handlerFireStore.getCurrentMembership()) {
 
-        if (userState is JobState.Success.Registered<*> && membershipState is JobState.True) _jobStateLiveData.postValue(userState)
-
-        else if(membershipState is JobState.Error) _jobStateLiveData.postValue(membershipState)
-
-        else if(userState is JobState.Error) _jobStateLiveData.postValue(userState)
-
-        else if(membershipState is JobState.False) _jobStateLiveData.postValue(membershipState)
-
-        else if(userState is JobState.Success.NotRegistered) _jobStateLiveData.postValue(userState)
-
-        else LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState, $userState")
+                    is JobState.Success.Registered<*> -> _jobStateLiveData.postValue(userState)
+                    is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(userState)
+                    is JobState.Error -> _jobStateLiveData.postValue(userState)
+                    else -> LogUtil.w(Constants.TAG, "$THIS_NAME getCurrentMembership() else : $userState")
+                }
+            }
+            is JobState.False -> _jobStateLiveData.postValue(membershipState)
+            is JobState.Error -> _jobStateLiveData.postValue(membershipState)
+            else -> LogUtil.w(Constants.TAG, "$THIS_NAME validateMembership() else : $membershipState")
+        }
     }
 
     /**
@@ -112,20 +109,20 @@ class MyViewModel(
          * 1. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보를 제거하는 메서드
          * 2. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 제거하는 메서드
          */
-        val disjoinMembershipState = handlerFireStore.disjoinMembership()
-        val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()
+        when (val disjoinMembershipState = handlerFireStore.disjoinMembership()) {
+            is JobState.True -> {
 
-        if (disjoinMembershipState is JobState.True && deleteCurrentUserState is JobState.True) removeToken()
+                when(val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()) {
 
-        else if(disjoinMembershipState is JobState.False) _jobStateLiveData.postValue(disjoinMembershipState)
-
-        else if(deleteCurrentUserState is JobState.False) _jobStateLiveData.postValue(deleteCurrentUserState)
-
-        else if(disjoinMembershipState is JobState.Error) _jobStateLiveData.postValue(disjoinMembershipState)
-
-        else if(deleteCurrentUserState is JobState.Error) _jobStateLiveData.postValue(deleteCurrentUserState)
-
-        else LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState, $deleteCurrentUserState")
-
+                    is JobState.True -> _jobStateLiveData.postValue(deleteCurrentUserState)
+                    is JobState.False -> _jobStateLiveData.postValue(deleteCurrentUserState)
+                    is JobState.Error -> _jobStateLiveData.postValue(deleteCurrentUserState)
+                    else -> LogUtil.w(Constants.TAG, "$THIS_NAME deleteCurrentUser() else : $deleteCurrentUserState")
+                }
+            }
+            is JobState.False -> _jobStateLiveData.postValue(disjoinMembershipState)
+            is JobState.Error -> _jobStateLiveData.postValue(disjoinMembershipState)
+            else -> LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState")
+        }
     }
 }

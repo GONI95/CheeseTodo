@@ -32,7 +32,7 @@ class HandleFireStore(
      * FirebaseAuth :
      * FirebaseUser : Firebase 프로젝트의 사용자 데이터베이스에 있는 사용자의 프로필 정보를 의미
      */
-    private lateinit var firebaseUser : FirebaseUser
+
 
     private fun getFireStoreString(stringId : Int) : String {
         LogUtil.i(Constants.TAG, "$THIS_NAME getFireStoreString() : ${context.getString(stringId)}")
@@ -45,9 +45,7 @@ class HandleFireStore(
     suspend fun validateMembership() : JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called")
 
-        firebaseAuth.currentUser?.let { firebaseUser = it }
-
-        return@withContext firebaseUser.email.let { email ->
+        return@withContext firebaseAuth.currentUser?.email.let { email ->
             try {
                 val result = firestore.collection(getFireStoreString(R.string.user_collection))
                     .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
@@ -76,10 +74,10 @@ class HandleFireStore(
 
         var jobState : JobState = JobState.Uninitialized
 
-        return@withContext firebaseUser.email.let { email ->
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
                 firestore.collection(getFireStoreString(R.string.user_collection))
-                    .document(email!!)
+                    .document(firebaseUser?.email!!)
                     .set(hashMapOf(
                             getFireStoreString(R.string.user_email) to firebaseUser.email,
                             getFireStoreString(R.string.user_uid) to firebaseUser.uid,
@@ -110,7 +108,7 @@ class HandleFireStore(
 
         var jobState : JobState = JobState.Uninitialized
 
-       return@withContext firebaseUser.email.let { email ->
+       return@withContext firebaseAuth.currentUser?.email.let { email ->
             try {
                 firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).delete().addOnCompleteListener { task ->
 
@@ -131,7 +129,7 @@ class HandleFireStore(
     suspend fun getCurrentMembership() : JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMembership() called")
 
-        return@withContext firebaseUser.email.let { email ->
+        return@withContext firebaseAuth.currentUser?.email.let { email ->
             try {
                 val result = firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).get().await()
 
@@ -164,11 +162,11 @@ class HandleFireStore(
     suspend fun validateReviewTodoExist(model: TodoModel): JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME validateReviewTodoExist() called")
 
-        return@withContext firebaseUser.let { firebaseUser ->
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUser.email)
+                    .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUser?.email)
                     .whereEqualTo(getFireStoreString(R.string.review_title), model.title)
                     .whereEqualTo(getFireStoreString(R.string.review_id), model.id)
                     .get().await()
@@ -192,7 +190,7 @@ class HandleFireStore(
     suspend fun insertReviewTodo(model: ReviewTodoDTO): JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() called")
 
-        return@withContext firebaseUser.let { firebaseUser ->
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() model : ${model}")
 
@@ -216,7 +214,7 @@ class HandleFireStore(
     }
 
     suspend fun getReviewTodo() : JobState = withContext(ioDispatchers) {
-        return@withContext firebaseUser.let { firebaseUser ->
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo()")
 
