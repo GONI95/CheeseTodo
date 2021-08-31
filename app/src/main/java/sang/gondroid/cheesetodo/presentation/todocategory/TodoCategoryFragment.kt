@@ -29,7 +29,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     // HomeFragment에서 newInstance()를 통해 전달한 category값을 Bundle로부터 가져옴
     private val todoCategory by lazy { arguments?.getSerializable(TODO_CATEGORY_KEY) as TodoCategory }
 
-    private val adapter by lazy {
+    private val todoAdapter by lazy {
         BaseAdapter<TodoModel>( modelList = listOf(), adapterListener = object : TodoListener {
             override fun onClickItem(view: View, position: Int, model: BaseModel) {
                 LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
@@ -63,12 +63,12 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
     }
 
     override fun initViews() = with(binding) {
-        super.initViews()
-        todoCategoryRecyclerView.adapter = adapter
+
+        binding.adapter = todoAdapter
     }
 
     override fun observeData() = viewModel.todoListLiveData.observe(viewLifecycleOwner, Observer {
-        adapter.submitList(it)
+        todoAdapter.submitList(it)
     })
 
     companion object {

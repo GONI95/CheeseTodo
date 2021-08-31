@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="reviewTodoModel"
+            type="sang.gondroid.cheesetodo.domain.model.ReviewTodoModel" />
+
+        <import type="sang.gondroid.cheesetodo.util.ExtensionsKt"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/reviewCardView"
+            style="@style/Widget.CheeseTodo.CardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/reviewTodoTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/three_dimensional_hatch"
+                    android:text="@{reviewTodoModel.title}"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:transitionName="@string/title_transition_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="제목" />
+
+                <TextView
+                    android:id="@+id/reviewTodoDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{ExtensionsKt.toDateFormat(reviewTodoModel.date)}"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/displayNameTextView"
+                    tools:text="2020 10 23" />
+
+                <TextView
+                    android:id="@+id/displayNameTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@{reviewTodoModel.userName}"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/reviewTodoDate"
+                    app:layout_constraintEnd_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle"
+                    tools:text="이상곤" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_cheese"
+                    app:imageUrl="@{reviewTodoModel.userPhoto.toString()}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_cheese" />
+
+                <TextView
+                    android:id="@+id/reviewTodoCategory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@{reviewTodoModel.category.categoryNameId}"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toTopOf="@+id/reviewTodoPassOrNot"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle" />
+
+                <TextView
+                    android:id="@+id/reviewTodoPassOrNot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{reviewTodoModel.passOrNot ? @string/review_pass : @string/review_nonpass }"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoCategory" />
+
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/verticalGuideline"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.70" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -37,7 +37,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/todoItemTile"
+                        android:id="@+id/todoItemTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -78,7 +78,7 @@
                         android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/todoItemTile"
+                        app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
                         tools:text="카테고리" />
 
                     <TextView
@@ -92,7 +92,7 @@
                         android:textSize="12sp"
                         app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
                         app:layout_constraintStart_toEndOf="@+id/todoItemCategory"
-                        app:layout_constraintTop_toBottomOf="@+id/todoItemTile"
+                        app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
                         tools:text="중요도" />
 
 

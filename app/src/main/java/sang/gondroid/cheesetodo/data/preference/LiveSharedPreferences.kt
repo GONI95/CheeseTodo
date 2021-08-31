@@ -2,6 +2,7 @@ package sang.gondroid.cheesetodo.data.preference
 
 import android.content.SharedPreferences
 import io.reactivex.rxjava3.subjects.PublishSubject
+import sang.gondroid.cheesetodo.domain.model.SearchHistoryModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
 
@@ -40,9 +41,20 @@ class LiveSharedPreferences(private val preferences: SharedPreferences) {
             if (!publisher.hasObservers()) {
                 preferences.unregisterOnSharedPreferenceChangeListener(listener)
             }
-    }
+        }
 
     fun getString(key: String, defaultValue: String?): LivePreference<String> {
+        LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
+        return LivePreference(updates, preferences, key, defaultValue)
+    }
+
+    fun getSearchHistoryList(key: String, defaultValue: String?): LivePreference<String> {
+        LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
+        return LivePreference(updates, preferences, key, defaultValue)
+    }
+
+
+    fun getBoolean(key: String, defaultValue: Boolean?): LivePreference<Boolean> {
         LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
         return LivePreference(updates, preferences, key, defaultValue)
     }

@@ -21,12 +21,19 @@ import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
+import sang.gondroid.cheesetodo.data.repository.ReviewTodoRepository
+import sang.gondroid.cheesetodo.data.repository.ReviewTodoRepositoryImpl
 import sang.gondroid.cheesetodo.data.repository.TodoRepository
 import sang.gondroid.cheesetodo.data.repository.TodoRepositoryImpl
+import sang.gondroid.cheesetodo.domain.mapper.*
 import sang.gondroid.cheesetodo.domain.usecase.DeleteTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.GetTodoListUseCase
 import sang.gondroid.cheesetodo.domain.usecase.InsertTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.UpdateTodoUseCase
+import sang.gondroid.cheesetodo.domain.usecase.firestore.GetReviewTodoUseCase
+import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertReviewTodoUseCase
+import sang.gondroid.cheesetodo.domain.usecase.firestore.ValidateReviewTodoExistUseCase
+import sang.gondroid.cheesetodo.presentation.home.HomeViewModel
 import sang.gondroid.cheesetodo.presentation.my.MyViewModel
 import sang.gondroid.cheesetodo.presentation.review.ReviewViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
@@ -45,10 +52,11 @@ val appModule = module {
     /**
      * ViewModel
      */
-    viewModel { MyViewModel(get<AppPreferenceManager>(), get(named("io")), get(), get()) }
-    viewModel { ReviewViewModel() }
+    viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(named("io"))) }
+    viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
+    viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
-    viewModel { DetailTodoViewModel(get(), get()) }
+    viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
 
     viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory, get()) }
 
@@ -56,6 +64,13 @@ val appModule = module {
      * Repository : Domain과 Data Layer 사이를 중재해주는 객체입니다.
      */
     single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get(named("io"))) }
+    single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(named("io"))) }
+
+    /**
+     * Mapper : Model <-> DTO
+     */
+    single { MapperReviewTodoDTO(get(named("io"))) }
+    single { MapperToReviewTodoModel(get(named("io"))) }
 
     /**
      * Database
@@ -70,6 +85,10 @@ val appModule = module {
     factory { GetTodoListUseCase(get()) }
     factory { UpdateTodoUseCase(get()) }
     factory { DeleteTodoUseCase(get()) }
+
+    factory { InsertReviewTodoUseCase(get()) }
+    factory { ValidateReviewTodoExistUseCase(get()) }
+    factory { GetReviewTodoUseCase(get()) }
 
     /**
      * FirebaseAuth

@@ -4,10 +4,14 @@ import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.BaseModel
+import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
+import sang.gondroid.cheesetodo.widget.base.BaseAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +41,15 @@ fun Int.toImportanceString(): String = when(this) {
     else -> " "
 }
 
+
+fun String.toTodoCategory() : TodoCategory = when(this) {
+    TodoCategory.ANDROID.name -> TodoCategory.ANDROID
+    TodoCategory.LANGUAGE.name -> TodoCategory.LANGUAGE
+    TodoCategory.DB.name -> TodoCategory.DB
+    TodoCategory.OTHER.name -> TodoCategory.OTHER
+    else -> TodoCategory.ALL
+}
+
 object BindingAdapters {
     @JvmStatic
     @BindingAdapter("selectPosition")
@@ -57,5 +70,11 @@ object BindingAdapters {
             .load(loadImage)
             .circleCrop()
             .into(imageView)
+    }
+
+    @JvmStatic
+    @BindingAdapter("setAdapter")
+    fun <M : BaseModel> setAdapter(view : RecyclerView, adapter : BaseAdapter<M>?) {
+        view.adapter = adapter
     }
 }

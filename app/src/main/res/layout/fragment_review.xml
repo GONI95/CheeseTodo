@@ -1,16 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="reviewViewModel"
+            type="sang.gondroid.cheesetodo.presentation.review.ReviewViewModel" />
+
+        <variable
+            name="reviewAdapter"
+            type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
+
+        <variable
+            name="historyAdapter"
+            type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
+
+        <variable
+            name="displayName"
+            type="String" />
+
+        <variable
+            name="switchState"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".presentation.review.ReviewFragment">
+        android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.CheeseTodo.Toolbar"
+            app:menu="@menu/review_plan_menu"
+            android:layout_width="0dp"
+            android:background="@color/cheese_light_lv"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:theme="@style/Widget.CheeseTodo.SearchView">
+
+            <TextView
+                android:id="@+id/welcomeUserTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/cute_light"
+                android:maxWidth="250dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="10dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="@{displayName != null ? String.format(@string/use_as_a_member, displayName) : @string/use_as_a_non_member}"
+                tools:text="어서오세요." />
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/reviewRefreshLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintVertical_bias="0.0"
+            app:onRefreshListener="@{() -> reviewViewModel.refresh()}"
+            app:refreshing="@{reviewViewModel.isLoading}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reviewTodoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:setAdapter="@{reviewAdapter}" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/searchHistoryLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="" />
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:visibility="visible">
+            <!-- layout_behavior : App bar의 하단에 위치할 위젯을 추가하면 App bar와 연결됨 -->
 
-    </FrameLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_history_save"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
+                    app:layout_constraintEnd_toStartOf="@+id/searchHistorySaveMode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/searchHistorySaveMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:checked="@{switchState}"
+                    android:theme="@style/Widget.CheeseTodo.SwitchButton"
+                    android:onCheckedChanged="@{(switch, checked) -> reviewViewModel.onHistoryCheckedChanged(checked)}"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
+                    app:layout_constraintStart_toEndOf="@+id/textView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/searchHistoryClear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawableEnd="@drawable/ic_delete"
+                    android:text="@string/search_history_clear"
+                    android:textColor="@color/gray"
+                    android:onClick="@{() -> reviewViewModel.onHistoryDeleteBtnClick()}"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/recyclerViewTopLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light_gray"
+                    app:layout_constraintBottom_toTopOf="@+id/searchHistoryRecyclerview"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/searchHistorySaveMode" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/searchHistoryRecyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewBottomLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewTopLine"
+                    app:setAdapter="@{historyAdapter}" />
+
+                <View
+                    android:id="@+id/recyclerViewBottomLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

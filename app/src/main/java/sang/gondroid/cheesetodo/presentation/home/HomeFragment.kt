@@ -1,8 +1,10 @@
 package sang.gondroid.cheesetodo.presentation.home
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,24 +12,32 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.databinding.FragmentHomeBinding
+import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
+import sang.gondroid.cheesetodo.presentation.base.BaseFragment
+import sang.gondroid.cheesetodo.presentation.my.MyViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryFragment
 import sang.gondroid.cheesetodo.util.*
 import sang.gondroid.cheesetodo.widget.page.FragmentViewPagerAdapter
+import java.lang.Exception
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     private val THIS_NAME = this::class.simpleName
 
     private val liveSharedPreferences: LiveSharedPreferences by inject()
 
-    private lateinit var binding : FragmentHomeBinding
+    override val viewModel: HomeViewModel by viewModel()
 
     // Fragment에 하위 뷰를 삽입하기위해 FragmentStateAdapter를 상속받는 Adapter 선언
     private lateinit var viewPagerAdapter: FragmentViewPagerAdapter
@@ -45,13 +55,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
-        return binding.root
-    }
+    override fun getDataBinding(): FragmentHomeBinding
+            = FragmentHomeBinding.inflate(layoutInflater)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initViews() {
 
         initViewPager()
         /**
@@ -82,9 +89,7 @@ class HomeFragment : Fragment() {
         liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
 
-            if (displayName != null) binding.welcomeUserTextView.text = String.format(getString(R.string.use_as_a_member, displayName))
-
-            else binding.welcomeUserTextView.text = getString(R.string.use_as_a_non_member)
+            binding.displayName = displayName
         })
     }
 
@@ -136,10 +141,31 @@ class HomeFragment : Fragment() {
         }.attach()
     }
 
+    override fun observeData() {
+        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData JobState : ${state}")
+            when (state) {
+                is JobState.Success.NotRegistered -> {
+                    LogUtil.i(Constants.TAG, "$THIS_NAME observeData JobState : ${state}")
+                }
+                is JobState.Login -> {
+                    LogUtil.i(Constants.TAG, "$THIS_NAME observeData JobState : ${state}")
+                }
+                is JobState.Error -> {
+                    LogUtil.e(Constants.TAG, "$THIS_NAME observeData JobState : ${getString(state.messageId, state.e)}")
+                    Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
+                }
+                is JobState.False -> {
+                    LogUtil.i(Constants.TAG, "$THIS_NAME observeData JobState : ${state}")
+                    Toast.makeText(requireContext(), R.string.request_false, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
     companion object {
         fun newInstance() = HomeFragment()
 
         const val TAG = "HomeFragment"
     }
 }
-

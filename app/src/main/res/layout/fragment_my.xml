@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="fireStoreMembershipInfo"
-            type="sang.gondroid.cheesetodo.domain.model.FireStoreMembershipInfo" />
+            name="fireStoreMembershipModel"
+            type="sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +20,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            app:imageUrl="@{fireStoreMembershipInfo.userPhoto.toString()}"
+            app:imageUrl="@{fireStoreMembershipModel.userPhoto.toString()}"
             app:layout_constraintBottom_toTopOf="@+id/userImageBottomGuideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/cute_light"
-            android:text="@{fireStoreMembershipInfo.userName}"
+            android:text="@{fireStoreMembershipModel.userName}"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/userNameBottomGuideline"
             app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +171,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="@{fireStoreMembershipInfo.userTodoCount.toString()}"
+                    android:text="@{fireStoreMembershipModel.userTodoCount.toString()}"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -227,7 +227,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="@{fireStoreMembershipInfo.userRank}"
+                    android:text="@{fireStoreMembershipModel.userRank}"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -284,7 +284,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/cute_light"
                     android:gravity="center_vertical"
-                    android:text="@{fireStoreMembershipInfo.userScore.toString()}"
+                    android:text="@{fireStoreMembershipModel.userScore.toString()}"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -34,7 +34,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/readMode_toolbar"
-                style="?attr/toolbarStyle"
+                style="@style/ThemeOverlay.CheeseTodo.Toolbar"
                 android:layout_width="0dp"
                 app:menu="@menu/detail_todo_readmode_menu"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -208,7 +208,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/editMode_toolbar"
-                style="?attr/toolbarStyle"
+                style="@style/ThemeOverlay.CheeseTodo.Toolbar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@+id/editMode_importanceSpinner"
