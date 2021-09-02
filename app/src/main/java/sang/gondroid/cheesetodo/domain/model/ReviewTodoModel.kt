@@ -8,7 +8,7 @@ data class ReviewTodoModel(
     val modelId: Long,
     val userEmail: String,
     val userName: String,
-    val userPhoto: Uri,
+    val userPhoto: String,
     val category: TodoCategory,
     val passOrNot: Boolean,
     val date: Long,

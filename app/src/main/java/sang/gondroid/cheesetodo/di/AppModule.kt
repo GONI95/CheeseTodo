@@ -35,6 +35,7 @@ import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertReviewTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.ValidateReviewTodoExistUseCase
 import sang.gondroid.cheesetodo.presentation.home.HomeViewModel
 import sang.gondroid.cheesetodo.presentation.my.MyViewModel
+import sang.gondroid.cheesetodo.presentation.review.DetailReviewViewModel
 import sang.gondroid.cheesetodo.presentation.review.ReviewViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoViewModel
@@ -54,6 +55,7 @@ val appModule = module {
      */
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(named("io"))) }
     viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
+    viewModel { DetailReviewViewModel() }
     viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }

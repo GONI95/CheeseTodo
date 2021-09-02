@@ -16,7 +16,7 @@ class MapperToReviewTodoModel(
             modelId = input.modelId,
             userEmail = input.userEmail,
             userName = input.userName,
-            userPhoto = input.userPhoto.toUri(),
+            userPhoto = input.userPhoto,
             category = input.category,
             passOrNot = input.passOrNot,
             date = input.date,

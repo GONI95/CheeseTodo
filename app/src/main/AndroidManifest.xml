@@ -10,6 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CheeseTodo">
+        <activity android:name="sang.gondroid.cheesetodo.presentation.review.DetailReviewActivity"/>
         <activity android:name="sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoActivity"/>
         <activity android:name="sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoActivity" />
         <activity android:name="sang.gondroid.cheesetodo.presentation.MainActivity"

@@ -28,7 +28,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
 
     override val viewModel: DetailTodoViewModel by viewModel()
 
-    override fun getViewBinding(): ActivityDetailTodoBinding =
+    override fun getDataBinding(): ActivityDetailTodoBinding =
         ActivityDetailTodoBinding.inflate(layoutInflater)
 
     override fun initViews() {

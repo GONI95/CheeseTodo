@@ -30,7 +30,7 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
 
     override val viewModel: InsertTodoViewModel by viewModel<InsertTodoViewModel>()
 
-    override fun getViewBinding(): ActivityInsertTodoBinding
+    override fun getDataBinding(): ActivityInsertTodoBinding
         = ActivityInsertTodoBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {

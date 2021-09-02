@@ -22,11 +22,11 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
     abstract val viewModel : VM
     protected lateinit var binding : VB
 
-    abstract fun getViewBinding() : VB
+    abstract fun getDataBinding() : VB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = getViewBinding()
+        binding = getDataBinding()
         binding.lifecycleOwner = this
         setContentView(binding.root)
         initViews()

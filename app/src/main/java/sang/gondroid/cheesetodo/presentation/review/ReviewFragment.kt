@@ -1,12 +1,16 @@
 package sang.gondroid.cheesetodo.presentation.review
 
+import android.app.ActivityOptions
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.google.gson.Gson
+import com.google.gson.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.BuildConfig
@@ -21,6 +25,7 @@ import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
 import sang.gondroid.cheesetodo.widget.history.SearchHistoryListener
 import sang.gondroid.cheesetodo.widget.review.ReviewTodoListener
+import java.lang.reflect.Type
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -50,10 +55,23 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
 
                     val bundle = Bundle()
                     bundle.putSerializable("ReviewTodoItemData", model)
+
+                    Intent(requireContext(), DetailReviewActivity::class.java).apply {
+                        putExtra("bundle", bundle)
+                        startActivity(this, getBudle(view))
+                    }
                 }
             }
         )
     }
+
+    /**
+     * API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리 / 클릭 이벤트 애니메이션 처리
+     */
+    private fun getBudle(v : View) : Bundle
+            = ActivityOptions.makeSceneTransitionAnimation(
+        requireActivity(), Pair.create(v, resources.getString(R.string.title_transition_name))
+    ).toBundle()
 
     private val searchHistoryAdapter by lazy {
         BaseAdapter<SearchHistoryModel>(modelList = listOf(), adapterListener = object : SearchHistoryListener {
