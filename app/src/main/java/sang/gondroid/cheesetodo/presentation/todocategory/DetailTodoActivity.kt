@@ -39,7 +39,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
          */
         val bundle = this.intent.getBundleExtra("bundle")
         bundle?.let {
-            model = bundle.getSerializable("TodoItemData") as TodoModel
+            model = it.getSerializable("TodoItemData") as TodoModel
             category = model.category   //category 초기화
             binding.todoItem = model
         }

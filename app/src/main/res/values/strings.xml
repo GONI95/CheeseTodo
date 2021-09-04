@@ -42,4 +42,12 @@
     <string name="search_for_review_plan">리뷰 검색하기</string>
 
     <string name="String_length_limit">검색어는 50자 내로 작성이 가능합니다.</string>
+
+    <string name="comments">Comments</string>
+    <string name="please_enter_comment"> 여러분의 소중한 댓글을 입력해주세요.</string>
+    <string name="send">보내기</string>
+    <string name="passCount">검토 완료 :</string>
+
+
+
 </resources>
