@@ -90,7 +90,8 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@id/mainContainerLayout"/>
+            motion:layout_constraintTop_toBottomOf="@id/mainContainerLayout"
+            android:layout_marginTop="5dp" />
 
 
     </ConstraintSet>

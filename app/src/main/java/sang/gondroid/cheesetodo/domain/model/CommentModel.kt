@@ -6,7 +6,7 @@ data class CommentModel(
     val userName : String,
     val userPhoto : String,
     val userRank : String,
-    val userScore : Number,
+    val userScore : Long,
     val comment : String,
-    val date : Number
+    val date : Long
 ) : BaseModel(id)
