@@ -15,5 +15,5 @@ data class ReviewTodoModel(
     val title: String,
     val todo: String,
     val difficult: String,
-    val comments: ArrayList<HashMap<String, CommentModel>>?
+    val comments: ArrayList<CommentModel>?
 ) : BaseModel(id)

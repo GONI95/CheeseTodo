@@ -19,5 +19,5 @@ data class ReviewTodoDTO(
     val title: String = "",
     val todo: String = "",
     val difficult: String = "",
-    val comments: ArrayList<HashMap<String, CommentModel>>? = ArrayList()
+    val comments: ArrayList<CommentDTO>? = ArrayList()
 )
