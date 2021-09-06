@@ -109,29 +109,18 @@
                             tools:text="Android" />
 
                         <TextView
-                            android:id="@+id/detailReviewPassOrNot"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/passCount"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@+id/detailReviewCategoryTextView"
-                            app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline" />
-
-                        <TextView
                             android:id="@+id/detailReviewPassCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="10dp"
-                            android:text="@{reviewTodoModel.passOrNot ? @string/review_pass : @string/review_nonpass}"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
                             android:textColor="@color/black"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@+id/detailReviewPassOrNot"
-                            app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                            app:layout_constraintTop_toBottomOf="@+id/detailReviewPassButton"
                             tools:text="2" />
 
 
@@ -177,7 +166,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
                             android:background="@drawable/bg_square_textview"
                             android:paddingStart="10dp"
                             android:paddingTop="5dp"
@@ -185,14 +173,24 @@
                             android:paddingBottom="5dp"
                             android:text="@{reviewTodoModel.difficult}"
                             android:textColor="@color/black"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
                             app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
                             app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficult"
                             tools:text="어러움" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <CheckBox
+                            android:id="@+id/detailReviewPassButton"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/checkbox_selector"
+                            android:button="@null"
+                            android:checked="false"
+                            android:stateListAnimator="@animator/scale"
+                            app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                            app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficultTextView" />
 
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.core.widget.NestedScrollView>
 

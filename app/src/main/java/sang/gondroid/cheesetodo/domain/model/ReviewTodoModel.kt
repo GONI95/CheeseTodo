@@ -11,6 +11,8 @@ data class ReviewTodoModel(
     val userPhoto: String,
     val category: TodoCategory,
     val passOrNot: Boolean,
+    val participating: ArrayList<String>,
+    val passCount: Long,
     val date: Long,
     val title: String,
     val todo: String,

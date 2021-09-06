@@ -25,6 +25,5 @@
     <string name="review_passornot">passOrNot</string>
     <string name="review_comments">Comments</string>
 
-    <string name="review_pass">통과 완료</string>
-    <string name="review_nonpass">대기 중…</string>
+    <string name="pass_count_text">검토완료 %s개</string>
 </resources>

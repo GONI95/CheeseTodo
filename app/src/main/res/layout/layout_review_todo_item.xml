@@ -121,7 +121,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@{reviewTodoModel.passOrNot ? @string/review_pass : @string/review_nonpass }"
+                    android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

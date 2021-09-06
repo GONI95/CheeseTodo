@@ -81,6 +81,8 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
             userPhoto = firebaseUser.photoUrl.toString(),
             category = model.category,
             passOrNot = false,
+            participating = arrayListOf(),
+            passCount = 0,
             date = currentMillis,
             title = model.title,
             todo = model.todo,
@@ -97,13 +99,23 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
 
         firebaseAuth.currentUser?.let { firebaseUser ->
             val existState = validateReviewTodoExistUseCase.invoke(model)
+            val reviewTodoModel = createReviewTodoModel(model, firebaseUser)
 
-            if (existState is JobState.True) {
-                val reviewTodoModel = createReviewTodoModel(model, firebaseUser)
-                insertReviewTodoUseCase.invoke(reviewTodoModel)
+            when(existState) {
+                is JobState.True -> {
+                    val insertState = insertReviewTodoUseCase.invoke(reviewTodoModel)
+
+                    when(insertState) {
+                        is JobState.True -> _jobState.postValue(insertState)
+                        is JobState.False -> _jobState.postValue(insertState)
+                        is JobState.Error -> _jobState.postValue(insertState)
+                        else -> _jobState.postValue(insertState)
+                    }
+                }
+                is JobState.False -> _jobState.postValue(existState)
+                is JobState.Error -> _jobState.postValue(existState)
+                else -> LogUtil.w(Constants.TAG, "$THIS_NAME uploadReviewTodo() else : $existState")
             }
-            else if (existState is JobState.False) _jobState.postValue(existState)
-            else _jobState.postValue(existState)
         } ?: kotlin.run { _jobState.postValue(JobState.Uninitialized) }
     }
 }

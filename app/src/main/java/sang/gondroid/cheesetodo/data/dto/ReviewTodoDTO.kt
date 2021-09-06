@@ -15,9 +15,11 @@ data class ReviewTodoDTO(
     val userPhoto: String = "",
     val category: TodoCategory = TodoCategory.ALL,
     val passOrNot: Boolean = false,
+    val participating: ArrayList<String> = arrayListOf(),
+    val passCount: Long = 0,
     val date: Long = 0,
     val title: String = "",
     val todo: String = "",
     val difficult: String = "",
-    val comments: ArrayList<CommentDTO>? = ArrayList()
+    val comments: ArrayList<CommentDTO>? = arrayListOf()
 )

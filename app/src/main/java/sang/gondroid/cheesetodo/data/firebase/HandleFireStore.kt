@@ -176,7 +176,7 @@ class HandleFireStore(
                     return@let JobState.True
                 }
                 else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME validateReviewTodoExist() JobState.True")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME validateReviewTodoExist() JobState.False")
                     return@let JobState.False
                 }
 
@@ -202,12 +202,12 @@ class HandleFireStore(
                     return@let JobState.True
                 }
                 else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.True")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.False")
                     return@let JobState.False
                 }
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.Error")
+                LogUtil.e(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }

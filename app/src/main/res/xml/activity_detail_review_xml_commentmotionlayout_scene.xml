@@ -69,6 +69,16 @@
             motion:layout_constraintStart_toStartOf="@+id/mainContainerLayout"
             android:layout_marginTop="10dp"
             android:id="@+id/commentsTextView" />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            motion:layout_constraintBottom_toTopOf="@+id/mainContainerLayout"
+            motion:layout_constraintHorizontal_bias="0.49"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/nestedScrollView"
+            android:layout_marginBottom="8dp" />
 
 
     </ConstraintSet>

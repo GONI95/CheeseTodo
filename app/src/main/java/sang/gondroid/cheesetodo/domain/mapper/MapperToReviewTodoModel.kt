@@ -28,6 +28,8 @@ class MapperToReviewTodoModel(
             userPhoto = input.userPhoto,
             category = input.category,
             passOrNot = input.passOrNot,
+            participating = input.participating,
+            passCount = input.passCount,
             date = input.date,
             title = input.title,
             todo = input.todo,
