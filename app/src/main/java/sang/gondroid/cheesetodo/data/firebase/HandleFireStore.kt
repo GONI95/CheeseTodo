@@ -2,16 +2,15 @@ package sang.gondroid.cheesetodo.data.firebase
 
 import android.content.Context
 import android.util.Log
-import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.data.db.FireStoreMembershipDTO
+import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
@@ -137,14 +136,7 @@ class HandleFireStore(
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMembership() JobState.Registered")
 
                     return@let JobState.Success.Registered(
-                        FireStoreMembershipModel(
-                            userName = result.get(getFireStoreString(R.string.user_name)) as String,
-                            userEmail = result.get(getFireStoreString(R.string.user_email)) as String,
-                            userPhoto = (result.get(getFireStoreString(R.string.user_photo)) as String).toUri(),
-                            userTodoCount = result.get(getFireStoreString(R.string.user_todo_count)) as Number,
-                            userScore = result.get(getFireStoreString(R.string.user_score)) as Number,
-                            userRank = result.get(getFireStoreString(R.string.user_rank)) as String
-                        )
+                        result.toObject(FireStoreMembershipDTO::class.java)
                     )
                 }
                 else {
@@ -195,7 +187,8 @@ class HandleFireStore(
                 LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() model : ${model}")
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .add(model)
+                    .document(firebaseUser?.email + model.modelId)
+                    .set(model)
 
                 if (result.isSuccessful) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.True")
@@ -223,7 +216,6 @@ class HandleFireStore(
 
                 if (!result.isEmpty) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.True")
-
                     return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java).sortedByDescending { it.date } )
                 }
                 else {
@@ -233,6 +225,35 @@ class HandleFireStore(
 
             } catch (e : Exception) {
                 LogUtil.e(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.Error : $e")
+                return@let  JobState.Error(R.string.request_error, e)
+            }
+        }
+    }
+
+    suspend fun insertComment(model: CommentDTO, modelId: Long): JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME insertComment() called")
+
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
+            try {
+                val result =
+
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .document(firebaseUser?.email + modelId)
+                    .collection(getFireStoreString(R.string.review_comments_collection))
+                    .document()
+                    .set(model)
+
+                if (result.isSuccessful) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME insertComment() JobState.True")
+                    return@let JobState.True
+                }
+                else {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME insertComment() JobState.False")
+                    return@let JobState.False
+                }
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME insertComment() JobState.Error")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }

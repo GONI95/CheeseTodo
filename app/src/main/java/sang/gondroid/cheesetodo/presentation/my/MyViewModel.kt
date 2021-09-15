@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
+import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
@@ -17,6 +18,7 @@ class MyViewModel(
     private val appPreferenceManager: AppPreferenceManager,
     private val handlerFirebaseAuth: HandlerFirebaseAuth,
     private val handlerFireStore: HandleFireStore,
+    private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
     private val ioDispatchers: CoroutineDispatcher
 ) : BaseViewModel() {
 
@@ -72,7 +74,7 @@ class MyViewModel(
         when (val membershipState = handlerFireStore.validateMembership()) {
             is JobState.True -> {
 
-                when(val userState = handlerFireStore.getCurrentMembership()) {
+                when(val userState = getCurrentMembershipUseCase.invoke()) {
 
                     is JobState.Success.Registered<*> -> _jobStateLiveData.postValue(userState)
                     is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(userState)
