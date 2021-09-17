@@ -10,4 +10,5 @@ interface ReviewTodoRepository {
     suspend fun validateReviewTodoExist(model: TodoModel): JobState
     suspend fun getReviewTodo() : JobState
     suspend fun insertComment(model: CommentModel, modelId: Long): JobState
+    suspend fun getComments(modelId: Long): JobState
 }

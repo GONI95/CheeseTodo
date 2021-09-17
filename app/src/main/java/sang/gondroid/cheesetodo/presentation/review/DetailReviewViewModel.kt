@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
+import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCommentsUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCommentUseCase
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
@@ -16,6 +17,7 @@ import sang.gondroid.cheesetodo.util.LogUtil
 class DetailReviewViewModel(
     private val insertCommentUseCase: InsertCommentUseCase,
     private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
+    private val getCommentsUseCase: GetCommentsUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
     private val THIS_NAME = this::class.simpleName
@@ -24,6 +26,10 @@ class DetailReviewViewModel(
     private var _jobStateLiveData = MutableLiveData<JobState>()
     val jobStateLiveData : LiveData<JobState>
         get() = _jobStateLiveData
+
+    private var _getCommentJobStateLiveData = MutableLiveData<JobState>()
+    val getCommentJobStateLiveData : LiveData<JobState>
+        get() = _getCommentJobStateLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
 
@@ -45,7 +51,7 @@ class DetailReviewViewModel(
         )
     }
 
-    fun insertComment(commentValue: String, modelId: Long) = viewModelScope.async(ioDispatcher) {
+    fun insertComment(commentValue: String, modelId: Long) = viewModelScope.launch(ioDispatcher) {
         getCurrentMembershipUseCase.invoke().run {
             when(this) {
                 is JobState.Success.Registered<*> -> {
@@ -59,5 +65,12 @@ class DetailReviewViewModel(
             }
         }
 
+    }
+
+    fun getComments(modelId: Long) = viewModelScope.launch(ioDispatcher) {
+        getCommentsUseCase.invoke(modelId).run {
+            LogUtil.i(Constants.TAG, "$THIS_NAME getComments() JobState : $this")
+            _getCommentJobStateLiveData.postValue(this)
+        }
     }
 }

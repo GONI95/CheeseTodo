@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -254,6 +255,33 @@ class HandleFireStore(
 
             } catch (e : Exception) {
                 LogUtil.e(Constants.TAG, "$THIS_NAME insertComment() JobState.Error")
+                return@let JobState.Error(R.string.request_error, e)
+            }
+        }
+    }
+
+    suspend fun getComments(modelId: Long): JobState = withContext(ioDispatchers) {
+        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
+            try {
+                var result : JobState = JobState.Uninitialized
+
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .document(firebaseUser?.email + modelId)
+                    .collection(getFireStoreString(R.string.review_comments_collection))
+                    .get().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            result = JobState.True.Result<List<CommentDTO>>( task.result.toObjects(CommentDTO::class.java).sortedByDescending { it.date } )
+                        }
+                        else {
+                            result = JobState.False
+                        }
+                    }.await()
+
+                LogUtil.d(Constants.TAG, "$THIS_NAME getComments() JobState : ${result}")
+                return@let result
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME getComments() JobState.Error")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
