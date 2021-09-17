@@ -53,9 +53,9 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
     /**
      * comment 추가 작업
      */
-    fun insertCommentOnClick(modelId : Long) {
+    fun insertCommentOnClick(reviewTodoModel : ReviewTodoModel) {
         with(binding) {
-            viewModel.insertComment(commentValueEditText.text.toString(), modelId)
+            viewModel.insertComment(commentValueEditText.text.toString(), reviewTodoModel)
         }
     }
 

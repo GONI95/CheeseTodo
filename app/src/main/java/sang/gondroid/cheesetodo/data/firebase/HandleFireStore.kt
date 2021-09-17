@@ -232,7 +232,7 @@ class HandleFireStore(
         }
     }
 
-    suspend fun insertComment(model: CommentDTO, modelId: Long): JobState = withContext(ioDispatchers) {
+    suspend fun insertComment(commentDTO: CommentDTO, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME insertComment() called")
 
         return@withContext firebaseAuth.currentUser.let { firebaseUser ->
@@ -240,10 +240,10 @@ class HandleFireStore(
                 val result =
 
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(firebaseUser?.email + modelId)
+                    .document(reviewTodoModel.userEmail + reviewTodoModel.modelId)
                     .collection(getFireStoreString(R.string.review_comments_collection))
                     .document()
-                    .set(model)
+                    .set(commentDTO)
 
                 if (result.isSuccessful) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME insertComment() JobState.True")

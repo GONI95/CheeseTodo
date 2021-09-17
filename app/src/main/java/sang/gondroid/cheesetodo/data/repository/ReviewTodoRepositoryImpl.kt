@@ -43,7 +43,7 @@ class ReviewTodoRepositoryImpl(
         return@withContext handleFireStore.getComments(model)
     }
 
-    override suspend fun insertComment(model: CommentModel, modelId: Long): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.insertComment(toCommentDTO.map(model), modelId)
+    override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.insertComment(toCommentDTO.map(commentModel), reviewTodoModel)
     }
 }

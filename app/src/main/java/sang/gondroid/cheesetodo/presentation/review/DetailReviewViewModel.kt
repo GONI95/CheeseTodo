@@ -59,12 +59,12 @@ class DetailReviewViewModel(
         )
     }
 
-    fun insertComment(commentValue: String, modelId: Long) = viewModelScope.launch(ioDispatcher) {
+    fun insertComment(commentValue: String, reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
         getCurrentMembershipUseCase.invoke().run {
             when(this) {
                 is JobState.Success.Registered<*> -> {
                     val commentModel = createCommentModel(commentValue, this.data as FireStoreMembershipModel)
-                    val insertCommentResult = insertCommentUseCase.invoke(commentModel, modelId)
+                    val insertCommentResult = insertCommentUseCase.invoke(commentModel, reviewTodoModel)
                     LogUtil.i(Constants.TAG, "$THIS_NAME insertComment() : $insertCommentResult")
                 }
                 is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(this)
