@@ -1,5 +1,7 @@
 package sang.gondroid.cheesetodo.data.repository
 
+import io.reactivex.rxjava3.core.Observable
+import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.model.TodoModel
@@ -10,5 +12,5 @@ interface ReviewTodoRepository {
     suspend fun validateReviewTodoExist(model: TodoModel): JobState
     suspend fun getReviewTodo() : JobState
     suspend fun insertComment(model: CommentModel, modelId: Long): JobState
-    suspend fun getComments(modelId: Long): JobState
+    suspend fun getComments(model: ReviewTodoModel): Observable<List<CommentDTO>>
 }

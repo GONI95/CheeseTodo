@@ -51,7 +51,7 @@ val appModule = module {
      */
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(), get(named("io"))) }
     viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
-    viewModel { DetailReviewViewModel(get(), get(), get(), get(named("io"))) }
+    viewModel { DetailReviewViewModel(get(), get(), get(), get(), get(named("io"))) }
     viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
@@ -62,7 +62,7 @@ val appModule = module {
      * Repository : Domain과 Data Layer 사이를 중재해주는 객체입니다.
      */
     single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get(named("io"))) }
-    single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(), get(), get(named("io"))) }
+    single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(), get(named("io"))) }
     single<MembershipRepository> { MembershipRepositoryImpl(get(), get(), get(named("io"))) }
 
     /**

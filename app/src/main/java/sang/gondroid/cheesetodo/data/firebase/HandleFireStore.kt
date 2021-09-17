@@ -12,6 +12,7 @@ import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.db.FireStoreMembershipDTO
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
+import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
@@ -260,29 +261,24 @@ class HandleFireStore(
         }
     }
 
-    suspend fun getComments(modelId: Long): JobState = withContext(ioDispatchers) {
-        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
-            try {
-                var result : JobState = JobState.Uninitialized
-
+    suspend fun getComments(model: ReviewTodoModel): Observable<List<CommentDTO>> = withContext(ioDispatchers) {
+        return@withContext Observable.create { emitter ->
+            firebaseAuth.currentUser.let { firebaseUser ->
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(firebaseUser?.email + modelId)
+                    .document(model.userEmail + model.modelId)
                     .collection(getFireStoreString(R.string.review_comments_collection))
-                    .get().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            result = JobState.True.Result<List<CommentDTO>>( task.result.toObjects(CommentDTO::class.java).sortedByDescending { it.date } )
-                        }
+                    .addSnapshotListener { value, error ->
+                        if (error != null)
+                            emitter.onError(error)
                         else {
-                            result = JobState.False
+                            value?.let { querySnapshot ->
+                                val tasks = querySnapshot.toObjects(CommentDTO::class.java)
+                                    .sortedByDescending { it.date }
+                                emitter.onNext(tasks)
+
+                            } ?: emitter.onError(Exception())
                         }
-                    }.await()
-
-                LogUtil.d(Constants.TAG, "$THIS_NAME getComments() JobState : ${result}")
-                return@let result
-
-            } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME getComments() JobState.Error")
-                return@let  JobState.Error(R.string.request_error, e)
+                    }
             }
         }
     }

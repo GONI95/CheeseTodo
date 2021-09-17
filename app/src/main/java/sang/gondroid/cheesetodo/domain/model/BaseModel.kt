@@ -23,7 +23,7 @@ abstract class BaseModel (
          */
         val DIFF_CALLBACK : DiffUtil.ItemCallback<BaseModel> = object : DiffUtil.ItemCallback<BaseModel>() {
             override fun areItemsTheSame(oldItem: BaseModel, newItem: BaseModel): Boolean {
-                Log.d(Constants.TAG, "BaseModel areItemsTheSame() called")
+                Log.d(Constants.TAG, "BaseModel areItemsTheSame() called : ${oldItem.id} ${newItem.id}")
 
                 return oldItem.id == newItem.id
             }
@@ -33,7 +33,7 @@ abstract class BaseModel (
              */
             @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: BaseModel, newItem: BaseModel): Boolean {
-                Log.d(Constants.TAG, "BaseModel areContentsTheSame() called")
+                Log.d(Constants.TAG, "BaseModel areContentsTheSame() called : ${oldItem.id} ${newItem.id}")
 
                 return oldItem === newItem
             }

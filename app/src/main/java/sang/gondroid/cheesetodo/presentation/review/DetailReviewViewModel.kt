@@ -3,9 +3,16 @@ package sang.gondroid.cheesetodo.presentation.review
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
+import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.data.dto.CommentDTO
+import sang.gondroid.cheesetodo.domain.mapper.MapperToCommentModel
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
+import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCommentsUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCommentUseCase
@@ -18,6 +25,7 @@ class DetailReviewViewModel(
     private val insertCommentUseCase: InsertCommentUseCase,
     private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
+    private val toCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
     private val THIS_NAME = this::class.simpleName
@@ -67,10 +75,31 @@ class DetailReviewViewModel(
 
     }
 
-    fun getComments(modelId: Long) = viewModelScope.launch(ioDispatcher) {
-        getCommentsUseCase.invoke(modelId).run {
-            LogUtil.i(Constants.TAG, "$THIS_NAME getComments() JobState : $this")
-            _getCommentJobStateLiveData.postValue(this)
-        }
+    fun getComments(model: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+
+        val result = getCommentsUseCase.invoke(model)
+
+        result
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(object: DisposableObserver<List<CommentDTO>>() {
+                override fun onComplete() {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onComplete")
+                }
+
+                override fun onNext(value: List<CommentDTO>) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
+
+                    viewModelScope.launch(ioDispatcher) {
+                        _getCommentJobStateLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    LogUtil.e(Constants.TAG, "$THIS_NAME getComments() : onError")
+                    _getCommentJobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
+                }
+            })
+
     }
 }

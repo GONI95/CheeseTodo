@@ -45,7 +45,7 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         bundle?.let {
             val model = it.getSerializable("ReviewTodoItemData") as ReviewTodoModel
             binding.reviewTodoModel = model
-            viewModel.getComments(model.modelId)
+            viewModel.getComments(model)
             observeData()
         }
     }
