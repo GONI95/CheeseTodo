@@ -7,13 +7,19 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.util.Base64Utils
 import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.BaseModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
+import java.security.KeyPairGenerator
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.Signature
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.crypto.Cipher
 
 /**
  * 1. 일반적인 Generic Function Body에서 타입 T는 런타임에는 Type erasure 때문에 접근이 불가능
@@ -77,4 +83,19 @@ object BindingAdapters {
     fun <M : BaseModel> setAdapter(view : RecyclerView, adapter : BaseAdapter<M>?) {
         view.adapter = adapter
     }
+}
+
+fun encrypt(input: String, key: PrivateKey): String {
+    val cipher = Cipher.getInstance("RSA")
+    cipher.init(Cipher.ENCRYPT_MODE, key)
+    val encrypt = cipher.doFinal(input.toByteArray())
+    return  Base64Utils.encode(encrypt)
+}
+
+fun decrypt(input: String, key: PublicKey): String {
+    val byteEncrypt: ByteArray = Base64Utils.decode(input)
+    val cipher = Cipher.getInstance("RSA")
+    cipher.init(Cipher.DECRYPT_MODE, key)
+    val decrypt = cipher.doFinal(byteEncrypt)
+    return String(decrypt)
 }

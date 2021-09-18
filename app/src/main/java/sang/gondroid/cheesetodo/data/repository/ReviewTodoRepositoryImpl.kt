@@ -43,6 +43,10 @@ class ReviewTodoRepositoryImpl(
         return@withContext handleFireStore.getComments(model)
     }
 
+    override suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.insertCheckedUser(reviewTodoModel)
+    }
+
     override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
         return@withContext handleFireStore.insertComment(toCommentDTO.map(commentModel), reviewTodoModel)
     }

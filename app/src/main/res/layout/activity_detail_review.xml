@@ -22,170 +22,6 @@
         android:layout_height="match_parent"
         tools:context=".presentation.review.DetailReviewActivity">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.49"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/reviewHorizontalGuideline"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.2" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/reviewVerticalLeftGuideline"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.05" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/reviewVerticalRightGuideline"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.95" />
-
-                <TextView
-                    android:id="@+id/detailReviewTitleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_round_textview"
-                    android:fontFamily="@font/three_dimensional_hatch"
-                    android:text="@{reviewTodoModel.title}"
-                    android:textSize="22sp"
-                    app:layout_constraintBottom_toTopOf="@+id/reviewHorizontalGuideline"
-                    app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/detailReviewCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/category_text"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline" />
-
-                <TextView
-                    android:id="@+id/detailReviewCategoryTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@{reviewTodoModel.category.categoryNameId}"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/detailReviewCategory"
-                    app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline"
-                    tools:text="Android" />
-
-                <TextView
-                    android:id="@+id/detailReviewPassCountTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewPassButton"
-                    tools:text="2" />
-
-
-                <TextView
-                    android:id="@+id/detailReviewReadModeTodo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="@string/todo"
-                    app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewCategory" />
-
-                <TextView
-                    android:id="@+id/detailReviewTodoTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_square_textview"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="@{reviewTodoModel.todo}"
-                    android:textColor="@color/black"
-                    app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewReadModeTodo"
-                    tools:text="공부하기" />
-
-                <TextView
-                    android:id="@+id/detailReviewDifficult"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/review_difficult"
-                    app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewTodoTextView" />
-
-                <TextView
-                    android:id="@+id/detailReviewDifficultTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_square_textview"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="@{reviewTodoModel.difficult}"
-                    android:textColor="@color/black"
-                    app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficult"
-                    tools:text="어러움" />
-
-                <CheckBox
-                    android:id="@+id/detailReviewPassButton"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/checkbox_selector"
-                    android:button="@null"
-                    android:checked="false"
-                    android:stateListAnimator="@animator/scale"
-                    app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficultTextView" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
         <androidx.constraintlayout.motion.widget.MotionLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -194,6 +30,171 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.49"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/reviewHorizontalGuideline"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.2" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/reviewVerticalLeftGuideline"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.05" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/reviewVerticalRightGuideline"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.95" />
+
+                    <TextView
+                        android:id="@+id/detailReviewTitleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_round_textview"
+                        android:fontFamily="@font/three_dimensional_hatch"
+                        android:text="@{reviewTodoModel.title}"
+                        android:textSize="22sp"
+                        app:layout_constraintBottom_toTopOf="@+id/reviewHorizontalGuideline"
+                        app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/detailReviewCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/category_text"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline" />
+
+                    <TextView
+                        android:id="@+id/detailReviewCategoryTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@{reviewTodoModel.category.categoryNameId}"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/detailReviewCategory"
+                        app:layout_constraintTop_toTopOf="@+id/reviewHorizontalGuideline"
+                        tools:text="Android" />
+
+                    <TextView
+                        android:id="@+id/detailReviewPassCountTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewPassButton"
+                        tools:text="2" />
+
+
+                    <TextView
+                        android:id="@+id/detailReviewReadModeTodo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:text="@string/todo"
+                        app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewCategory" />
+
+                    <TextView
+                        android:id="@+id/detailReviewTodoTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_square_textview"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="@{reviewTodoModel.todo}"
+                        android:textColor="@color/black"
+                        app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewReadModeTodo"
+                        tools:text="공부하기" />
+
+                    <TextView
+                        android:id="@+id/detailReviewDifficult"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/review_difficult"
+                        app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewTodoTextView" />
+
+                    <TextView
+                        android:id="@+id/detailReviewDifficultTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_square_textview"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="@{reviewTodoModel.difficult}"
+                        android:textColor="@color/black"
+                        app:layout_constraintEnd_toStartOf="@+id/reviewVerticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficult"
+                        tools:text="어러움" />
+
+                    <CheckBox
+                        android:id="@+id/detailReviewPassButton"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/checkbox_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:onCheckedChanged="@{(v, checked) -> handler.onCheckedChangedPassButton(checked, reviewTodoModel)}"
+                        android:stateListAnimator="@animator/scale"
+                        app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/detailReviewDifficultTextView" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mainContainerLayout"

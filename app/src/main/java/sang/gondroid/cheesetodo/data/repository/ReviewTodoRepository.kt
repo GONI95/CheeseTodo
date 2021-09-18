@@ -13,4 +13,5 @@ interface ReviewTodoRepository {
     suspend fun getReviewTodo() : JobState
     suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState
     suspend fun getComments(model: ReviewTodoModel): Observable<List<CommentDTO>>
+    suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) : JobState
 }

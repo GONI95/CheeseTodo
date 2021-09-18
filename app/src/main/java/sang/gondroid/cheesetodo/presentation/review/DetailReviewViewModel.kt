@@ -15,6 +15,7 @@ import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCommentsUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
+import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCheckedUserUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCommentUseCase
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
@@ -25,6 +26,7 @@ class DetailReviewViewModel(
     private val insertCommentUseCase: InsertCommentUseCase,
     private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
+    private val insertCheckedUserUseCase: InsertCheckedUserUseCase,
     private val toCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
@@ -100,6 +102,14 @@ class DetailReviewViewModel(
                     _getCommentJobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
                 }
             })
+
+    }
+
+    fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        val result = insertCheckedUserUseCase.invoke(reviewTodoModel)
+    }
+
+    fun deleteUnCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
 
     }
 }

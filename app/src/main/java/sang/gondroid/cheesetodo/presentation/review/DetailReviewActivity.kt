@@ -59,6 +59,24 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         }
     }
 
+    /**
+     * like 추가 작업
+     */
+    fun onCheckedChangedPassButton(isCheck : Boolean, reviewTodoModel : ReviewTodoModel) {
+        with(binding) {
+            LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton ...")
+
+            if (isCheck) {
+                LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton checked")
+                viewModel.insertCheckedUser(reviewTodoModel)
+            }
+            else {
+                LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton not checked")
+                viewModel.deleteUnCheckedUser(reviewTodoModel)
+            }
+        }
+    }
+
     override fun observeData() {
         LogUtil.d(Constants.TAG, "$THIS_NAME getCommentJobStateLiveData ...")
         viewModel.getCommentJobStateLiveData.observe(this, Observer {
@@ -67,11 +85,8 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCommentJobStateLiveData True")
                     commentAdapter.submitList(it.data as List<CommentModel>)
                 }
-                is JobState.False -> {
-                    Toast.makeText(this, R.string.get_comment_jobstate_false, Toast.LENGTH_SHORT).show()
-                }
                 is JobState.Error -> {
-                    Toast.makeText(this, R.string.get_comment_jobstate_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     LogUtil.w(Constants.TAG, "$THIS_NAME getComments() else : $this")

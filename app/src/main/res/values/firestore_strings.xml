@@ -17,6 +17,8 @@
 
     <string name="review_todo_collection">ReviewTodo</string>
     <string name="review_comments_collection">comments</string>
+    <string name="checked_user_collection">checked_users</string>
+
     <string name="review_id">modelId</string>
     <string name="review_date">date</string>
     <string name="review_category">category</string>
