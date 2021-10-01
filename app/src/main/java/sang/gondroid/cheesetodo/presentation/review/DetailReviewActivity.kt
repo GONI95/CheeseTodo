@@ -46,6 +46,7 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
             binding.reviewTodoModel = model
             viewModel.getComments(model)
             viewModel.getCheckedCurrentUser(model)
+            viewModel.getCheckedUserCount(model)
             observeData()
         }
     }

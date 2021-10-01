@@ -119,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="8dp"
-                        android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
+                        android:text="@{String.format(@string/pass_count_text, Integer.toString(reviewDetailViewModel.getCheckedUserCountLiveData))}"
                         android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold"

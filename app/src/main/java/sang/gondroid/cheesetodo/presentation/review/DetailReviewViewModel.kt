@@ -25,6 +25,7 @@ class DetailReviewViewModel(
     private val getCommentsUseCase: GetCommentsUseCase,
     private val insertCheckedUserUseCase: InsertCheckedUserUseCase,
     private val getCheckedCurrentUserUseCase: GetCheckedCurrentUserUseCase,
+    private val getCheckedUserCountUseCase: GetCheckedUserCountUseCase,
     private val deleteCheckedUserUseCase: DeleteCheckedUserUseCase,
     private val toCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
@@ -51,6 +52,10 @@ class DetailReviewViewModel(
     private var _deleteCheckedUserLiveData = MutableLiveData<JobState>()
     val deleteCheckedUserLiveData : LiveData<JobState>
         get() = _deleteCheckedUserLiveData
+
+    private var _getCheckedUserCountLiveData = MutableLiveData<Int>()
+    val getCheckedUserCountLiveData : LiveData<Int>
+        get() = _getCheckedUserCountLiveData
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
 
@@ -90,30 +95,28 @@ class DetailReviewViewModel(
 
     fun getComments(model: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
 
-        val result = getCommentsUseCase.invoke(model)
-
-        result
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object: DisposableObserver<List<CommentDTO>>() {
-                override fun onComplete() {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onComplete")
-                }
-
-                override fun onNext(value: List<CommentDTO>) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
-
-                    viewModelScope.launch(ioDispatcher) {
-                        _getCommentJobStateLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
+        getCommentsUseCase.invoke(model).run {
+            this.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<List<CommentDTO>>() {
+                    override fun onComplete() {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onComplete")
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    LogUtil.e(Constants.TAG, "$THIS_NAME getComments() : onError")
-                    _getCommentJobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
-                }
-            })
+                    override fun onNext(value: List<CommentDTO>) {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
 
+                        viewModelScope.launch(ioDispatcher) {
+                            _getCommentJobStateLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        LogUtil.e(Constants.TAG, "$THIS_NAME getComments() : onError")
+                        _getCommentJobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
+                    }
+                })
+        }
     }
 
     fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
@@ -138,6 +141,32 @@ class DetailReviewViewModel(
                     _getCheckedCurrentUserBooleanLiveData.postValue(false)
                 }
             }
+        }
+    }
+
+    fun getCheckedUserCount(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+
+        getCheckedUserCountUseCase.invoke(reviewTodoModel).run {
+            this.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<Int>() {
+                    override fun onComplete() {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onComplete")
+                    }
+
+                    override fun onNext(value: Int) {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onNext : $value")
+
+                        viewModelScope.launch(ioDispatcher) {
+                            _getCheckedUserCountLiveData.postValue(value)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        LogUtil.e(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onError")
+                        _getCheckedUserCountLiveData.postValue(0)
+                    }
+                })
         }
     }
 

@@ -16,4 +16,5 @@ interface ReviewTodoRepository {
     suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) : JobState
     suspend fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel) : JobState
     suspend fun deleteCheckedUser(reviewTodoModel: ReviewTodoModel) : JobState
+    suspend fun getCheckedUserCount(model: ReviewTodoModel): Observable<Int>
 }

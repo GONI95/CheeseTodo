@@ -59,12 +59,16 @@ class ReviewTodoRepositoryImpl(
         }
     }
 
-    override suspend fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.getCheckedCurrentUser(reviewTodoModel)
+    override suspend fun getCheckedCurrentUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.getCheckedCurrentUser(model)
     }
 
-    override suspend fun deleteCheckedUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.deleteCheckedUser(reviewTodoModel)
+    override suspend fun deleteCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.deleteCheckedUser(model)
+    }
+
+    override suspend fun getCheckedUserCount(model: ReviewTodoModel): Observable<Int> = withContext(ioDispatcher) {
+        return@withContext handleFireStore.getCheckedUserCount(model)
     }
 
     override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {

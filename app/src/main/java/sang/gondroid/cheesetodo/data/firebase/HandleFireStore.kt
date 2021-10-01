@@ -313,6 +313,30 @@ class HandleFireStore(
         }
     }
 
+    suspend fun getCheckedUserCount(model: ReviewTodoModel) : Observable<Int> = withContext(ioDispatchers) {
+
+        return@withContext Observable.create { emitter ->
+            firebaseAuth.currentUser.let {
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .document(model.userEmail + model.modelId)
+                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .addSnapshotListener { value, error ->
+                        LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedUserCount() : ${value}")
+
+                        if (error != null)
+                            emitter.onError(error)
+                        else {
+                            value?.let { querySnapshot ->
+                                querySnapshot.documents.size.let { size ->
+                                    emitter.onNext(size)
+                                }
+                            } ?: emitter.onError(Exception())
+                        }
+                    }
+            }
+
+        }
+    }
     suspend fun getCheckedCurrentUser(model: ReviewTodoModel) : JobState = withContext(ioDispatchers) {
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
