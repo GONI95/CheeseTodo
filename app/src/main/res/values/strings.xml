@@ -19,6 +19,10 @@
     <string name="success">작업이 완료되었습니다.</string>
     <string name="an_error_occurred">오류가 발생했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
 
+    <string name="delete_pass_information_operation_error">Pass 정보를 삭제하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
+    <string name="insert_pass_information_operation_error">Pass 정보를 추가하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
+    <string name="get_pass_information_operation_error">Pass 정보를 받아오지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
+
     <string name="edit">편집하기</string>
     <string name="request_a_review">검토 요청</string>
     <string name="delete">삭제하기</string>

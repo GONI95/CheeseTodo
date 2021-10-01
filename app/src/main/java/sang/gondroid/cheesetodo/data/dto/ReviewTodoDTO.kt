@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.util.TodoCategory
-import sang.gondroid.cheesetodo.util.toTodoCategory
 
 data class ReviewTodoDTO(
     val modelId: Long = 0,

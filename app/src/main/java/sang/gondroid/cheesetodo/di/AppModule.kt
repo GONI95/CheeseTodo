@@ -51,7 +51,7 @@ val appModule = module {
      */
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(), get(named("io"))) }
     viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
-    viewModel { DetailReviewViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
+    viewModel { DetailReviewViewModel(get(), get(), get(), get(), get(), get(), get(), get(named("io"))) }
     viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
@@ -96,6 +96,8 @@ val appModule = module {
     factory { GetCurrentMembershipUseCase(get(), get(named("io"))) }
     factory { GetCommentsUseCase(get(), get(named("io"))) }
     factory { InsertCheckedUserUseCase(get(), get(named("io"))) }
+    factory { GetCheckedCurrentUserUseCase(get(), get(named("io"))) }
+    factory { DeleteCheckedUserUseCase(get(), get(named("io"))) }
 
     /**
      * FirebaseAuth

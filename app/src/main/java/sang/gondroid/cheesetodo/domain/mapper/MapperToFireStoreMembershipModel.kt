@@ -7,6 +7,7 @@ import sang.gondroid.cheesetodo.data.db.FireStoreMembershipDTO
 import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
 import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
+import sang.gondroid.cheesetodo.util.toUserRank
 
 class MapperToFireStoreMembershipModel (
     private val ioDispatcher: CoroutineDispatcher

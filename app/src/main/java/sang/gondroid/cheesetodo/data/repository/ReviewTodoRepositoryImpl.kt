@@ -43,8 +43,28 @@ class ReviewTodoRepositoryImpl(
         return@withContext handleFireStore.getComments(model)
     }
 
-    override suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.insertCheckedUser(reviewTodoModel)
+    override suspend fun insertCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        with(handleFireStore) {
+            when(val result = insertCheckedUser(model)) {
+                is JobState.True -> {
+                    return@withContext if (updateMembership(model) == JobState.True)
+                        JobState.True
+                    else
+                        JobState.False
+                }
+                else -> {
+                    return@withContext result
+                }
+            }
+        }
+    }
+
+    override suspend fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.getCheckedCurrentUser(reviewTodoModel)
+    }
+
+    override suspend fun deleteCheckedUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handleFireStore.deleteCheckedUser(reviewTodoModel)
     }
 
     override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {

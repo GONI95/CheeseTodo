@@ -13,6 +13,10 @@
             type="sang.gondroid.cheesetodo.widget.base.BaseAdapter" />
 
         <variable
+            name="reviewDetailViewModel"
+            type="sang.gondroid.cheesetodo.presentation.review.DetailReviewViewModel" />
+
+        <variable
             name="handler"
             type="sang.gondroid.cheesetodo.presentation.review.DetailReviewActivity" />
     </data>
@@ -186,7 +190,7 @@
                         android:layout_marginTop="15dp"
                         android:background="@drawable/checkbox_selector"
                         android:button="@null"
-                        android:checked="false"
+                        android:checked="@{reviewDetailViewModel.getCheckedCurrentUserBooleanLiveData}"
                         android:onCheckedChanged="@{(v, checked) -> handler.onCheckedChangedPassButton(checked, reviewTodoModel)}"
                         android:stateListAnimator="@animator/scale"
                         app:layout_constraintStart_toStartOf="@+id/reviewVerticalLeftGuideline"

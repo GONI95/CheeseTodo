@@ -13,10 +13,7 @@ import sang.gondroid.cheesetodo.domain.mapper.MapperToCommentModel
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
-import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCommentsUseCase
-import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
-import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCheckedUserUseCase
-import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertCommentUseCase
+import sang.gondroid.cheesetodo.domain.usecase.firestore.*
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
@@ -27,6 +24,8 @@ class DetailReviewViewModel(
     private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
     private val insertCheckedUserUseCase: InsertCheckedUserUseCase,
+    private val getCheckedCurrentUserUseCase: GetCheckedCurrentUserUseCase,
+    private val deleteCheckedUserUseCase: DeleteCheckedUserUseCase,
     private val toCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
@@ -41,6 +40,18 @@ class DetailReviewViewModel(
     val getCommentJobStateLiveData : LiveData<JobState>
         get() = _getCommentJobStateLiveData
 
+    private var _insertCheckedUserJobStateLiveData = MutableLiveData<JobState>()
+    val insertCheckedUserJobStateLiveData : LiveData<JobState>
+        get() = _insertCheckedUserJobStateLiveData
+
+    private var _getCheckedCurrentUserBooleanLiveData = MutableLiveData<Boolean>()
+    val getCheckedCurrentUserBooleanLiveData : LiveData<Boolean>
+        get() = _getCheckedCurrentUserBooleanLiveData
+
+    private var _deleteCheckedUserLiveData = MutableLiveData<JobState>()
+    val deleteCheckedUserLiveData : LiveData<JobState>
+        get() = _deleteCheckedUserLiveData
+
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
 
     }
@@ -53,7 +64,7 @@ class DetailReviewViewModel(
             id = null,
             userEmail = currentMembershipModel.userEmail,
             userName = currentMembershipModel.userName,
-            userPhoto = currentMembershipModel.userPhoto.toString(),
+            userPhoto = currentMembershipModel.userPhoto,
             userRank = currentMembershipModel.userRank,
             userScore = currentMembershipModel.userScore.toLong(),
             date = System.currentTimeMillis(),
@@ -106,10 +117,33 @@ class DetailReviewViewModel(
     }
 
     fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        val result = insertCheckedUserUseCase.invoke(reviewTodoModel)
+        insertCheckedUserUseCase.invoke(reviewTodoModel).run {
+            _insertCheckedUserJobStateLiveData.postValue(this)
+        }
+    }
+
+    fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        getCheckedCurrentUserUseCase.invoke(reviewTodoModel).run {
+            when(this) {
+                is JobState.True -> {
+                    _getCheckedCurrentUserBooleanLiveData.postValue(true)
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() ${getCheckedCurrentUserBooleanLiveData.value}")
+                }
+                is JobState.False -> {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() True")
+                    _getCheckedCurrentUserBooleanLiveData.postValue(false)
+                }
+                is JobState.Error -> {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() Error")
+                    _getCheckedCurrentUserBooleanLiveData.postValue(false)
+                }
+            }
+        }
     }
 
     fun deleteUnCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-
+        deleteCheckedUserUseCase.invoke(reviewTodoModel).run {
+            _deleteCheckedUserLiveData.postValue(this)
+        }
     }
 }

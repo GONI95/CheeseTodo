@@ -34,18 +34,18 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         })
     }
 
-
-
     override fun initViews() {
 
         binding.commentRecycvlerViewAdapter = commentAdapter
         binding.handler = this
+        binding.reviewDetailViewModel = viewModel
 
         val bundle = intent.getBundleExtra("bundle")
         bundle?.let {
             val model = it.getSerializable("ReviewTodoItemData") as ReviewTodoModel
             binding.reviewTodoModel = model
             viewModel.getComments(model)
+            viewModel.getCheckedCurrentUser(model)
             observeData()
         }
     }
@@ -88,8 +88,35 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
                 is JobState.Error -> {
                     Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
                 }
-                else -> {
-                    LogUtil.w(Constants.TAG, "$THIS_NAME getComments() else : $this")
+            }
+        })
+
+        viewModel.insertCheckedUserJobStateLiveData.observe(this, Observer {
+            when(it) {
+                is JobState.False -> {
+                    Toast.makeText(this, R.string.insert_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                }
+                is JobState.Error -> {
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+        viewModel.getCheckedCurrentUserBooleanLiveData.observe(this, Observer {
+            when(it) {
+                false -> {
+                    Toast.makeText(this, R.string.get_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+        viewModel.deleteCheckedUserLiveData.observe(this, Observer {
+            when(it) {
+                is JobState.False -> {
+                    Toast.makeText(this, R.string.delete_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                }
+                is JobState.Error -> {
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
                 }
             }
         })

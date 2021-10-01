@@ -48,12 +48,25 @@ fun Int.toImportanceString(): String = when(this) {
 }
 
 
-fun String.toTodoCategory() : TodoCategory = when(this) {
-    TodoCategory.ANDROID.name -> TodoCategory.ANDROID
-    TodoCategory.LANGUAGE.name -> TodoCategory.LANGUAGE
-    TodoCategory.DB.name -> TodoCategory.DB
-    TodoCategory.OTHER.name -> TodoCategory.OTHER
-    else -> TodoCategory.ALL
+fun Long.toUserRank() : String? {
+    val value = this
+    with(CheeseTodoApplication.appContext) {
+        LogUtil.i(Constants.TAG, "toUserRank() : $value")
+        return when (value) {
+            in 0..100 -> this?.getString(UserRank.Level1.userRankStringId)
+            in 100..200 -> this?.getString(UserRank.Level2.userRankStringId)
+            in 200..300 -> this?.getString(UserRank.Level3.userRankStringId)
+            in 300..400 -> this?.getString(UserRank.Level4.userRankStringId)
+            in 400..500 -> this?.getString(UserRank.Level5.userRankStringId)
+            in 500..600 -> this?.getString(UserRank.Level6.userRankStringId)
+            in 600..700 -> this?.getString(UserRank.Level7.userRankStringId)
+            in 700..800 -> this?.getString(UserRank.Level8.userRankStringId)
+            in 800..900 -> this?.getString(UserRank.Level9.userRankStringId)
+            in 900..1000 -> this?.getString(UserRank.Level10.userRankStringId)
+            in 1000..1100 -> this?.getString(UserRank.Level11.userRankStringId)
+            else -> this?.getString(UserRank.Level12.userRankStringId)
+        }
+    }
 }
 
 object BindingAdapters {
@@ -83,19 +96,4 @@ object BindingAdapters {
     fun <M : BaseModel> setAdapter(view : RecyclerView, adapter : BaseAdapter<M>?) {
         view.adapter = adapter
     }
-}
-
-fun encrypt(input: String, key: PrivateKey): String {
-    val cipher = Cipher.getInstance("RSA")
-    cipher.init(Cipher.ENCRYPT_MODE, key)
-    val encrypt = cipher.doFinal(input.toByteArray())
-    return  Base64Utils.encode(encrypt)
-}
-
-fun decrypt(input: String, key: PublicKey): String {
-    val byteEncrypt: ByteArray = Base64Utils.decode(input)
-    val cipher = Cipher.getInstance("RSA")
-    cipher.init(Cipher.DECRYPT_MODE, key)
-    val decrypt = cipher.doFinal(byteEncrypt)
-    return String(decrypt)
 }
