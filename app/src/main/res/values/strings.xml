@@ -9,7 +9,7 @@
     <string name="hight_importance">중요도 순</string>
     <string name="fast_date">날짜 빠른 순</string>
 
-    <string name="title_transition_name">TodoTile</string>
+    <string name="title_transition_name">TodoTitle</string>
 
     <string name="save">저장하기</string>
     <string name="todo">TODO</string>
@@ -49,9 +49,18 @@
 
     <string name="comments">Comments</string>
     <string name="please_enter_comment"> 여러분의 소중한 댓글을 입력해주세요.</string>
+    <string name="pass_count_text">검토완료 %s개</string>
     <string name="send">보내기</string>
-    <string name="passCount">검토 완료 :</string>
 
+    <string name="what_is_my_score">나의 점수는 뭘까?</string>
+    <string name="what_is_my_rank">나의 랭크는 뭘까?</string>
+    <string name="what_are_my_todos">나의 검증된 계획 갯수는?</string>
+    <string name="logout">로그아웃</string>
+    <string name="revoke">회원탈퇴</string>
+    <string name="google_login_require">로그인이 필요합니다.</string>
 
-
+    <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
+    <string name="use_as_a_member">%s님 반갑습니다.</string>
+    <string name="checking_member_info">회원 정보 확인 중…</string>
+    <string name="login_is_required">서비스 이용은 로그인이 필요합니다.</string>
 </resources>
