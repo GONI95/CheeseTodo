@@ -30,8 +30,11 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME, initViews() called")
 
+        /**
+         * Gon : BottomNavigationView에서 선택한 bottom_navigation_menu의 item 값에 따라 해당하는 Framgent를 띄웁니다.
+         */
         binding.bottomNav.setOnItemSelectedListener { item ->
-            return@setOnItemSelectedListener when (item.itemId) {
+            when (item.itemId) {
                 R.id.nav_home -> {
 
                     showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
@@ -54,44 +57,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Gon : 처음 애플리케이션이 켜졌을 때 기본적으로 HomeFramgent를 출력합니다.
+         */
         showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
     }
 
-    /**
-     * 1. supportFragmentManager : FragmentManager는 동적인 UI를 제공하기 위한 Class인 Fragment를 관리하는
-     * 컨트롤러 역할을 합니다. 현재 UI에 Fragment를 추가, 교체, 제거가 가능합니다.
-     * Activity에 하위 Fragment를 이용하겠다면, supportFragmentManager
-     * Fragment에 하위 Fragment를 이용하겠다면, parentFragmentManager 또는 childFragmentManager
-     *
-     * 2. beginTransaction : FragmentTransaction을 가져와 각종 Transaction 작업을 할 수 있도록 함
-     *
-     * 3. commitAllowingStateLoss : activity 상태가 저장된 후 commit을 실행할 수 있는데, 이 경우 나중에 activity를
-     *                           해당 상태에서 복원해야할 때 상태에 대한 손실이 발생할 수 있고, 이 경우 에러가 발생함.
-     *                           이러한 UI 상태가 예기치 않게 변경되어도 괜찮은 경우에 사용해야한다.
-     */
     private fun showFragment(fragment: Fragment, tag: String) {
         LogUtil.v(Constants.TAG, "$THIS_NAME, showFragment() called")
+
         /**
-         * 1. 주어진 Tag를 가진 Fragment가 가져옴
-         * 2. FragmentTransaction을 가져와 각종 Transaction 작업을 할 수 있도록 함
+         * Gon : FragmentManager에 추가된 Fragment들 중 인자를 가지는 Fragment를 찾아 선언과 함께 초기화 합니다.
          */
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
 
         /**
-         * Fragment가 교체되기전 모든 Fragment들을 화면에서 숨김
+         * Gon : FragmentManager에 추가된 모든 Fragment 리스트를 가져와
+         *       Fragment Transaction 작업을 통해 화면에서 숨깁니다.
          */
         supportFragmentManager.fragments.forEach { fm ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Hide ${fm.tag}")
             supportFragmentManager.beginTransaction().hide(fm).commitAllowingStateLoss()
         }
 
         /**
-         * 주어진 Tag를 가진 Fragment가 있으면 show(), 없다면 add
+         * Gon : findFragment의 값이 존재하는 한다면 숨겨두었던 Fragment를 표시합니다.
+         *       findFragment의 값이 존재하지 않는다면 해당 프래그먼트를 생성하여 표시합니다. (기존의 Fragment는 그대로 둠)
          */
         findFragment?.let {
             LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Show ${tag}")
             supportFragmentManager.beginTransaction().show(it).commitAllowingStateLoss()
-            //supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commitAllowingStateLoss()
         } ?: kotlin.run {
             LogUtil.i(Constants.TAG, "$THIS_NAME, showFragment() : Add ${tag}")
             supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment, tag).commitAllowingStateLoss()
