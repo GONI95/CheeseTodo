@@ -6,23 +6,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel에서 공통적으로 사용될 사항들을 정의
+ * Gon : ViewModel에서 공통적으로 사용될 메서드를 정의했습니다.
  */
 open class BaseViewModel : ViewModel() {
 
     /**
-     * 1. 내부적으로 Lifecycler을 관리하도록 stateBundle 선언
-     * 2. open 변경자를 통해 상속을 허용하고 Job을 반환하는 fetchData() 생성
-     * 3. View에 대한 상태를 저장하기위해 storeState() 생성 [activity, fragment가 종료되기 전까진 해당 데이터가 유지됨]
+     * Gon : open 변경자를 통해 상속을 허용해 재정의가 가능하고 Coroutine Job을 반환하는 fetchData() 생성했습니다.
      */
-    //protected var stateBundle : Bundle? = null
-
     open fun fetchData(): Job = viewModelScope.launch {  }
-
-    /*
-    open fun storeState(stateBundle: Bundle) {
-        this.stateBundle = stateBundle
-    }
-     */
-
 }
