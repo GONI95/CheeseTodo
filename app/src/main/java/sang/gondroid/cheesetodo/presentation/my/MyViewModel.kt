@@ -3,9 +3,8 @@ package sang.gondroid.cheesetodo.presentation.my
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.firebase.HandlerFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.domain.usecase.firestore.GetCurrentMembershipUseCase
@@ -17,7 +16,7 @@ import sang.gondroid.cheesetodo.util.JobState
 class MyViewModel(
     private val appPreferenceManager: AppPreferenceManager,
     private val handlerFirebaseAuth: HandlerFirebaseAuth,
-    private val handlerFireStore: HandleFireStore,
+    private val handlerFireStore: HandlerFireStore,
     private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
     private val ioDispatchers: CoroutineDispatcher
 ) : BaseViewModel() {

@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
-import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.firebase.HandlerFireStore
 import sang.gondroid.cheesetodo.domain.mapper.*
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
@@ -13,7 +13,7 @@ import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.util.JobState
 
 class ReviewTodoRepositoryImpl(
-    private val handleFireStore: HandleFireStore,
+    private val handlerFireStore: HandlerFireStore,
     private val toReviewTodoMapper: MapperReviewTodoDTO,
     private val toReviewTodoModelMapper: MapperToReviewTodoModel,
     private val toCommentDTO: MapperToCommentDTO,
@@ -21,15 +21,15 @@ class ReviewTodoRepositoryImpl(
     ) : ReviewTodoRepository {
 
     override suspend fun insertReviewTodo(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        handleFireStore.insertReviewTodo( toReviewTodoMapper.map(model) )
+        handlerFireStore.insertReviewTodo( toReviewTodoMapper.map(model) )
     }
 
     override suspend fun validateReviewTodoExist(model: TodoModel): JobState = withContext(ioDispatcher) {
-        handleFireStore.validateReviewTodoExist(model)
+        handlerFireStore.validateReviewTodoExist(model)
     }
 
     override suspend fun getReviewTodo() : JobState = withContext(ioDispatcher) {
-        val result = handleFireStore.getReviewTodo()
+        val result = handlerFireStore.getReviewTodo()
 
         return@withContext when(result) {
             is JobState.True.Result<*> -> {
@@ -40,11 +40,11 @@ class ReviewTodoRepositoryImpl(
     }
 
     override suspend fun getComments(model: ReviewTodoModel) : Observable<List<CommentDTO>> = withContext(ioDispatcher) {
-        return@withContext handleFireStore.getComments(model)
+        return@withContext handlerFireStore.getComments(model)
     }
 
     override suspend fun insertCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        with(handleFireStore) {
+        with(handlerFireStore) {
             when(val result = insertCheckedUser(model)) {
                 is JobState.True -> {
                     return@withContext if (updateMembership(model) == JobState.True)
@@ -60,18 +60,18 @@ class ReviewTodoRepositoryImpl(
     }
 
     override suspend fun getCheckedCurrentUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.getCheckedCurrentUser(model)
+        return@withContext handlerFireStore.getCheckedCurrentUser(model)
     }
 
     override suspend fun deleteCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.deleteCheckedUser(model)
+        return@withContext handlerFireStore.deleteCheckedUser(model)
     }
 
     override suspend fun getCheckedUserCount(model: ReviewTodoModel): Observable<Int> = withContext(ioDispatcher) {
-        return@withContext handleFireStore.getCheckedUserCount(model)
+        return@withContext handlerFireStore.getCheckedUserCount(model)
     }
 
     override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handleFireStore.insertComment(toCommentDTO.map(commentModel), reviewTodoModel)
+        return@withContext handlerFireStore.insertComment(toCommentDTO.map(commentModel), reviewTodoModel)
     }
 }
