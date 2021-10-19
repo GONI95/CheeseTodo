@@ -53,17 +53,10 @@ class LiveSharedPreferences(private val preferences: SharedPreferences) {
      *       SharedPreferences로부터 value를 검색하기 위한 key, value가 null인 경우 초기화하기 위해 defaultValue를 매개변수로 받습니다.
      */
     fun getString(key: String, defaultValue: String?): LivePreference<String> {
-        LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
-        return LivePreference(updates, preferences, key, defaultValue)
-    }
-
-    fun getSearchHistoryList(key: String, defaultValue: String?): LivePreference<String> {
-        LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
         return LivePreference(updates, preferences, key, defaultValue)
     }
 
     fun getBoolean(key: String, defaultValue: Boolean?): LivePreference<Boolean> {
-        LogUtil.d(Constants.TAG, "$THIS_NAME getString() called")
         return LivePreference(updates, preferences, key, defaultValue)
     }
 }

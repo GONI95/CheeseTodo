@@ -114,7 +114,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         /**
          * AppPreferenceManager의 검색 히스토리 값을 관찰
          */
-        liveSharedPreferences.getSearchHistoryList(BuildConfig.KEY_SEARCH_HISTORY, null).observe(viewLifecycleOwner, Observer { list ->
+        liveSharedPreferences.getString(BuildConfig.KEY_SEARCH_HISTORY, null).observe(viewLifecycleOwner, Observer { list ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getSearchHistoryList() called : $list")
 
             if(!list.isNullOrBlank()) {
