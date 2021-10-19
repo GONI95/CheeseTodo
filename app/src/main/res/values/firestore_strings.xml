@@ -10,11 +10,6 @@
     <string name="user_rank">userRank</string>
     <string name="user_score">userScore</string>
 
-    <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
-    <string name="use_as_a_member">%s님 반갑습니다.</string>
-    <string name="checking_member_info">회원 정보 확인 중…</string>
-    <string name="login_is_required">서비스 이용은 로그인이 필요합니다.</string>
-
     <string name="review_todo_collection">ReviewTodo</string>
     <string name="review_comments_collection">comments</string>
     <string name="checked_user_collection">checked_users</string>
@@ -27,6 +22,4 @@
     <string name="review_difficult">difficult</string>
     <string name="review_passornot">passOrNot</string>
     <string name="review_comments">Comments</string>
-
-    <string name="pass_count_text">검토완료 %s개</string>
 </resources>

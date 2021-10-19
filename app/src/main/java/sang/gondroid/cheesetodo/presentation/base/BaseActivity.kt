@@ -5,40 +5,44 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 
 /**
- * Activity에서 공통적으로 사용될 사항들을 정의
- * open : 하위 Class에서 재정의할 수 있다. 코틀린은 final이 원칙이라, 상속을 허용할거면 open을 붙여야한다.
- * abstract : 하위 Class에서 반드시 재정의해야한다. abstract 선언된 Class는 인스턴스화 불가능, 기본적으로 open이다.
- * Generic : Class 내부에서 사용할 데이터의 타입을 외부에서 지정
- * Protected : private + 상속받은 Class에서 접근이 가능 [protected 멤버를 오버라이딩한 멤버에 따로 접근 제한자를 선언하지 않으면 protected를 따름]
- *
+ * Gon : Activity에서 공통적으로 사용될 메서드와 프로퍼티를 정의했습니다.
+ *       abstract 변경자 - 추상 클래스로, 공통 메서드, 프로퍼티 정의에 사용 (상속이 이루어져야함)
+ *       open 변경자 - 무분별한 상속을 막기 위한 변경자로 기본적으로 final, 상속을 허용하려면 open 변경자가 필요
+ *       generic - 클래스 및 메서드 정의 시 Type을 확실히 정하지 않고, 클래스 내부에서 사용할 데이터의 Type을 외부에서 지정
  */
 abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompatActivity() {
 
     /**
-     * 1. Generic 타입으로 받기때문에 viewModel과 viewBining은 Generic 타입으로 선언이 가능
-     * 2. onCreate() 후에 처리하기 위해 lateinit var 프로퍼티로 선언
-     * 3. viewModel에서 선언한 fetchData()에서 사용하는 coroutine을 Lifecycler에 맞게 제거하기위해 선언
+     * Gon : viewModel과 binding을 외부에서 받는 Generic 타입으로 선언했습니다.
      */
     abstract val viewModel : VM
+
     protected lateinit var binding : VB
 
+    /**
+     * Gon : DataBinding 초기화를 위한 getDataBinding()
+     */
     abstract fun getDataBinding() : VB
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = getDataBinding()
-        binding.lifecycleOwner = this
-        setContentView(binding.root)
-        initViews()
-    }
-
     /**
-     * 1. View 초기화를 위한 initViews()
-     * 2. LiveData를 처리하는 observeData()
+     * Gon : View 초기화를 위한 initViews()
      */
     open fun initViews() {
         observeData()
     }
 
+    /**
+     * Gon : LiveData를 관찰하는 observeData()
+     */
     abstract fun observeData()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = getDataBinding()
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
+
+        initViews()
+    }
 }
