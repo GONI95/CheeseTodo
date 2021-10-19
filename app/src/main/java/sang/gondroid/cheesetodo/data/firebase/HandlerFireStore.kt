@@ -19,7 +19,7 @@ import sang.gondroid.cheesetodo.util.*
 import java.lang.Exception
 import java.security.*
 
-class HandleFireStore(
+class HandlerFireStore(
     private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
     private val ioDispatchers: CoroutineDispatcher,

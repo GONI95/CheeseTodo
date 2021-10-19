@@ -17,7 +17,7 @@ import org.koin.dsl.module
 import sang.gondroid.cheesetodo.BuildConfig
 import sang.gondroid.cheesetodo.data.db.TodoDao
 import sang.gondroid.cheesetodo.data.db.TodoDatabase
-import sang.gondroid.cheesetodo.data.firebase.HandleFireStore
+import sang.gondroid.cheesetodo.data.firebase.HandlerFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
@@ -36,7 +36,6 @@ import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryViewModel
 import sang.gondroid.cheesetodo.util.TodoCategory
-import kotlin.math.sin
 
 val appModule = module {
 
@@ -123,7 +122,7 @@ val appModule = module {
     /**
      * HandleFireStore
      */
-    single { HandleFireStore(get(), get(), get(named("io")), androidApplication()) }
+    single { HandlerFireStore(get(), get(), get(named("io")), androidApplication()) }
 
     single { LiveSharedPreferences(getPreferences(androidApplication())) }
 }
