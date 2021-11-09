@@ -21,7 +21,6 @@
     <style name="Widget.CheeseTodo.SearchView" parent="Widget.AppCompat.SearchView" >
         <!-- Query Text Color -->
         <item name="android:textColorPrimary">@color/gray_thick</item>
-        <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/cute_light</item>
         <!-- Drawable Color -->
         <item name="android:drawableTint">@color/gray_thick</item>
