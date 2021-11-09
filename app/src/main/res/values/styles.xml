@@ -66,8 +66,8 @@
 
     <!-- 카드뷰 -->
     <style name="Widget.CheeseTodo.CardView" parent="CardView">
-        <item name="cardCornerRadius">20dp</item>
-        <item name="cardElevation">10dp</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="cardElevation">3dp</item>
     </style>
 
     <!-- 투명 버튼 -->

@@ -16,7 +16,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -24,7 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -34,66 +34,79 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/todoItemTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="20dp"
                         android:fontFamily="@font/three_dimensional_hatch"
+                        android:singleLine="true"
                         android:text="@{todoItem.title}"
                         android:textColor="@color/black"
-                        android:textSize="22sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="제목" />
 
                     <TextView
                         android:id="@+id/todoItemDate"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:singleLine="true"
                         android:text="@{ExtensionsKt.toDateFormat(todoItem.date)}"
-                        android:textSize="12sp"
+                        android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
+                        app:layout_constraintTop_toBottomOf="@+id/todoItemImportance"
                         tools:text="날짜" />
 
                     <TextView
                         android:id="@+id/todoItemCategory"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="5dp"
+                        android:maxLength="20"
                         android:text="@{todoItem.category.categoryNameId}"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
                         app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
                         tools:text="카테고리" />
 
                     <TextView
                         android:id="@+id/todoItemImportance"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:maxLength="20"
                         android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toTopOf="@+id/todoItemDate"
+                        android:textSize="10sp"
+                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
                         app:layout_constraintStart_toEndOf="@+id/todoItemCategory"
                         app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
                         tools:text="중요도" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/verticalLeftGuideline"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.1" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/verticalRightGuideline"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.9" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,7 +116,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -111,9 +124,8 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
                 android:src="@drawable/ic_cheese"
+                app:findImage="@{todoItem.category}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

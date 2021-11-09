@@ -83,6 +83,33 @@ object BindingAdapters {
     }
 
     @JvmStatic
+    @BindingAdapter("findImage")
+    fun load(imageView : ImageView, todoCategory: TodoCategory) {
+
+        val loadImage = when(todoCategory.ordinal) {
+            1 -> {
+                R.drawable.ic_android
+            }
+            2 -> {
+                R.drawable.ic_kotlin
+            }
+            3 -> {
+                R.drawable.ic_db
+            }
+            4 -> {
+                R.drawable.ic_etc
+            }
+            else -> {
+                R.drawable.ic_cheese
+            }
+        }
+
+        Glide.with(imageView.context)
+            .load(loadImage)
+            .into(imageView)
+    }
+
+    @JvmStatic
     @BindingAdapter("imageUrl")
     fun load(imageView: ImageView, loadImage: String?) {
         Glide.with(imageView.context)
