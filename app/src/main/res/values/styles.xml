@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Toolbar 설정 -->
-    <style name="Widget.CheeseTodo.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="android:layout_height">45dp</item>
+    <style name="ThemeOverlay.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">0dp</item>
     </style>
 
-    <style name="ThemeOverlay.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
-        <item name="android:layout_height">45dp</item>
+    <!-- Toolbar 내에서 사용될 TextView -->
+    <style name="ThemeOverlay.CheeseTodo.Toobar.TextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:fontFamily">@font/cute_light</item>
+        <item name="android:maxWidth">250dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.CheeseTodo.SearchView" parent="Widget.AppCompat.SearchView" >

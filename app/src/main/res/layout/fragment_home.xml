@@ -16,24 +16,13 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/ThemeOverlay.CheeseTodo.Toolbar"
-            android:layout_width="0dp"
-            android:background="@color/cheese_light_lv"
-            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/welcomeUserTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/cute_light"
-                android:maxWidth="250dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="10dp"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                style="@style/ThemeOverlay.CheeseTodo.Toobar.TextView"
                 android:text="@{displayName != null ? String.format(@string/use_as_a_member, displayName) : @string/use_as_a_non_member}"
                 tools:text="어서오세요." />
         </androidx.appcompat.widget.Toolbar>

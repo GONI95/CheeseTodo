@@ -5,6 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/light_blue_gray"
         tools:context=".presentation.MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
@@ -21,8 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/bottom_navigation_background"
-            android:elevation="8dp"
             app:itemIconTint="@drawable/bottom_navigation_color_selector"
+            android:elevation="8dp"
             app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
