@@ -30,7 +30,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="?attr/actionBarSize"
             app:tabIndicatorFullWidth="false"
             app:tabMode="auto"
             app:tabMaxWidth="0dp"
@@ -68,26 +68,32 @@
                 android:id="@+id/filterChipGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
                 app:chipSpacingHorizontal="4dp"
                 app:chipSpacingVertical="6dp"
+                app:selectionRequired="true"
                 app:singleLine="true"
                 app:singleSelection="true"
                 app:checkedChip="@id/chipInitialize"
-                android:paddingHorizontal="12dp"
-                app:selectionRequired="true"
                 android:visibility="visible"
                 tools:visibility="visible">
 
+                <!--
+                    selectionRequired : 그룹 내 모든 자식 Chip이 선택 해제되는 것을 방지할지 여부
+                    chipSpacingHorizontal : 그룹 내 Chip 사이 수평 간격
+                    chipSpacingVertical : 그룹 내 Chip 사이 수직 간격
+                    singleLine : Chip 그룹을 단일 라인 또는 다중 라인인지 여부
+                    checkedChip : 기본적으로 체크할 Chip 선택
+                -->
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipInitialize"
-                    android:text="@string/initialize"
-                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
                     style="@style/Widget.CheeseTodo.Chip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:chipIconEnabled="true"
-                    android:visibility="visible"
-                    app:chipIconTint="@color/icon_filter_chip_state_list_reset"/>
+                    android:text="@string/initialize"
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
+                    android:visibility="visible" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipLowImportance"
@@ -95,9 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hight_importance"
-                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
-                    app:chipIconEnabled="true"
-                    app:chipIconTint="@color/icon_filter_chip_state_list_reset" />
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipFastDate"
@@ -105,9 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fast_date"
-                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance"
-                    app:chipIconEnabled="true"
-                    app:chipIconTint="@color/icon_filter_chip_state_list_reset" />
+                    android:textAppearance="@style/Widget.CheeseTodo.ChipTextAppearance" />
 
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
