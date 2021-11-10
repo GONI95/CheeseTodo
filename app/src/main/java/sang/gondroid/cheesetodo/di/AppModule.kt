@@ -68,7 +68,7 @@ val appModule = module {
      * Mapper : Model <-> DTO
      */
     single { MapperReviewTodoDTO(get(named("io"))) }
-    single { MapperToReviewTodoModel(get(), get(named("io"))) }
+    single { MapperToReviewTodoModel(get(named("io"))) }
     single { MapperToCommentModel(get(named("io"))) }
     single { MapperToCommentDTO(get(named("io"))) }
     single { MapperToFireStoreMembershipModel(get(named("io"))) }

@@ -80,14 +80,10 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
             userName = firebaseUser.displayName!!,
             userPhoto = firebaseUser.photoUrl.toString(),
             category = model.category,
-            passOrNot = false,
-            participating = arrayListOf(),
-            passCount = 0,
             date = currentMillis,
             title = model.title,
             todo = model.todo,
-            difficult = model.difficult!!,
-            comments = null
+            difficult = model.difficult!!
         )
     }
 

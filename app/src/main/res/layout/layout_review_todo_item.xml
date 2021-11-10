@@ -104,29 +104,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@{reviewTodoModel.category.categoryNameId}"
-                    android:textSize="10sp"
-                    app:layout_constraintBottom_toTopOf="@+id/reviewTodoPassOrNot"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle" />
-
-                <TextView
-                    android:id="@+id/reviewTodoPassOrNot"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@{String.format(@string/pass_count_text, Long.toString(reviewTodoModel.passCount))}"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoCategory" />
+                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline" />
 
 
                 <androidx.constraintlayout.widget.Guideline

@@ -8,18 +8,10 @@ import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 
 class MapperToReviewTodoModel(
-    private val mapperToCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
 ) : Mapper<ReviewTodoDTO, ReviewTodoModel> {
 
     override suspend fun map(input: ReviewTodoDTO): ReviewTodoModel = withContext(ioDispatcher) {
-
-        val list = arrayListOf<CommentModel>()
-        input.comments?.forEach {
-            list.add(mapperToCommentModel.map(it))
-        }
-
-
         return@withContext ReviewTodoModel(
             id = null,
             modelId = input.modelId,
@@ -27,14 +19,10 @@ class MapperToReviewTodoModel(
             userName = input.userName,
             userPhoto = input.userPhoto,
             category = input.category,
-            passOrNot = input.passOrNot,
-            participating = input.participating,
-            passCount = input.passCount,
             date = input.date,
             title = input.title,
             todo = input.todo,
-            difficult = input.difficult,
-            comments = list
+            difficult = input.difficult
         )
     }
 }
