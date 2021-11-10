@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -23,6 +24,8 @@ import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
+import sang.gondroid.cheesetodo.widget.custom.CustomDialog
+import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import sang.gondroid.cheesetodo.widget.history.SearchHistoryListener
 import sang.gondroid.cheesetodo.widget.review.ReviewTodoListener
 import java.lang.reflect.Type
@@ -48,6 +51,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         binding.toolbar.menu.findItem(R.id.search_menu_item)?.actionView as androidx.appcompat.widget.SearchView
     }
 
+    private var loginState by Delegates.notNull<Boolean>()
     private val reviewTodoAdapter by lazy {
         BaseAdapter<ReviewTodoModel>(modelList = listOf(), adapterListener = object : ReviewTodoListener {
                 override fun onClickItem(view: View, position: Int, model: BaseModel) {
@@ -56,9 +60,17 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
                     val bundle = Bundle()
                     bundle.putSerializable("ReviewTodoItemData", model)
 
-                    Intent(requireContext(), DetailReviewActivity::class.java).apply {
-                        putExtra("bundle", bundle)
-                        startActivity(this, getBudle(view))
+                    if (loginState) {
+                        Intent(requireContext(), DetailReviewActivity::class.java).apply {
+                            putExtra("bundle", bundle)
+                            startActivity(this, getBudle(view))
+                        }
+                    } else {
+                        Snackbar.make(view, getString(R.string.login_is_required), Snackbar.LENGTH_SHORT).run {
+                            this.setAction(getString(R.string.yes)) {
+                                this.dismiss()
+                            }
+                        }.show()
                     }
                 }
             }
@@ -103,6 +115,13 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         mSearchView.setOnQueryTextFocusChangeListener(this@ReviewFragment)
 
         /**
+         * AppPreferenceManager의 토큰 값 유무 확인
+         */
+        liveSharedPreferences.getString(BuildConfig.KEY_ID_TOKEN, null).observe(viewLifecycleOwner, Observer { token ->
+            loginState = !token.isNullOrBlank()
+        })
+
+        /**
          * AppPreferenceManager의 회원명 값을 관찰
          */
         liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
@@ -127,6 +146,15 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
             }
 
             searchHistoryAdapter.submitList(searchHistoryList)
+        })
+
+        /**
+         * AppPreferenceManager의 저장모드 값을 관찰
+         */
+        liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, false).observe(viewLifecycleOwner, Observer { state ->
+            LogUtil.i(Constants.TAG, "$THIS_NAME getBoolean() called")
+            saveModeState = state
+            binding.switchState = saveModeState
         })
 
         /**
