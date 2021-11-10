@@ -93,9 +93,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      * - GoogleSignInClient.signOut() : 앱에 연결된 계정을 지우는 작업(매번 계정 선택가능)
      */
     private fun signOut() {
-        viewModel.removeToken()
         gsc.signOut()
         gsc.revokeAccess()
+        viewModel.removeToken()
     }
 
     /**
@@ -104,8 +104,6 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      */
     private fun disjoin() {
         viewModel.disjoinMembership()
-        gsc.signOut()
-        gsc.revokeAccess()
     }
 
     override fun initViews() = with(binding) {
@@ -153,6 +151,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
             LogUtil.i(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
             when (it) {
                 is JobState.Loading -> handleLoadingState()
+                is JobState.True -> signOut()
                 is JobState.Success -> handleSuccessState(it)
                 is JobState.Login -> handleLoginState(it)
                 is JobState.Error -> handleErrorState(it)

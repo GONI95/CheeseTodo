@@ -37,12 +37,10 @@ class MyViewModel(
         _jobStateLiveData.postValue(JobState.Loading)
 
         when (val myState = handlerFirebaseAuth.validateToken()) {
-
             is JobState.Login -> _jobStateLiveData.postValue(myState)
             is JobState.Error -> _jobStateLiveData.postValue(myState)
             else -> _jobStateLiveData.postValue(myState)
         }
-
     }
 
     /**
@@ -74,7 +72,6 @@ class MyViewModel(
             is JobState.True -> {
 
                 when(val userState = getCurrentMembershipUseCase.invoke()) {
-
                     is JobState.Success.Registered<*> -> _jobStateLiveData.postValue(userState)
                     is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(userState)
                     is JobState.Error -> _jobStateLiveData.postValue(userState)
@@ -113,12 +110,18 @@ class MyViewModel(
         when (val disjoinMembershipState = handlerFireStore.disjoinMembership()) {
             is JobState.True -> {
 
-                when(val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()) {
+                when (val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()) {
 
-                    is JobState.True -> _jobStateLiveData.postValue(deleteCurrentUserState)
+                    is JobState.True -> {
+
+                        _jobStateLiveData.postValue(deleteCurrentUserState)
+                    }
                     is JobState.False -> _jobStateLiveData.postValue(deleteCurrentUserState)
                     is JobState.Error -> _jobStateLiveData.postValue(deleteCurrentUserState)
-                    else -> LogUtil.w(Constants.TAG, "$THIS_NAME deleteCurrentUser() else : $deleteCurrentUserState")
+                    else -> LogUtil.w(
+                        Constants.TAG,
+                        "$THIS_NAME deleteCurrentUser() else : $deleteCurrentUserState"
+                    )
                 }
             }
             is JobState.False -> _jobStateLiveData.postValue(disjoinMembershipState)

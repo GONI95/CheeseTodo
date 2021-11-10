@@ -25,6 +25,7 @@ class HomeViewModel(
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
 
+        /*
         when (val myState = handlerFirebaseAuth.validateToken()) {
             is JobState.Login -> {
 
@@ -40,5 +41,6 @@ class HomeViewModel(
             is JobState.Error -> _jobStateLiveData.postValue(myState)
             else -> LogUtil.w(Constants.TAG, "$THIS_NAME validateToken() else : $myState")
         }
+         */
     }
 }
