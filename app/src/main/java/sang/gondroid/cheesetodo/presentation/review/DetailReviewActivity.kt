@@ -1,6 +1,7 @@
 package sang.gondroid.cheesetodo.presentation.review
 
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import org.koin.android.ext.android.inject
@@ -61,20 +62,18 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
     }
 
     /**
-     * like 추가 작업
+     * Gon : like 추가 작업 [ onCheckedChanged 리스너 사용 시 Review 열람할 때 checked 값으로 인해서 passCount가 증가 ]
      */
-    fun onCheckedChangedPassButton(isCheck : Boolean, reviewTodoModel : ReviewTodoModel) {
-        with(binding) {
-            LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton ...")
+    fun onClickPassButton(view: View, reviewTodoModel : ReviewTodoModel) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton ... ")
 
-            if (isCheck) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton checked")
-                viewModel.insertCheckedUser(reviewTodoModel)
-            }
-            else {
-                LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton not checked")
-                viewModel.deleteUnCheckedUser(reviewTodoModel)
-            }
+        if (view is CheckBox && view.isChecked) {
+            LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton checked")
+            viewModel.insertCheckedUser(reviewTodoModel)
+        }
+        else {
+            LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton not checked")
+            viewModel.deleteUnCheckedUser(reviewTodoModel)
         }
     }
 
