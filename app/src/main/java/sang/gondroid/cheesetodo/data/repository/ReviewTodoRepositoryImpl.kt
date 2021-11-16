@@ -47,7 +47,7 @@ class ReviewTodoRepositoryImpl(
         with(handlerFireStore) {
             when(val result = insertCheckedUser(model)) {
                 is JobState.True -> {
-                    return@withContext if (updateMembership(model) == JobState.True)
+                    return@withContext if (updateMembershipUserScore(model) == JobState.True)
                         JobState.True
                     else
                         JobState.False
