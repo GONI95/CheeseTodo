@@ -183,26 +183,58 @@ class HandlerFireStore(
 
     suspend fun insertReviewTodo(model: ReviewTodoDTO): JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() called")
+        var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() model : ${model}")
 
-                val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
                     .document(firebaseUser?.email + model.modelId)
                     .set(model)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful)
+                            jobState = JobState.True
+                        else
+                            jobState = JobState.False
+                    }.await()
 
-                if (result.isSuccessful) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.True")
-                    return@let JobState.True
-                }
-                else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.False")
-                    return@let JobState.False
-                }
+                LogUtil.d(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState : ${jobState}")
+                return@let jobState
 
             } catch (e : Exception) {
                 LogUtil.e(Constants.TAG, "$THIS_NAME insertReviewTodo() JobState.Error : $e")
+                return@let  JobState.Error(R.string.request_error, e)
+            }
+        }
+    }
+
+    /**
+     *  Gon : insertReviewTodo()의 반환값이 JobState.True이면 userTodoCount를 증가시키기 위한 메서드 입니다.
+     */
+    suspend fun updateMembershipUserTodoCount(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+        var jobState : JobState = JobState.Uninitialized
+
+        return@withContext firebaseAuth.currentUser?.email.let { _ ->
+            try {
+                LogUtil.v(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount()")
+
+                getReviewTodoWriterMembership(model.userEmail)?.let {
+                    val userTodoCount = it.get(getFireStoreString(R.string.user_todo_count)) as Long + 1
+
+                    firestore.collection(getFireStoreString(R.string.user_collection))
+                        .document(model.userEmail)
+                        .update(getFireStoreString(R.string.user_todo_count), userTodoCount)
+                        .addOnCompleteListener { task ->
+                            jobState = if (task.isSuccessful) JobState.True else JobState.False
+                        }.await()
+                }
+
+                LogUtil.d(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount() JobState : $jobState")
+                return@let jobState
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
@@ -418,7 +450,10 @@ class HandlerFireStore(
         }
     }
 
-    suspend fun updateMembership(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+    /**
+     *  Gon : insertCheckedUser()의 반환값이 JobState.True이면 userScore를 증가시키기 위한 메서드 입니다.
+     */
+    suspend fun updateMembershipUserScore(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
@@ -427,15 +462,11 @@ class HandlerFireStore(
 
                 getReviewTodoWriterMembership(model.userEmail)?.let {
                     val userScore = it.get(getFireStoreString(R.string.user_score)) as Long + 10L
-                    val userTodoCount = it.get(getFireStoreString(R.string.user_todo_count)) as Long + 1
 
                     firestore.collection(getFireStoreString(R.string.user_collection))
                         .document(model.userEmail)
-                        .update(getFireStoreString(R.string.user_score), userScore
-                            , getFireStoreString(R.string.user_rank), userScore.toUserRank()
-                            ,getFireStoreString(R.string.user_todo_count), userTodoCount)
+                        .update(getFireStoreString(R.string.user_score), userScore, getFireStoreString(R.string.user_rank), userScore.toUserRank())
                         .addOnCompleteListener { task ->
-
                             jobState = if (task.isSuccessful) JobState.True else JobState.False
                         }.await()
                 }
