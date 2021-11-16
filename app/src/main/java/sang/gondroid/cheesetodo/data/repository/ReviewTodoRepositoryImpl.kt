@@ -21,7 +21,19 @@ class ReviewTodoRepositoryImpl(
     ) : ReviewTodoRepository {
 
     override suspend fun insertReviewTodo(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        handlerFireStore.insertReviewTodo( toReviewTodoMapper.map(model) )
+        with(handlerFireStore) {
+            when(val result = insertReviewTodo( toReviewTodoMapper.map(model))) {
+                is JobState.True -> {
+                    return@withContext if (updateMembershipUserTodoCount(model) == JobState.True)
+                        JobState.True
+                    else
+                        JobState.False
+                }
+                else -> {
+                    return@withContext result
+                }
+            }
+        }
     }
 
     override suspend fun validateReviewTodoExist(model: TodoModel): JobState = withContext(ioDispatcher) {
