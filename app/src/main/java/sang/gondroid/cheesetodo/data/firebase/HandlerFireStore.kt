@@ -230,6 +230,7 @@ class HandlerFireStore(
                         }.await()
                 }
 
+                LogUtil.d(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount() JobState : $jobState")
                 return@let jobState
 
             } catch (e : Exception) {
