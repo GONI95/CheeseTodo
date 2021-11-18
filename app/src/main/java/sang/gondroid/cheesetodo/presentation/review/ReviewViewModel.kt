@@ -34,13 +34,22 @@ class ReviewViewModel(
     val isLoading : LiveData<Boolean>
         get() = _isLoading
 
+    /**
+     * Gon : 최종적으로 HandlerFireStore.kt getReviewTodo() 메서드를 호출하여, Firestore ReviewTodo Collection에서 모든 정보를 수신받습니다.
+     *       [update - 21.11.18]
+     */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
+        getReviewTodoUseCase.invoke().also { jobState ->
+            _jobStateLiveData.postValue(jobState)
 
-        when (val getReviewTodoState = getReviewTodoUseCase.invoke()) {
-
-            is JobState.True.Result<*> -> _jobStateLiveData.postValue(getReviewTodoState)
-            is JobState.Error -> _jobStateLiveData.postValue(getReviewTodoState)
-            else -> _jobStateLiveData.postValue(getReviewTodoState)
+            when(jobState) {
+                is JobState.True.Result<*> ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() ReviewTodo 가져오기 성공")
+                is JobState.Error ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() Error 발생 : ${jobState.e}")
+                else ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() 알 수 없는 반환값")
+            }
         }
     }
 
@@ -62,9 +71,9 @@ class ReviewViewModel(
                 LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 활성화")
                 appPreferenceManager.setSaveMode(isActivated = true)
             } false -> {
-                LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 비활성화")
-                appPreferenceManager.setSaveMode(isActivated = false)
-            }
+            LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 비활성화")
+            appPreferenceManager.setSaveMode(isActivated = false)
+        }
         }
     }
 
