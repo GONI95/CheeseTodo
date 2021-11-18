@@ -54,26 +54,26 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     private var loginState by Delegates.notNull<Boolean>()
     private val reviewTodoAdapter by lazy {
         BaseAdapter<ReviewTodoModel>(modelList = listOf(), adapterListener = object : ReviewTodoListener {
-                override fun onClickItem(view: View, position: Int, model: BaseModel) {
-                    LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
+            override fun onClickItem(view: View, position: Int, model: BaseModel) {
+                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem() : $position, $model")
 
-                    val bundle = Bundle()
-                    bundle.putSerializable("ReviewTodoItemData", model)
+                val bundle = Bundle()
+                bundle.putSerializable("ReviewTodoItemData", model)
 
-                    if (loginState) {
-                        Intent(requireContext(), DetailReviewActivity::class.java).apply {
-                            putExtra("bundle", bundle)
-                            startActivity(this, getBudle(view))
-                        }
-                    } else {
-                        Snackbar.make(view, getString(R.string.login_is_required), Snackbar.LENGTH_SHORT).run {
-                            this.setAction(getString(R.string.yes)) {
-                                this.dismiss()
-                            }
-                        }.show()
+                if (loginState) {
+                    Intent(requireContext(), DetailReviewActivity::class.java).apply {
+                        putExtra("bundle", bundle)
+                        startActivity(this, getBudle(view))
                     }
+                } else {
+                    Snackbar.make(view, getString(R.string.login_is_required), Snackbar.LENGTH_SHORT).run {
+                        this.setAction(getString(R.string.yes)) {
+                            this.dismiss()
+                        }
+                    }.show()
                 }
             }
+        }
         )
     }
 
@@ -167,7 +167,11 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         })
     }
 
-
+    /**
+     * Gon : jobStateLiveData의 값에 따라 reviewTodo를 표시하는 RecyclerView 목록을 업데이트
+     *       jobStateLiveData - HandlerFireStore.kt getReviewTodo() 메서드로 부터 반환받은 JobState
+     *       [update - 21.11.18]
+     */
     override fun observeData() {
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
@@ -175,12 +179,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
                     reviewTodoList = state.data as ArrayList<ReviewTodoModel>
                     reviewTodoAdapter.submitList(reviewTodoList)
                 }
-                is JobState.False -> {
-                    LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
-                    Toast.makeText(requireContext(), R.string.request_false, Toast.LENGTH_LONG).show()
-                }
                 is JobState.Error -> {
-                    LogUtil.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
                     Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
                 }
             }

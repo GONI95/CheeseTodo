@@ -241,7 +241,7 @@ class HandlerFireStore(
 
     /**
      * Gon : Firestore Users Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
-     * [update - 21.11.17]
+     *       [update - 21.11.17]
      */
     suspend fun deleteMemberInfo() : JobState {
         LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() called")
@@ -378,22 +378,19 @@ class HandlerFireStore(
         }
     }
 
+    /**
+     * Gon : Firestore ReviewTodo Collection에서 모든 정보를 가져오는 메서드
+     *       [update - 21.11.18]
+     */
     suspend fun getReviewTodo() : JobState = withContext(ioDispatchers) {
-        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
+        return@withContext firebaseAuth.currentUser.let { _ ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo()")
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
                     .get().await()
 
-                if (!result.isEmpty) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.True")
-                    return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java).sortedByDescending { it.date } )
-                }
-                else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.False")
-                    return@let JobState.False
-                }
+                return@let JobState.True.Result<List<ReviewTodoDTO>>( result.toObjects(ReviewTodoDTO::class.java).sortedByDescending { it.date } )
 
             } catch (e : Exception) {
                 LogUtil.e(Constants.TAG, "$THIS_NAME getReviewTodo() JobState.Error : $e")
@@ -514,11 +511,11 @@ class HandlerFireStore(
                 LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedCurrentUser()")
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                        .document(model.userEmail + model.modelId)
-                        .collection(getFireStoreString(R.string.checked_user_collection))
-                        .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUserEmail)
-                        .get()
-                        .await()
+                    .document(model.userEmail + model.modelId)
+                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUserEmail)
+                    .get()
+                    .await()
 
                 if (!result.isEmpty) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() JobState.True")
