@@ -89,21 +89,15 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * - FirebaseAuth.getInstance().signOut() : 현재 사용자를 로그아웃하고 디스크 캐시에서 삭제
-     * - GoogleSignInClient.signOut() : 앱에 연결된 계정을 지우는 작업(매번 계정 선택가능)
+     * Gon : FirebaseAuth.getInstance().signOut() : 현재 사용자를 로그아웃하고 디스크 캐시에서 삭제
+     *       GoogleSignInClient.revokeAccess() : 현재 애플리케이션에 부여된 액세스 권한을 취소
+     *       GoogleSignInClient.signOut() : 앱에 연결된 계정을 지우는 작업(매번 계정 선택가능)
+     *       [update - 21.11.17]
      */
     private fun signOut() {
         gsc.signOut()
         gsc.revokeAccess()
         viewModel.removeToken()
-    }
-
-    /**
-     * - FirebaseAuth.getInstance().currentUser.delete() : Firebase 프로젝트의 데이터베이스에서 사용자 레코드를 삭제
-     * - GoogleSignInClient.revokeAccess() : 현재 애플리케이션에 부여된 액세스 권한을 취소
-     */
-    private fun disjoin() {
-        viewModel.disjoinMembership()
     }
 
     override fun initViews() = with(binding) {
@@ -127,19 +121,20 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 }).show()
         }
 
+        /**
+         * Gon : 회원탈퇴 버튼을 클릭하고 발생한 Dialog의 선택 값에 따라 작업을 처리합니다.
+         *       [update - 21.11.17]
+         */
         deleteButton.setOnClickListener {
-            CustomDialog(requireContext(),
-                getString(R.string.delete_user_dialog_title),
-                getString(R.string.delete_user_dialog_description),
-                object : CustomDialogClickListener {
-                    override fun onPositiveClick() {
-                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
-                        disjoin()
-                    }
-                    override fun onNegativeClick() {
-                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
-                    }
-                }).show()
+            CustomDialog(requireContext(), getString(R.string.delete_user_dialog_title), getString(R.string.delete_user_dialog_description), object : CustomDialogClickListener {
+                override fun onPositiveClick() {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME 회원탈퇴 CustomDialog Positive")
+                    viewModel.disjoinMembership()
+                }
+                override fun onNegativeClick() {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME 회원탈퇴 CustomDialog Negative")
+                }
+            }).show()
         }
     }
 
@@ -148,7 +143,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      */
     override fun observeData() {
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer {
-            LogUtil.i(Constants.TAG, "$THIS_NAME observeData MyState : ${it}")
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData jobStateLiveData : ${it}")
             when (it) {
                 is JobState.Loading -> handleLoadingState()
                 is JobState.True -> signOut()
@@ -157,6 +152,16 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 is JobState.Error -> handleErrorState(it)
                 is JobState.False -> handleFalseState()
                 is JobState.Uninitialized -> handleUninitialized()
+            }
+        })
+
+        viewModel.dsjnMembJobStateLiveData.observe(viewLifecycleOwner, Observer {
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+            when (it) {
+                is JobState.True -> signOut()
+                is JobState.False -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+                is JobState.Error -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+                is JobState.Uninitialized -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
             }
         })
     }

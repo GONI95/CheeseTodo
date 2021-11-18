@@ -1,9 +1,11 @@
 package sang.gondroid.cheesetodo.presentation.my
 
+import android.app.job.JobInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.firebase.HandlerFireStore
 import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
@@ -28,6 +30,9 @@ class MyViewModel(
     val jobStateLiveData : LiveData<JobState>
         get() = _jobStateLiveData
 
+    private var _dsjnMembJobStateLiveData = MutableLiveData<JobState>()
+    val dsjnMembJobStateLiveData : LiveData<JobState>
+        get() = _dsjnMembJobStateLiveData
 
     /**
      * Preference에 저장된 Token 유무에 따라 현재 로그인이 되었는지 체크하는 작업 : Loading, Login, NotRegistered 핸들링
@@ -93,40 +98,57 @@ class MyViewModel(
         appPreferenceManager.removeIdToken()
         appPreferenceManager.removeUserNameString()
 
-        handlerFirebaseAuth.signout()
-
         fetchData()
     }
 
     /**
-     * Firebase Auth, Firestore User Collection에서 현재 로그인한 User 정보의 삭제를 요청하는 메서드
+     * Gon : Firestore Users, ReviewTodo collection에서 회원정보를 성공적으로 삭제하면, Firebase Auth Database에서 현재 사용자 정보를 삭제합니다.
+     *       [update - 21.11.17]
      */
-    fun disjoinMembership() = viewModelScope.launch(ioDispatchers){
+    fun disjoinMembership() = viewModelScope.launch(ioDispatchers) {
 
-        /**
-         * 1. Firestore Users에서 현재 Firebase Auth 데이터베이스의 사용자 정보와 동일한 정보를 제거하는 메서드
-         * 2. Firebase 인증 시스템 데이터베이스에서 현재 사용자 정보를 제거하는 메서드
-         */
-        when (val disjoinMembershipState = handlerFireStore.disjoinMembership()) {
-            is JobState.True -> {
-
-                when (val deleteCurrentUserState = handlerFirebaseAuth.deleteCurrentUser()) {
-
-                    is JobState.True -> {
-
-                        _jobStateLiveData.postValue(deleteCurrentUserState)
-                    }
-                    is JobState.False -> _jobStateLiveData.postValue(deleteCurrentUserState)
-                    is JobState.Error -> _jobStateLiveData.postValue(deleteCurrentUserState)
-                    else -> LogUtil.w(
-                        Constants.TAG,
-                        "$THIS_NAME deleteCurrentUser() else : $deleteCurrentUserState"
-                    )
-                }
+        val dltRvTdResult = handlerFireStore.deleteReviewTodoOwnedByMember().also { jobState ->
+            when(jobState) {
+                is JobState.True ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() 회원의 ReviewTodo 삭제 성공")
+                is JobState.False ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() 회원의 ReviewTodo 삭제 실패")
+                is JobState.Error ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() Error 발생 : ${jobState.e}")
+                else ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() Firebase 인증 시스템 로그인되지 않음")
             }
-            is JobState.False -> _jobStateLiveData.postValue(disjoinMembershipState)
-            is JobState.Error -> _jobStateLiveData.postValue(disjoinMembershipState)
-            else -> LogUtil.w(Constants.TAG, "$THIS_NAME disjoinMembership() else : $disjoinMembershipState")
+        }
+
+        val dltMembResult = handlerFireStore.deleteMemberInfo().also { jobState ->
+            when(jobState) {
+                is JobState.True ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() 회원정보 삭제 성공")
+                is JobState.False ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() 회원정보 삭제 실패")
+                is JobState.Error ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() Error 발생 : ${jobState.e}")
+                else ->
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() Firebase 인증 시스템 로그인되지 않음")
+            }
+        }
+
+        if (dltRvTdResult == JobState.True && dltMembResult == JobState.True) {
+            handlerFirebaseAuth.deleteCurrentUser( result = { jobState ->
+
+                _dsjnMembJobStateLiveData.postValue(jobState)
+
+                when(jobState) {
+                    is JobState.True ->
+                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Firebase 인증 시스템 회원정보 삭제 성공")
+                    is JobState.False ->
+                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Firebase 인증 시스템 회원정보 삭제 실패")
+                    is JobState.Error ->
+                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Error 발생 : ${jobState.e}")
+                    else ->
+                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() Firebase 인증 시스템 로그인되지 않음")
+                }
+            })
         }
     }
 }

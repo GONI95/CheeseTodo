@@ -2,13 +2,13 @@ package sang.gondroid.cheesetodo.data.firebase
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.Observable
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.db.FireStoreMembershipDTO
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
@@ -102,28 +102,166 @@ class HandlerFireStore(
     }
 
     /**
-     * Firebase 인증 시스템에 로그인한 User인 현재 User의 Email과 동일한 Firestore Users Collection에서 삭제하는 메서드
+     * Gon : Firestore ReviewTodo Collection에서 현재 로그인한 회원의 게시물을 삭제하는 메서드
+     *
+     *       Firestore는 기본적으로 document 삭제에 대한 작업을 한번에 할 수 없습니다.
+     *       reviewTodoDocumentList - 삭제할 회원의 ReviewTodo에 해당하는 document들을 찾아냅니다.
+     *       reviewTodoDocumentList를 넘기며 두 메서드를 호출하여, 정상동작한 경우, ReviewTodo의 document를 삭제합니다.
+     *       taskResult - document 삭제 작업 중 실패할 경우에만 값을 가집니다.
+     *       [update - 21.11.17]
      */
-    suspend fun disjoinMembership() : JobState = withContext(ioDispatchers) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME disjoinMembership() called")
+    suspend fun deleteReviewTodoOwnedByMember() : JobState = withContext(ioDispatchers) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() called : ${currentCoroutineContext()}")
+        val taskResult = ArrayList<Boolean>()
 
+        firebaseAuth.currentUser?.let { firebaseUser ->
+            firebaseUser.email.let { email ->
+                try {
+                    val reviewTodoDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                        .whereEqualTo(getFireStoreString(R.string.user_email), email)
+                        .get().await().documents
+
+                    val dltCheckedUser = async {
+                        deleteCheckedUserOwnedByMemeber(reviewTodoDocumentList).also {
+                            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() return : $it")
+                        }
+                    }
+
+                    val dltComments = async {
+                        deleteCommentsOwnedByMemeber(reviewTodoDocumentList).also {
+                            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCommentsOwnedByMemeber() return : $it")
+                        }
+                    }
+
+                    if (dltComments.await() && dltCheckedUser.await()) {
+                        reviewTodoDocumentList.forEach { documentSnapshot ->
+                            firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                                .document(documentSnapshot.id)
+                                .delete()
+                                .addOnCompleteListener { task ->
+                                    if (!task.isSuccessful) {
+                                        taskResult.add(task.isSuccessful)
+                                    }
+                                }.await()
+                        }
+
+                        return@withContext if (taskResult.isEmpty()) JobState.True else JobState.False
+                    }
+
+                    return@withContext JobState.False
+
+                } catch (e : Throwable) {
+                    return@withContext JobState.Error(R.string.request_error, e)
+                }
+            }
+        } ?: kotlin.run {
+            return@withContext JobState.Uninitialized
+        }
+    }
+
+    /**
+     * Gon : Firestore ReviewTodo Collection에서 현재 로그인한 회원의 게시물의 Comments를 삭제하는 메서드
+     *
+     *       Firestore는 기본적으로 document 삭제에 대한 작업을 한번에 할 수 없습니다.
+     *       commentsDocumentList - 삭제할 회원의 Comments에 해당하는 document들을 찾아냅니다.
+     *       commentsDocumentList의 정보를 확인하여 Comments의 document를 삭제합니다.
+     *       taskResult - document 삭제 작업 중 실패할 경우에만 값을 가집니다.
+     *       [update - 21.11.17]
+     */
+    private suspend fun deleteCommentsOwnedByMemeber(reviewTodoDocumentList: List<DocumentSnapshot>): Boolean {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCommentsOwnedByMemeber() called : ${currentCoroutineContext()}")
+        val taskResult = ArrayList<Boolean>()
+
+        reviewTodoDocumentList.forEach { documentSnapshot ->
+
+            val commentsDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                .document(documentSnapshot.id)
+                .collection(getFireStoreString(R.string.review_comments_collection))
+                .get().await().documents
+
+            commentsDocumentList.forEach {
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .document(documentSnapshot.id)
+                    .collection(getFireStoreString(R.string.review_comments_collection))
+                    .document(it.id)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            taskResult.add(task.isSuccessful)
+                        }
+                    }
+                    .await()
+            }
+
+            return taskResult.isEmpty()
+        }
+
+        return false
+    }
+
+    /**
+     * Gon : Firestore ReviewTodo Collection에서 현재 로그인한 회원의 게시물의 CheckedUser를 삭제하는 메서드
+     *
+     *       Firestore는 기본적으로 document 삭제에 대한 작업을 한번에 할 수 없습니다.
+     *       checkedUsersDocumentList - 삭제할 회원의 checked_user에 해당하는 document들을 찾아냅니다.
+     *       checkedUsersDocumentList의 정보를 확인하여 checked_user의 document를 삭제합니다.
+     *       taskResult - document 삭제 작업 중 실패할 경우에만 값을 가집니다.
+     *       [update - 21.11.17]
+     */
+    private suspend fun deleteCheckedUserOwnedByMemeber(reviewTodoDocumentList: List<DocumentSnapshot>) : Boolean {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCommentsOwnedByMemeber() called")
+        val taskResult = ArrayList<Boolean>()
+
+        reviewTodoDocumentList.forEach { documentSnapshot ->
+
+            val checkedUsersDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                .document(documentSnapshot.id)
+                .collection(getFireStoreString(R.string.checked_user_collection))
+                .get().await().documents
+
+            checkedUsersDocumentList.forEach {
+                firestore.collection(getFireStoreString(R.string.review_todo_collection))
+                    .document(documentSnapshot.id)
+                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .document(it.id)
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            taskResult.add(task.isSuccessful)
+                        }
+                    }
+                    .await()
+            }
+
+            return taskResult.isEmpty()
+        }
+
+        return false
+    }
+
+    /**
+     * Gon : Firestore Users Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
+     * [update - 21.11.17]
+     */
+    suspend fun deleteMemberInfo() : JobState {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() called")
         var jobState : JobState = JobState.Uninitialized
 
-        return@withContext firebaseAuth.currentUser?.email.let { email ->
-            try {
-                firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).delete().addOnCompleteListener { task ->
+        firebaseAuth.currentUser?.let { firebaseUser ->
+            firebaseUser.email.let { email ->
+                return try {
+                    firestore.collection(getFireStoreString(R.string.user_collection))
+                        .document(email!!).delete().addOnCompleteListener { task ->
+                            jobState = if (task.isSuccessful) JobState.True else JobState.False
+                        }.await()
 
-                    jobState = if (task.isSuccessful) JobState.True else JobState.False
-
-                }.await()
-
-                LogUtil.d(Constants.TAG, "$THIS_NAME disjoinMembership() $jobState")
-                return@let jobState
-
-            } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME disjoinMembership() JobState.Error")
-                return@let  JobState.Error(R.string.request_error, e)
+                    jobState
+                } catch (e : Throwable) {
+                    JobState.Error(R.string.request_error, e)
+                }
             }
+        } ?: kotlin.run {
+            return jobState
         }
     }
 

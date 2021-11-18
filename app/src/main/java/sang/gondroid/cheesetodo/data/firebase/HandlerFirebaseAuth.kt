@@ -37,13 +37,12 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
         LogUtil.v(Constants.TAG, "$THIS_NAME validateToken() called")
 
         if (!appPreferenceManager.getIdToken().isNullOrEmpty() && !appPreferenceManager.getUserNameString().isNullOrEmpty()) {
-
             try {
-                if (firebaseAuth.currentUser == null) {
-                    val credential = GoogleAuthProvider.getCredential(appPreferenceManager.getIdToken()!!, null)
-                    firebaseAuth.signInWithCredential(credential).await().let { result ->
-                        result.user?.let { firebaseUser = it } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
-                    }
+                val credential = GoogleAuthProvider.getCredential(appPreferenceManager.getIdToken()!!, null)
+                firebaseAuth.signInWithCredential(credential).await().let { result ->
+                    result.user?.let {
+                        firebaseUser = it
+                    } // firebase 인증 시스템에 로그인 할 때 마다 현재 User를 초기화
                 }
 
                 LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : JobState.Login")
@@ -53,8 +52,6 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
                 LogUtil.e(Constants.TAG, "$THIS_NAME validateToken() : JobState.Error")
                 return@withContext JobState.Error(R.string.request_error, e)
             }
-
-
         } else {
             LogUtil.d(Constants.TAG, "$THIS_NAME validateToken() : JobState.NotRegistered")
 
@@ -67,52 +64,45 @@ class HandlerFirebaseAuth(private val appPreferenceManager: AppPreferenceManager
     /**
      * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 가져오는 메서드 : Registered, NotRegistered 반환
      */
-     fun validateCurrentUser(): JobState {
-         LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentUser() called")
+    fun validateCurrentUser(): JobState {
+        LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentUser() called")
 
-            try {
-                if (firebaseAuth.currentUser != null) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() JobState.True")
-                    return JobState.True
-                } else {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() JobState.False")
-                    return JobState.False
-                }
-            } catch (e : Exception) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
-                return JobState.Error(R.string.request_error, e)
+        try {
+            if (firebaseAuth.currentUser != null) {
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() JobState.True")
+                return JobState.True
+            } else {
+                LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() JobState.False")
+                return JobState.False
             }
+        } catch (e : Exception) {
+            LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentUser() MyState.Error")
+            return JobState.Error(R.string.request_error, e)
+        }
 
-     }
+    }
 
 
     /**
-     * Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 Firebase 인증 시스템으로부터 삭제하는 메서드
+     * Gon : Firebase 인증 시스템에 로그인한 User인 현재 User 정보를 Firebase 인증 시스템으로부터 삭제하는 메서드
+     *
+     *       FirebaseAuth.getInstance().currentUser.delete() : Firebase Auth Database에서 현재 사용자 정보를 삭제
+     *       [update - 21.11.17]
      */
-    suspend fun deleteCurrentUser() : JobState = withContext(ioDispatchers){
-        LogUtil.v(Constants.TAG, "$THIS_NAME deleteCurrentUser() called")
+    suspend fun deleteCurrentUser( result: (JobState) -> Unit ) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() called : ${currentCoroutineContext()}")
 
-        var jobState : JobState = JobState.Uninitialized
-
-        return@withContext firebaseUser.email.let { email ->
+        firebaseUser.let { user ->
             try {
-                firebaseUser.delete().addOnCompleteListener { task ->
-
-                    jobState = if (task.isSuccessful) JobState.True else JobState.False
-
+                user.delete().addOnCompleteListener { task ->
+                    result(if (task.isSuccessful) JobState.True else JobState.False)
                 }.await()
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() $jobState")
-                return@let jobState
-
             } catch (e : Exception) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME deleteCurrentUser() JobState.Error")
-                return@let  JobState.Error(R.string.request_error, e)
+                result(JobState.Error(R.string.request_error, e))
             }
+        } ?: kotlin.run {
+            result(JobState.Uninitialized)
         }
-    }
-
-    fun signout() {
-        firebaseAuth.signOut()
     }
 }
