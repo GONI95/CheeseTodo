@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="todoItem"
+            type="sang.gondroid.cheesetodo.domain.model.TodoModel" />
+
+        <import type="sang.gondroid.cheesetodo.util.ExtensionsKt"/>
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/read_mode_toolbar">
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/read_mode_title_neumorph_cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+            app:neumorph_shapeType="basin"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/read_mode_title_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:fontFamily="@font/three_dimensional_hatch"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="@{todoItem.title}"
+                    android:textColor="@color/text_color_dark_gray"
+                    android:textSize="20sp"
+                    android:transitionName="@string/title_transition_name"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="상세 정보" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:id="@+id/read_mode_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/category_text"
+            android:textColor="@color/text_color_dark_gray"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/read_mode_title_neumorph_cardView" />
+
+        <TextView
+            android:id="@+id/read_mode_category_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@{todoItem.category.categoryNameId}"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/read_mode_category"
+            app:layout_constraintTop_toBottomOf="@+id/read_mode_title_neumorph_cardView"
+            tools:text="Android" />
+
+        <TextView
+            android:id="@+id/read_mode_importance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/importance_text"
+            android:textColor="@color/text_color_dark_gray"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/read_mode_category_textView"
+            app:layout_constraintTop_toBottomOf="@+id/read_mode_title_neumorph_cardView" />
+
+        <TextView
+            android:id="@+id/read_mode_importance_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/read_mode_importance"
+            app:layout_constraintTop_toBottomOf="@+id/read_mode_title_neumorph_cardView"
+            tools:text="아주 중요함" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

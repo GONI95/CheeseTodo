@@ -54,14 +54,14 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 R.layout.support_simple_spinner_dropdown_item
             ).also {
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                editModeImportanceSpinner.adapter = it
+                //editModeImportanceSpinner.adapter = it
             }
 
             /**
              * OptionMenu를 DataBinding 레이아웃 표현식으로 처리하고 싶었지만, 보류
              */
             readModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
-            editModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
+            //editModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
         }
     }
 
@@ -75,11 +75,11 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
      * 5. OnMenuItemClickListener의 onMenuItemClick() 이벤트 핸들러 메서드(메서드 참조 방식, Button)
      */
     fun titleAfterTextChanged(editable: Editable?) {
-        if(!editable.toString().isEmpty()) binding.editModeTitleEditLayout.error = null
+        //if(!editable.toString().isEmpty()) binding.editModeTitleEditLayout.error = null
     }
 
     fun todoAfterTextChanged(editable: Editable?) {
-        if(!editable.toString().isEmpty()) binding.editModeTodoEditLayout.error = null
+        //if(!editable.toString().isEmpty()) binding.editModeTodoEditLayout.error = null
     }
 
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -102,14 +102,14 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         R.id.edit_item -> {
             with(binding) {
                 readModeConstraintLayout.visibility = View.GONE
-                editModeConstraintLayout.visibility = View.VISIBLE
+                //editModeConstraintLayout.visibility = View.VISIBLE
             }
             true
         }
 
         R.id.upload_item -> {
             with(binding) {
-                if (readModeDifficultTextView.text.isNullOrEmpty())
+                if (layoutReadModeInfo.readModeDifficultTextView.text.isNullOrEmpty())
                     Toast.makeText(this@DetailTodoActivity, R.string.there_are_blank_entries, Toast.LENGTH_LONG).show()
                 else
                     viewModel.uploadReviewTodo(model)
@@ -123,6 +123,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         }
 
         R.id.check_item -> {
+            /*
             with(binding) {
                 val (titleText, todoText) = editModeTitleEditLayout.editText?.text to editModeTodoEditLayout.editText?.text
 
@@ -135,6 +136,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                         editModeDifficultEdit.text.toString()).let { viewModel.updateData(it) }
                 }
             }
+             */
             true
         }
 
@@ -154,6 +156,26 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                     LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
                 }
             }).show()
+    }
+
+    /**
+     * Gon : Todo_CardView, Difficult_CardView의 가시성 변경을 위한 메서드 입니다.
+     *       OnClickListener의 onClick() 이벤트 핸들러 메서드(메서드 참조 방식)
+     *       [21.11.21]
+     */
+    fun onTransformCardViewClick(view: View) {
+        with(binding) {
+            when(view) {
+                layoutReadModeTransform.readModeTodoCardView -> {
+                    layoutReadModeInfo.readModeTodoCardView.visibility = View.VISIBLE
+                    layoutReadModeInfo.readModeDifficultCardView.visibility = View.GONE
+                }
+                layoutReadModeTransform.readModeDifficultCardView -> {
+                    layoutReadModeInfo.readModeTodoCardView.visibility = View.GONE
+                    layoutReadModeInfo.readModeDifficultCardView.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     override fun observeData() {
