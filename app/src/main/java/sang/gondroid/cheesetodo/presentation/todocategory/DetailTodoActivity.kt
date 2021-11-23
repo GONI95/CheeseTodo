@@ -1,12 +1,17 @@
 package sang.gondroid.cheesetodo.presentation.todocategory
 
 import android.text.Editable
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import org.koin.android.ext.android.bind
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import org.koin.android.viewmodel.ext.android.viewModel
+import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.ActivityDetailTodoBinding
 import sang.gondroid.cheesetodo.domain.model.TodoModel
@@ -22,9 +27,8 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
     Toolbar.OnMenuItemClickListener {
     private val THIS_NAME = this::class.simpleName
     private lateinit var model: TodoModel
-    private lateinit var category: TodoCategory
-    private var importance by Delegates.notNull<String>()
-    private var importanceId by Delegates.notNull<Int>()
+    private lateinit var categoryValue: TodoCategory
+    private var importanceValue by Delegates.notNull<Int>()
 
     override val viewModel: DetailTodoViewModel by viewModel()
 
@@ -40,7 +44,9 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         val bundle = this.intent.getBundleExtra("bundle")
         bundle?.let {
             model = it.getSerializable("TodoItemData") as TodoModel
-            category = model.category   //category 초기화
+            categoryValue = model.category   //category 초기화
+            importanceValue = model.importanceId    //중요도 초기화
+
             binding.todoItem = model
         }
 
@@ -48,61 +54,115 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         binding.handler = this
 
         with(binding) {
+
+            /**
+             * Gon : values/spinner_array.xml와 를 DataBinding 레이아웃 표현식으로 처리하고 싶었지만, 보류
+             *       [21.11.21]
+             */
             ArrayAdapter.createFromResource(
-                this@DetailTodoActivity,
-                R.array.importance_array,
-                R.layout.support_simple_spinner_dropdown_item
+                this@DetailTodoActivity, R.array.importance_array, R.layout.support_simple_spinner_dropdown_item
             ).also {
                 it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                //editModeImportanceSpinner.adapter = it
+                layoutWriteModeTitle.writeModeImportanceSpinner.adapter = it
             }
 
             /**
-             * OptionMenu를 DataBinding 레이아웃 표현식으로 처리하고 싶었지만, 보류
+             * Gon : OptionMenu를 DataBinding 레이아웃 표현식으로 처리하고 싶었지만, 보류
+             *
+             *       [21.11.21]
              */
             readModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
-            //editModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
+            writeModeToolbar.setOnMenuItemClickListener(this@DetailTodoActivity)
+            layoutWriteModeTitle.writeModeExpandTextView.setOnClickListener(cardViewExtension)
+
         }
     }
 
     /**
-     * 1, 2. addtextchangedlistener의 afterTextChanged() 이벤트 핸들러 메서드(리스너 바인딩 방식)
      *
-     * 3. OnItemSelectedListener의 onItemSelected() 이벤트 핸들러 메서드(메서드 참조 방식, Spinner)
-     *
-     * 4. OnCheckedChangeListener의 onCheckedChanged() 이벤트 핸들러 메서드(메서드 참조 방식, RadioButton)
-     *
-     * 5. OnMenuItemClickListener의 onMenuItemClick() 이벤트 핸들러 메서드(메서드 참조 방식, Button)
+     */
+    private val cardViewExtension = View.OnClickListener {
+        with(binding.layoutWriteModeTitle) {
+            if (writeModeHiddenLayout.visibility == View.VISIBLE) {
+                TransitionManager.endTransitions(writeModeTitleNeumorphCardView)
+
+                val drawable =
+                CheeseTodoApplication.appContext?.let { instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_more) }
+
+                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(
+                    null, null, drawable, null
+                )
+
+                writeModeHiddenLayout.visibility = View.GONE
+            } else {
+                TransitionManager.beginDelayedTransition(writeModeTitleNeumorphCardView, AutoTransition())
+
+                val drawable =
+                    CheeseTodoApplication.appContext?.let { instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_less) }
+
+                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(
+                    null, null, drawable, null
+                )
+
+                writeModeHiddenLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+
+
+    /**
+     * Gon : TextView의 값이 빈값인 경우 Error가 발생했을 때, 값이 입력되면 Error 문구를 지우기위한 메서드 입니다.
+     *       addtextchangedlistener의 afterTextChanged() 이벤트 핸들러 메서드(리스너 바인딩 방식)
+     *       [21.11.21]
      */
     fun titleAfterTextChanged(editable: Editable?) {
-        //if(!editable.toString().isEmpty()) binding.editModeTitleEditLayout.error = null
+        if(!editable.toString().isEmpty()) binding.layoutWriteModeTitle.writeModeTitleTextInputLayout.error = null
     }
 
     fun todoAfterTextChanged(editable: Editable?) {
-        //if(!editable.toString().isEmpty()) binding.editModeTodoEditLayout.error = null
+        if(!editable.toString().isEmpty()) binding.layoutWriteModeInfo.writeModeTodoTextInputLayout.error = null
     }
 
+    /**
+     * Gon : 수정 작업 중 Importance 변경 값을 수신받아 멤버변수 importanceId에 저장하는 메서드 입니다.
+     *       OnItemSelectedListener의 onItemSelected() 이벤트 핸들러 메서드(메서드 참조 방식, Spinner)
+     *       [21.11.21]
+     */
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        importance = parent.getItemAtPosition(position).toString()
-        importanceId = position
+        importanceValue = position
     }
 
+    /**
+     * Gon : 수정 작업 중 Category 변경 값을 수신받아 멤버변수 category에 저장하는 메서드 입니다.
+     *       OnCheckedChangeListener의 onCheckedChanged() 이벤트 핸들러 메서드(메서드 참조 방식, RadioButton)
+     *       [21.11.21]
+     */
     fun onCategoryCheckChanged(group: RadioGroup?, checkedId: Int) {
-        category = when (checkedId) {
-            R.id.androidRadioButton -> TodoCategory.ANDROID
-            R.id.lauguageRadioButton -> TodoCategory.LANGUAGE
-            R.id.dbRadioButton -> TodoCategory.DB
-            R.id.otherRadioButton -> TodoCategory.OTHER
+        categoryValue = when (checkedId) {
+            R.id.android_radio_button -> TodoCategory.ANDROID
+            R.id.lauguage_radio_button -> TodoCategory.LANGUAGE
+            R.id.db_radio_button -> TodoCategory.DB
+            R.id.other_radio_button -> TodoCategory.OTHER
 
             else -> TodoCategory.ALL
         }
     }
 
+    /**
+     * Gon : Menu 별 수정, 업로드, 삭제 이벤트를 발생시키기 위한 메서드 입니다.
+     *       OnMenuItemClickListener의 onMenuItemClick() 이벤트 핸들러 메서드(메서드 참조 방식, MenuButton)
+     *       [21.11.21]
+     */
     override fun onMenuItemClick(item: MenuItem): Boolean = when (item.itemId) {
         R.id.edit_item -> {
             with(binding) {
+                readModeTitleText = layoutReadModeTitle.readModeTitleTextView.text.toString()
+                readModeTodoText = layoutReadModeInfo.readModeTodoTextView.text.toString()
+                readModeDifficultText = layoutReadModeInfo.readModeDifficultTextView.text.toString()
+
                 readModeConstraintLayout.visibility = View.GONE
-                //editModeConstraintLayout.visibility = View.VISIBLE
+                writeModeConstraintLayout.visibility = View.VISIBLE
             }
             true
         }
@@ -123,20 +183,20 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         }
 
         R.id.check_item -> {
-            /*
             with(binding) {
-                val (titleText, todoText) = editModeTitleEditLayout.editText?.text to editModeTodoEditLayout.editText?.text
+                val (titleText, todoText) =
+                    layoutWriteModeTitle.writeModeTitleEditText.text to layoutWriteModeInfo.writeModeTodoEditText.text
 
-                if (titleText.isNullOrEmpty())  editModeTitleEditLayout.error = getString(R.string.please_enter_the_text)
+                if (titleText.isNullOrEmpty()) layoutWriteModeTitle.writeModeTitleTextInputLayout.error = getString(R.string.please_enter_the_text)
 
-                else if (todoText.isNullOrEmpty())  editModeTodoEditLayout.error = getString(R.string.please_enter_the_text)
+                else if (todoText.isNullOrEmpty()) layoutWriteModeInfo.writeModeTodoTextInputLayout.error = getString(R.string.please_enter_the_text)
 
                 else {
-                    TodoModel(model.id, model.date, category, importanceId, titleText.toString(), todoText.toString(),
-                        editModeDifficultEdit.text.toString()).let { viewModel.updateData(it) }
+                    TodoModel(model.id, model.date, categoryValue, importanceValue, titleText.toString(), todoText.toString(),
+                        layoutWriteModeInfo.writeModeDifficultEditText.text.toString()).let { viewModel.updateData(it) }
                 }
             }
-             */
+
             true
         }
 
@@ -145,25 +205,12 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
         }
     }
 
-    private fun createDeleteDialog() {
-        CustomDialog(this, getString(R.string.delete_todo_dialog_title), getString(R.string.delete_todo_dialog_description),
-            object : CustomDialogClickListener {
-                override fun onPositiveClick() {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
-                    viewModel.deleteData(model.id)
-                }
-                override fun onNegativeClick() {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
-                }
-            }).show()
-    }
-
     /**
      * Gon : Todo_CardView, Difficult_CardView의 가시성 변경을 위한 메서드 입니다.
      *       OnClickListener의 onClick() 이벤트 핸들러 메서드(메서드 참조 방식)
      *       [21.11.21]
      */
-    fun onTransformCardViewClick(view: View) {
+    fun onReadModeTransformCardViewClick(view: View) {
         with(binding) {
             when(view) {
                 layoutReadModeTransform.readModeTodoCardView -> {
@@ -176,6 +223,37 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 }
             }
         }
+    }
+    fun onWriteModeTransformCardViewClick(view: View) {
+        with(binding) {
+            when(view) {
+                layoutWriteModeTransform.writeModeTodoCardView -> {
+                    layoutWriteModeInfo.writeModeTodoCardView.visibility = View.VISIBLE
+                    layoutWriteModeInfo.writeModeDifficultCardView.visibility = View.GONE
+                }
+                layoutWriteModeTransform.writeModeDifficultCardView -> {
+                    layoutWriteModeInfo.writeModeTodoCardView.visibility = View.GONE
+                    layoutWriteModeInfo.writeModeDifficultCardView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    /**
+     * Gon : TodoItem 삭제 여부를 묻는 Dialog 생성 메서드 입니다.
+     *       [21.11.21]
+     */
+    private fun createDeleteDialog() {
+        CustomDialog(this, getString(R.string.delete_todo_dialog_title), getString(R.string.delete_todo_dialog_description),
+            object : CustomDialogClickListener {
+                override fun onPositiveClick() {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                    viewModel.deleteData(model.id)
+                }
+                override fun onNegativeClick() {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                }
+            }).show()
     }
 
     override fun observeData() {

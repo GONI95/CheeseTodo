@@ -16,8 +16,8 @@
         android:paddingBottom="10dp">
 
         <soup.neumorphism.NeumorphCardView
-            android:id="@+id/read_mode_todo_cardView"
-            android:onClick="@{handler::onReadModeTransformCardViewClick}"
+            android:id="@+id/write_mode_todo_cardView"
+            android:onClick="@{handler::onWriteModeTransformCardViewClick}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/vertical_top_middle_guideline"
@@ -46,7 +46,6 @@
         </soup.neumorphism.NeumorphCardView>
 
         <TextView
-            android:id="@+id/todo_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/cute_light"
@@ -55,13 +54,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/vertical_top_middle_guideline"
             app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/read_mode_todo_cardView" />
+            app:layout_constraintTop_toBottomOf="@+id/write_mode_todo_cardView" />
 
 
 
         <soup.neumorphism.NeumorphCardView
-            android:id="@+id/read_mode_difficult_cardView"
-            android:onClick="@{handler::onReadModeTransformCardViewClick}"
+            android:id="@+id/write_mode_difficult_cardView"
+            android:onClick="@{handler::onWriteModeTransformCardViewClick}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
@@ -89,7 +88,6 @@
         </soup.neumorphism.NeumorphCardView>
 
         <TextView
-            android:id="@+id/difficult_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/cute_light"
@@ -98,7 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
             app:layout_constraintStart_toStartOf="@+id/vertical_bottom_middle_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/read_mode_difficult_cardView" />
+            app:layout_constraintTop_toBottomOf="@+id/write_mode_difficult_cardView" />
 
 
         <androidx.constraintlayout.widget.Guideline

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="readModeTitleText"
+            type="String" />
+
+        <variable
+            name="handler"
+            type="sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoActivity" />
+
+        <variable
+            name="todoItem"
+            type="sang.gondroid.cheesetodo.domain.model.TodoModel" />
+
+        <variable
+            name="todoCategory"
+            type="sang.gondroid.cheesetodo.util.TodoCategory" />
+
+        <import type="sang.gondroid.cheesetodo.util.ExtensionsKt"/>
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/write_mode_toolbar">
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/write_mode_title_neumorph_cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+            app:neumorph_shapeType="basin"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="10dp">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/write_mode_title_textInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/write_mode_title_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text)}"
+                        android:fontFamily="@font/three_dimensional_hatch"
+                        android:inputType="text"
+                        android:maxLength="50"
+                        android:minLines="1"
+                        android:text="@{readModeTitleText.toString()}"
+                        android:textColor="@color/text_color_dark_gray"
+                        android:textSize="20sp" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/write_mode_hidden_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/write_mode_expand_textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/write_mode_title_textInputLayout">
+
+                    <Spinner
+                        android:id="@+id/write_mode_importance_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:onItemSelected="@{handler::onImportanceItemSelected}"
+                        app:selectPosition="@{todoItem.importanceId}" />
+                    <!-- setSelection : DataBinding에서 제공하는 bindingAdapter를 이용해 todoItem의 importanceId 값을 가져옵니다. -->
+
+                    <HorizontalScrollView
+                        android:id="@+id/write_mode_horizontal_scrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:scrollbars="none">
+
+                        <RadioGroup
+                            android:id="@+id/write_mode_category_radioGroup"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:gravity="center_vertical"
+                            android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
+                            android:orientation="horizontal"
+                            app:changedId="@{todoItem.category.ordinal - 1}">
+
+                            <RadioButton
+                                android:id="@+id/android_radio_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@{todoCategory.ANDROID.name()}" />
+
+                            <RadioButton
+                                android:id="@+id/lauguage_radio_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@{todoCategory.LANGUAGE.name()}" />
+
+                            <RadioButton
+                                android:id="@+id/db_radio_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@{todoCategory.DB.name()}" />
+
+                            <RadioButton
+                                android:id="@+id/other_radio_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@{todoCategory.OTHER.name()}" />
+
+                        </RadioGroup>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/write_mode_expand_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25dp"
+                    android:gravity="end"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:textColor="@color/gray"
+                    app:drawableEndCompat="@drawable/ic_expand_more"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/write_mode_hidden_layout" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

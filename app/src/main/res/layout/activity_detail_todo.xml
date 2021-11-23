@@ -5,6 +5,18 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
+            name="readModeTitleText"
+            type="String" />
+
+        <variable
+            name="readModeTodoText"
+            type="String" />
+
+        <variable
+            name="readModeDifficultText"
+            type="String" />
+
+        <variable
             name="todoCategory"
             type="sang.gondroid.cheesetodo.util.TodoCategory" />
 
@@ -30,18 +42,18 @@
         tools:context=".presentation.todocategory.DetailTodoActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/readModeConstraintLayout"
+            android:id="@+id/read_mode_constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/readMode_toolbar"
+                android:id="@+id/read_mode_toolbar"
                 style="@style/ThemeOverlay.CheeseTodo.Toolbar"
                 android:layout_width="0dp"
                 app:layout_constraintEnd_toStartOf="@+id/read_mode_vertical_right_guideline"
                 app:layout_constraintStart_toStartOf="@+id/read_mode_vertical_left_guideline"
                 app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/detail_todo_readmode_menu" />
+                app:menu="@menu/detail_todo_read_mode_menu" />
 
 
             <include
@@ -52,7 +64,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/read_mode_vertical_right_guideline"
                 app:layout_constraintStart_toStartOf="@+id/read_mode_vertical_left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/readMode_toolbar" />
+                app:layout_constraintTop_toBottomOf="@+id/read_mode_toolbar" />
 
             <include
                 android:id="@+id/layout_read_mode_transform"
@@ -111,7 +123,89 @@
         <!-- ==================================================== 구분선 ==================================================== -->
         <!-- ==================================================== 구분선 ==================================================== -->
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/write_mode_constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/write_mode_toolbar"
+                style="@style/ThemeOverlay.CheeseTodo.Toolbar"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toStartOf="@+id/write_mode_vertical_right_guideline"
+                app:layout_constraintStart_toStartOf="@+id/write_mode_vertical_left_guideline"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/detail_todo_write_mode_menu" />
+
+
+            <include
+                android:id="@+id/layout_write_mode_title"
+                layout="@layout/include_layout_write_mode_title"
+                bind:todoItem="@{todoItem}"
+                bind:todoCategory="@{todoCategory}"
+                bind:handler="@{handler}"
+                bind:readModeTitleText="@{readModeTitleText}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/write_mode_vertical_right_guideline"
+                app:layout_constraintStart_toStartOf="@+id/write_mode_vertical_left_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/write_mode_toolbar" />
+
+            <include
+                android:id="@+id/layout_write_mode_transform"
+                layout="@layout/include_layout_write_mode_transform"
+                bind:handler="@{handler}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/write_mode_vertical_right_guideline"
+                app:layout_constraintStart_toStartOf="@+id/write_mode_vertical_left_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/layout_write_mode_title" />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/write_mode_vertical_right_guideline"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/write_mode_vertical_left_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/layout_write_mode_transform"
+                app:layout_constraintVertical_bias="0.0">
+
+                <include
+                    android:id="@+id/layout_write_mode_info"
+                    layout="@layout/include_layout_write_mode_info"
+                    bind:handler="@{handler}"
+                    bind:readModeTodoText="@{readModeTodoText}"
+                    bind:readModeDifficultText="@{readModeDifficultText}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/write_mode_vertical_left_guideline"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintGuide_percent="0.04"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/write_mode_vertical_right_guideline"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintGuide_percent="0.96"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
