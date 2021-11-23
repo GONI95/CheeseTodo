@@ -79,30 +79,29 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
     }
 
     /**
-     *
+     * Gon : TransitionManager을 사용하여 layout 변경 애니메이션 적용했습니다.
+     *       [21.11.23]
      */
     private val cardViewExtension = View.OnClickListener {
         with(binding.layoutWriteModeTitle) {
             if (writeModeHiddenLayout.visibility == View.VISIBLE) {
                 TransitionManager.endTransitions(writeModeTitleNeumorphCardView)
 
-                val drawable =
-                CheeseTodoApplication.appContext?.let { instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_more) }
+                val drawable = CheeseTodoApplication.appContext?.let {
+                        instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_more)
+                }
 
-                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(
-                    null, null, drawable, null
-                )
+                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
 
                 writeModeHiddenLayout.visibility = View.GONE
             } else {
                 TransitionManager.beginDelayedTransition(writeModeTitleNeumorphCardView, AutoTransition())
 
-                val drawable =
-                    CheeseTodoApplication.appContext?.let { instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_less) }
+                val drawable = CheeseTodoApplication.appContext?.let {
+                        instance -> ContextCompat.getDrawable(instance, R.drawable.ic_expand_less)
+                }
 
-                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(
-                    null, null, drawable, null
-                )
+                writeModeExpandTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
 
                 writeModeHiddenLayout.visibility = View.VISIBLE
             }
