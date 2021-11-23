@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="handler"
+            type="sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/write_mode_todo_cardView"
+            android:onClick="@{handler::onWriteModeTransformCardViewClick}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_top_middle_guideline"
+            app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
+            android:background="@color/storke_filter_chip_state_list"
+            app:neumorph_shapeType="flat"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_todo_list"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cute_light"
+            android:text="@string/todo"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_top_middle_guideline"
+            app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/write_mode_todo_cardView" />
+
+
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/write_mode_difficult_cardView"
+            android:onClick="@{handler::onWriteModeTransformCardViewClick}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+            app:layout_constraintStart_toStartOf="@+id/vertical_bottom_middle_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
+            app:neumorph_shapeType="flat"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_speech_bubble"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cute_light"
+            android:text="@string/difficult"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+            app:layout_constraintStart_toStartOf="@+id/vertical_bottom_middle_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/write_mode_difficult_cardView" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_left_guideline"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_top_middle_guideline"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_bottom_middle_guideline"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vertical_right_guideline"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

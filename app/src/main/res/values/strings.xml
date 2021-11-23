@@ -13,6 +13,7 @@
 
     <string name="save">저장하기</string>
     <string name="todo">TODO</string>
+    <string name="difficult">DIFFICULT</string>
     <string name="TITLE">제목</string>
     <string name="please_enter_the_text">글을 입력해주세요.</string>
 

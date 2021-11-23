@@ -1,5 +1,7 @@
-https://icon-icons.com/ko/download/123034/SVG/512/
-https://icon-icons.com/ko/download/84956/SVG/512/
-https://icon-icons.com/ko/download/60488/SVG/512/
-https://icon-icons.com/ko/download/130487/SVG/512/
-https://icon-icons.com/ko/download/143196/SVG/512/
+etc : https://icon-icons.com/ko/download/123034/SVG/512/
+db : https://icon-icons.com/ko/download/84956/SVG/512/
+android : https://icon-icons.com/ko/download/60488/SVG/512/
+kotlin : https://icon-icons.com/ko/download/130487/SVG/512/
+git : https://icon-icons.com/ko/download/143196/SVG/512/
+todo_list : https://icon-icons.com/ko/download/81326/SVG/512/
+speach bubble : https://icon-icons.com/ko/download/81316/SVG/512/

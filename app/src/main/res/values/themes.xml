@@ -10,7 +10,7 @@
         <item name="colorSecondaryVariant">@color/cheese_thick</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/light_blue_gray</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/bg_light_gray</item>
         <!-- Status bar Icon color. -->
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <!-- Customize your theme here. -->
