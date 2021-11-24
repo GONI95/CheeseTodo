@@ -69,11 +69,11 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
      * 5. OnClickListener onClick() 이벤트 핸들러 메서드(메서드 참조 방식, Button)
      */
     fun titleAfterTextChanged(editable : Editable?) {
-        if (!editable.toString().isEmpty()) binding.titleEditLayout.error = null
+        if (!editable.toString().isEmpty()) binding.titleTextInputLayout.error = null
     }
 
     fun todoAfterTextChanged(editable : Editable?) {
-        if (!editable.toString().isEmpty()) binding.todoEditLayout.error = null
+        if (!editable.toString().isEmpty()) binding.todoTextInputLayout.error = null
     }
 
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -97,14 +97,14 @@ class InsertTodoActivity : BaseActivity<InsertTodoViewModel, ActivityInsertTodoB
 
     fun onBtnClick(view: View?) {
         with(binding) {
-            val titleText = titleEditLayout.editText?.text
-            val todoText = todoEditLayout.editText?.text
+            val titleText = titleTextInputLayout.editText?.text
+            val todoText = todoTextInputLayout.editText?.text
 
             if (titleText.isNullOrEmpty())
-                titleEditLayout.error = getString(R.string.please_enter_the_text)
+                titleTextInputLayout.error = getString(R.string.please_enter_the_text)
 
             else if(todoText.isNullOrEmpty())
-                todoEditLayout.error = getString(R.string.please_enter_the_text)
+                todoTextInputLayout.error = getString(R.string.please_enter_the_text)
 
             else {
                 val todoModel = TodoModel(null, System.currentTimeMillis(), category, importanceId, titleText.toString(), todoText.toString(), difficultText)
