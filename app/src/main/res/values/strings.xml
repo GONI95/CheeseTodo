@@ -14,7 +14,9 @@
     <string name="save">저장하기</string>
     <string name="todo">TODO</string>
     <string name="difficult">DIFFICULT</string>
-    <string name="TITLE">제목</string>
+    <string name="category">CATEGORY</string>
+    <string name="importance">IMPORTANCE</string>
+    <string name="title">TITLE</string>
     <string name="please_enter_the_text">글을 입력해주세요.</string>
 
     <string name="success">작업이 완료되었습니다.</string>

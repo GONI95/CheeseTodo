@@ -19,6 +19,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/bg_light_gray"
         tools:context=".presentation.todocategory.InsertTodoActivity">
 
         <androidx.core.widget.NestedScrollView
@@ -35,131 +36,317 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/titleEditLayout"
+                <soup.neumorphism.NeumorphCardView
+                    android:id="@+id/title_ardView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusTopEnd="10dp"
-                    app:boxCornerRadiusTopStart="10dp"
-                    app:errorEnabled="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_marginTop="30dp"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                    app:neumorph_shapeType="basin"
+                    tools:ignore="MissingConstraints">
 
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/titleEdit"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:hint="@string/TITLE"
-                        android:afterTextChanged="@{(text)-> handler.titleAfterTextChanged(text)}"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:maxLength="50"/>
+                        android:layout_height="match_parent"
+                        android:paddingTop="10dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/title_textInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:errorEnabled="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/title_editText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/three_dimensional_hatch"
+                                android:hint="@string/title"
+                                android:inputType="text"
+                                android:maxLength="50"
+                                android:maxLines="1"
+                                android:textColor="@color/text_color_dark_gray"
+                                android:textSize="20sp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </soup.neumorphism.NeumorphCardView>
 
 
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/todoEditLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <soup.neumorphism.NeumorphCardView
+                    android:id="@+id/category_cardView"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:errorEnabled="true"
-                    app:layout_constraintBottom_toTopOf="@+id/insertButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/todoEdit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:hint="@string/todo"
-                        android:afterTextChanged="@{(text)-> handler.todoAfterTextChanged(text)}"
-                        android:minLines="10"
-                        android:maxLength="1000"
-                        android:inputType="none" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Spinner
-                    android:id="@+id/importanceSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:onItemSelected="@{handler::onImportanceItemSelected}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleEditLayout" />
-
-                <HorizontalScrollView
-                    android:id="@+id/horizontalScrollView"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:scrollbars="none"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/importanceSpinner">
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/title_ardView"
+                    app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                    app:neumorph_shapeType="basin"
+                    tools:ignore="MissingConstraints">
 
-                    <RadioGroup
-                        android:id="@+id/categoryRadioGroup"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
-                        android:checkedButton="@id/androidRadioButton"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <RadioButton
-                            android:id="@+id/androidRadioButton"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/category_textView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@{todoCategory.ANDROID.name()}" />
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/cute_light"
+                            android:text="@string/category"
+                            app:layout_constraintBottom_toTopOf="@+id/category_line"
+                            app:layout_constraintEnd_toStartOf="@+id/category_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/category_vertical_left_guideline"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <RadioButton
-                            android:id="@+id/lauguageRadioButton"
-                            android:layout_width="match_parent"
+                        <View
+                            android:id="@+id/category_line"
+                            android:layout_width="0dp"
+                            android:layout_height="0.5dp"
+                            android:background="@color/light_gray"
+                            app:layout_constraintBottom_toTopOf="@+id/category_horizontal_scrollView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/category_textView" />
+
+                        <HorizontalScrollView
+                            android:id="@+id/category_horizontal_scrollView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@{todoCategory.LANGUAGE.name()}" />
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:scrollbars="none"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/category_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/category_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/category_line">
 
-                        <RadioButton
-                            android:id="@+id/dbRadioButton"
-                            android:layout_width="match_parent"
+                            <RadioGroup
+                                android:id="@+id/category_radioGroup"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:checkedButton="@id/androidRadioButton"
+                                android:gravity="center_vertical"
+                                android:onCheckedChanged="@{handler::onCategoryCheckChanged}"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:id="@+id/androidRadioButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:paddingEnd="5dp"
+                                    android:text="@{todoCategory.ANDROID.name()}"
+                                    android:textSize="12sp" />
+
+                                <RadioButton
+                                    android:id="@+id/lauguageRadioButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:paddingEnd="5dp"
+                                    android:text="@{todoCategory.LANGUAGE.name()}"
+                                    android:textSize="12sp" />
+
+                                <RadioButton
+                                    android:id="@+id/dbRadioButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:paddingEnd="5dp"
+                                    android:text="@{todoCategory.DB.name()}"
+                                    android:textSize="12sp" />
+
+                                <RadioButton
+                                    android:id="@+id/otherRadioButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:paddingEnd="5dp"
+                                    android:text="@{todoCategory.OTHER.name()}"
+                                    android:textSize="12sp" />
+
+                            </RadioGroup>
+                        </HorizontalScrollView>
+
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/category_vertical_left_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.04" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/category_vertical_right_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.96" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </soup.neumorphism.NeumorphCardView>
+
+
+                <soup.neumorphism.NeumorphCardView
+                    android:id="@+id/importance_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/category_cardView"
+                    app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                    app:neumorph_shapeType="basin"
+                    tools:ignore="MissingConstraints">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/importance_textView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@{todoCategory.DB.name()}" />
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/cute_light"
+                            android:text="@string/importance"
+                            app:layout_constraintBottom_toTopOf="@+id/importance_line"
+                            app:layout_constraintEnd_toStartOf="@+id/importance_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/importance_vertical_left_guideline"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <RadioButton
-                            android:id="@+id/otherRadioButton"
-                            android:layout_width="match_parent"
+                        <View
+                            android:id="@+id/importance_line"
+                            android:layout_width="0dp"
+                            android:layout_height="0.5dp"
+                            android:background="@color/light_gray"
+                            app:layout_constraintBottom_toTopOf="@+id/importance_spinner"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/importance_textView" />
+
+                        <Spinner
+                            android:id="@+id/importance_spinner"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@{todoCategory.OTHER.name()}" />
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:onItemSelected="@{handler::onImportanceItemSelected}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/importance_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/importance_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/importance_line" />
 
-                    </RadioGroup>
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/importance_vertical_left_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.04" />
 
-                </HorizontalScrollView>
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/importance_vertical_right_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.96" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </soup.neumorphism.NeumorphCardView>
+
+
+                <soup.neumorphism.NeumorphCardView
+                    android:id="@+id/todo_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/importance_cardView"
+                    app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                    app:neumorph_shapeType="basin"
+                    tools:ignore="MissingConstraints">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/todo_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/cute_light"
+                            android:text="@string/todo"
+                            app:layout_constraintBottom_toTopOf="@+id/todo_line"
+                            app:layout_constraintEnd_toStartOf="@+id/todo_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/todo_vertical_left_guideline"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <View
+                            android:id="@+id/todo_line"
+                            android:layout_width="0dp"
+                            android:layout_height="0.5dp"
+                            android:background="@color/light_gray"
+                            app:layout_constraintBottom_toTopOf="@+id/todo_textInputLayout"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/todo_textView" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/todo_textInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            app:errorEnabled="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/todo_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/todo_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/todo_line">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/todo_editText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:afterTextChanged="@{(text)-> handler.todoAfterTextChanged(text)}"
+                                android:inputType="none"
+                                android:maxLength="1000"
+                                android:minLines="5" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/todo_vertical_left_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.04" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/todo_vertical_right_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.96" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </soup.neumorphism.NeumorphCardView>
+
 
                 <Button
                     android:id="@+id/insertButton"
@@ -167,19 +354,38 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="30dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="@color/white"
-                    android:text="@string/save"
                     android:onClick="@{handler::onBtnClick}"
+                    android:text="@string/save"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/todoEditLayout" />
+                    app:layout_constraintEnd_toEndOf="@+id/vertical_right_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/todo_cardView" />
+
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/vertical_left_guideline"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintGuide_percent="0.03"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/vertical_right_guideline"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintGuide_percent="0.97"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.core.widget.NestedScrollView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
