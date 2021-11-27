@@ -8,14 +8,14 @@
         motion:duration="1000">
        <KeyFrameSet>
        </KeyFrameSet>
-        <OnSwipe motion:touchAnchorId="@+id/mainContainerLayout"
-            motion:touchRegionId="@+id/commentsTextView" />
+        <OnSwipe motion:touchAnchorId="@+id/main_container_layout"
+            motion:touchRegionId="@+id/comments_textView" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
 
         <Constraint
-            android:id="@+id/mainContainerLayout"
+            android:id="@+id/main_container_layout"
             android:layout_width="0dp"
             android:layout_height="56dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -25,47 +25,47 @@
             motion:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
-            android:id="@+id/commentRecyclerView"
+            android:id="@+id/comment_recyclerView"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="0dp"
             android:layout_height="0.1dp"
             motion:layout_constraintVertical_bias="1.0"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintTop_toBottomOf="@id/mainContainerLayout"
+            motion:layout_constraintTop_toBottomOf="@id/main_container_layout"
             motion:layout_constraintStart_toStartOf="parent" />
 
         <Constraint
-            android:id="@+id/commentValueEditText"
+            android:id="@+id/comment_value_editText"
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            motion:layout_constraintBottom_toTopOf="@id/commentSendButton"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintStart_toStartOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toBottomOf="@id/commentsTextView" />
+            motion:layout_constraintBottom_toTopOf="@id/comment_send_button"
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintStart_toStartOf="@id/main_container_layout"
+            motion:layout_constraintTop_toBottomOf="@id/comments_textView" />
 
         <Constraint
-            android:id="@+id/commentSendButton"
+            android:id="@+id/comment_send_button"
             android:layout_width="wrap_content"
             android:layout_height="0.1dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
-            motion:layout_constraintBottom_toBottomOf="@id/mainContainerLayout"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toBottomOf="@id/commentValueEditText" />
+            motion:layout_constraintBottom_toBottomOf="@id/main_container_layout"
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintTop_toBottomOf="@id/comment_value_editText" />
 
         <Constraint
-            android:id="@+id/commentsTextView"
+            android:id="@+id/comments_textView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintStart_toStartOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toTopOf="@id/mainContainerLayout" />
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintStart_toStartOf="@id/main_container_layout"
+            motion:layout_constraintTop_toTopOf="@id/main_container_layout" />
 
 
     </ConstraintSet>
@@ -73,7 +73,7 @@
     <ConstraintSet android:id="@+id/end">
 
         <Constraint
-            android:id="@+id/mainContainerLayout"
+            android:id="@+id/main_container_layout"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -82,45 +82,45 @@
             android:layout_marginTop="0dp" />
 
         <Constraint
-            android:id="@+id/commentRecyclerView"
+            android:id="@+id/comment_recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toBottomOf="@id/mainContainerLayout" />
+            motion:layout_constraintTop_toBottomOf="@id/main_container_layout" />
 
         <Constraint
-            android:id="@+id/commentValueEditText"
+            android:id="@+id/comment_value_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            motion:layout_constraintBottom_toTopOf="@id/commentSendButton"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintStart_toStartOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toBottomOf="@id/commentsTextView" />
+            motion:layout_constraintBottom_toTopOf="@id/comment_send_button"
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintStart_toStartOf="@id/main_container_layout"
+            motion:layout_constraintTop_toBottomOf="@id/comments_textView" />
 
         <Constraint
-            android:id="@+id/commentSendButton"
+            android:id="@+id/comment_send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
-            motion:layout_constraintBottom_toBottomOf="@id/mainContainerLayout"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toBottomOf="@id/commentValueEditText" />
+            motion:layout_constraintBottom_toBottomOf="@id/main_container_layout"
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintTop_toBottomOf="@id/comment_value_editText" />
 
         <Constraint
-            android:id="@+id/commentsTextView"
+            android:id="@+id/comments_textView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            motion:layout_constraintEnd_toEndOf="@id/mainContainerLayout"
-            motion:layout_constraintStart_toStartOf="@id/mainContainerLayout"
-            motion:layout_constraintTop_toTopOf="@id/mainContainerLayout" />
+            motion:layout_constraintEnd_toEndOf="@id/main_container_layout"
+            motion:layout_constraintStart_toStartOf="@id/main_container_layout"
+            motion:layout_constraintTop_toTopOf="@id/main_container_layout" />
     </ConstraintSet>
 </MotionScene>
