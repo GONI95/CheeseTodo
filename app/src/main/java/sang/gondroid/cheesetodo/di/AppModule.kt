@@ -35,6 +35,7 @@ import sang.gondroid.cheesetodo.presentation.review.ReviewViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.InsertTodoViewModel
 import sang.gondroid.cheesetodo.presentation.todocategory.TodoCategoryViewModel
+import sang.gondroid.cheesetodo.util.NetworkConnection
 import sang.gondroid.cheesetodo.util.TodoCategory
 
 val appModule = module {
@@ -124,7 +125,15 @@ val appModule = module {
      */
     single { HandlerFireStore(get(), get(), get(named("io")), androidApplication()) }
 
+    /**
+     * LiveSharedPreferences
+     */
     single { LiveSharedPreferences(getPreferences(androidApplication())) }
+
+    /**
+     * Network State
+     */
+    single { NetworkConnection(androidApplication()) }
 }
 
 private fun provideDB(context : Context) : TodoDatabase =
