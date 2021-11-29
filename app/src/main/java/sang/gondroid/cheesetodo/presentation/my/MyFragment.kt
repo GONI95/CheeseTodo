@@ -2,6 +2,7 @@ package sang.gondroid.cheesetodo.presentation.my
 
 import android.app.Activity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
@@ -18,6 +20,7 @@ import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
 import sang.gondroid.cheesetodo.util.JobState
+import sang.gondroid.cheesetodo.util.NetworkConnection
 import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import java.lang.Exception
@@ -26,6 +29,12 @@ import java.lang.Exception
 @Suppress("UNCHECKED_CAST")
 class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private val THIS_NAME = this::class.simpleName
+
+    /**
+     * Gon : 네트워크 연결 상태를 확인하기 위한 NetworkConnection class
+     *       [21.11.28]
+     */
+    private val connection : NetworkConnection by inject()
 
     override val viewModel: MyViewModel by viewModel()
 
@@ -141,7 +150,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     /**
      * Preference 또는 Firebase의 현재 유저 정보를 기초로 MyState를 관리하고 그에 맞는 메서드를 실행
      */
-    override fun observeData() {
+    override fun observeData() = with(binding) {
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer {
             LogUtil.i(Constants.TAG, "$THIS_NAME observeData jobStateLiveData : ${it}")
             when (it) {
@@ -162,6 +171,24 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
                 is JobState.False -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
                 is JobState.Error -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
                 is JobState.Uninitialized -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+            }
+        })
+
+        /**
+         * Gon : connection(네트워크 변경 상태에 따라 true, false) 값에 따라 서비스 이용이 유무에 대응하는 layout을 표시
+         *       [update - 21.11.28]
+         */
+        connection.observe(this@MyFragment, Observer { isConnected ->
+            if (isConnected) {
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : On ")
+
+                myLayoutDisconnected.visibility = View.GONE
+                myLayoutConnected.visibility = View.VISIBLE
+            } else {
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : Off ")
+
+                myLayoutDisconnected.visibility = View.VISIBLE
+                myLayoutConnected.visibility = View.GONE
             }
         })
     }

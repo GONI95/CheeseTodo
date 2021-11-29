@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
+import sang.gondroid.cheesetodo.util.NetworkConnection
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
 import sang.gondroid.cheesetodo.widget.custom.CustomDialog
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
@@ -38,6 +40,12 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     androidx.appcompat.widget.SearchView.OnQueryTextListener,
     View.OnFocusChangeListener {
     private val THIS_NAME = this::class.simpleName
+
+    /**
+     * Gon : 네트워크 연결 상태를 확인하기 위한 NetworkConnection class
+     *       [21.11.28]
+     */
+    private val connection : NetworkConnection by inject()
 
     override val viewModel: ReviewViewModel by viewModel()
 
@@ -78,7 +86,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     }
 
     /**
-     * API 21 이상부터 가능하지만, 최소 버전이 23이라 분기처리 없이 처리 / 클릭 이벤트 애니메이션 처리
+     * API 21 이상부터 가능하지만, 최소 버전이 24라 분기처리 없이 처리 / 클릭 이벤트 애니메이션 처리
      */
     private fun getBudle(v : View) : Bundle
             = ActivityOptions.makeSceneTransitionAnimation(
@@ -172,7 +180,27 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
      *       jobStateLiveData - HandlerFireStore.kt getReviewTodo() 메서드로 부터 반환받은 JobState
      *       [update - 21.11.18]
      */
-    override fun observeData() {
+    override fun observeData() = with(binding) {
+
+        /**
+         * Gon : connection(네트워크 변경 상태에 따라 true, false) 값에 따라 서비스 이용이 유무에 대응하는 layout을 표시
+         *       [update - 21.11.28]
+         */
+        connection.observe(this@ReviewFragment, Observer { isConnected ->
+            if (isConnected) {
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : On ")
+
+                reviewLayoutDisconnected.visibility = View.GONE
+                layoutConnectedGroup.visibility = View.VISIBLE
+
+            } else {
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : Off ")
+
+                reviewLayoutDisconnected.visibility = View.VISIBLE
+                layoutConnectedGroup.visibility = View.GONE
+            }
+        })
+
         viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is JobState.True.Result<*> -> {

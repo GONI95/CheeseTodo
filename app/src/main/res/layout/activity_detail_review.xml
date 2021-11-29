@@ -27,425 +27,442 @@
         android:background="@color/bg_light_gray"
         tools:context=".presentation.review.DetailReviewActivity">
 
-        <androidx.constraintlayout.motion.widget.MotionLayout
+        <include
+            android:id="@+id/detail_review_layout_disconnected"
+            layout="@layout/include_layout_disconnected"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutDescription="@xml/activity_detail_review_scene"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent" />
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/detail_review_nestedScrollView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_review_layout_connected"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <androidx.constraintlayout.motion.widget.MotionLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutDescription="@xml/activity_detail_review_scene"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.49"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/detail_review_constraintLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/detail_review_nestedScrollView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.49"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/detail_review_horizontal_guideline"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintGuide_percent="0.25"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/detail_review_vertical_left_guideline"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintGuide_percent="0.04"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/detail_review_vertical_right_guideline"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintGuide_percent="0.96"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <!-- =================================== Title =================================== -->
-                    <!-- =================================== Title =================================== -->
-
-                    <soup.neumorphism.NeumorphCardView
-                        android:id="@+id/detail_review_title_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
-                        app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
-                        app:neumorph_shapeType="basin"
-                        tools:ignore="MissingConstraints">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp">
-
-                            <TextView
-                                android:id="@+id/detail_review_title_textView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="12dp"
-                                android:layout_marginEnd="12dp"
-                                android:fontFamily="@font/three_dimensional_hatch"
-                                android:gravity="center_vertical"
-                                android:maxLines="1"
-                                android:text="@{reviewTodoModel.title}"
-                                android:textColor="@color/text_color_dark_gray"
-                                android:textSize="20sp"
-                                android:transitionName="@string/title_transition_name"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="상세 정보" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </soup.neumorphism.NeumorphCardView>
-
-                    <TextView
-                        android:id="@+id/detail_review_category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/category_text"
-                        android:textColor="@color/text_color_dark_gray"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/detail_review_title_cardView" />
-
-                    <TextView
-                        android:id="@+id/detail_review_category_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@{reviewTodoModel.category.categoryNameId}"
-                        android:textColor="@color/text_color_dark_gray"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@+id/detail_review_category"
-                        app:layout_constraintTop_toBottomOf="@+id/detail_review_title_cardView"
-                        tools:text="Android" />
-
-
-                    <!-- =================================== Todo_ =================================== -->
-                    <!-- =================================== Todo_ =================================== -->
-
-                    <soup.neumorphism.NeumorphCardView
-                        android:id="@+id/detail_review_todo_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
-                        app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
-                        app:layout_constraintTop_toTopOf="@+id/detail_review_horizontal_guideline"
-                        app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
-                        app:neumorph_shapeType="basin"
-                        tools:ignore="MissingConstraints">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/detail_review_todo"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:fontFamily="@font/cute_light"
-                                android:text="@string/todo"
-                                android:textColor="@color/text_color_dark_gray"
-                                app:layout_constraintBottom_toTopOf="@+id/detail_review_todo_line"
-                                app:layout_constraintEnd_toStartOf="@+id/detail_review_todo_vertical_right_guideline"
-                                app:layout_constraintStart_toStartOf="@+id/detail_review_todo_vertical_left_guideline"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <View
-                                android:id="@+id/detail_review_todo_line"
-                                android:layout_width="0dp"
-                                android:layout_height="0.5dp"
-                                android:background="@color/light_gray"
-                                app:layout_constraintBottom_toTopOf="@+id/detail_review_todo_textView"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/detail_review_todo" />
-
-                            <TextView
-                                android:id="@+id/detail_review_todo_textView"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:drawablePadding="10dp"
-                                android:text="@{reviewTodoModel.todo}"
-                                android:textColor="@color/text_color_dark_gray"
-                                app:drawableStartCompat="@drawable/ic_todo_list"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/detail_review_todo_vertical_right_guideline"
-                                app:layout_constraintStart_toStartOf="@+id/detail_review_todo_vertical_left_guideline"
-                                app:layout_constraintTop_toBottomOf="@+id/detail_review_todo_line"
-                                tools:text="공부하기" />
-
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/detail_review_todo_vertical_left_guideline"
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintGuide_percent="0.04"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/detail_review_todo_vertical_right_guideline"
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintGuide_percent="0.96"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </soup.neumorphism.NeumorphCardView>
-
-
-                    <!-- =================================== Difficult =================================== -->
-                    <!-- =================================== Difficult =================================== -->
-
-                    <soup.neumorphism.NeumorphCardView
-                        android:id="@+id/detail_review_difficult_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
-                        app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/detail_review_todo_cardView"
-                        app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
-                        app:neumorph_shapeType="basin"
-                        tools:ignore="MissingConstraints">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/detail_review_difficult"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:fontFamily="@font/cute_light"
-                                android:text="@string/difficult"
-                                android:textColor="@color/text_color_dark_gray"
-                                app:layout_constraintBottom_toTopOf="@+id/detail_review_difficult_line"
-                                app:layout_constraintEnd_toStartOf="@+id/detail_review_difficult_vertical_right_guideline"
-                                app:layout_constraintStart_toStartOf="@+id/detail_review_difficult_vertical_left_guideline"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <View
-                                android:id="@+id/detail_review_difficult_line"
-                                android:layout_width="0dp"
-                                android:layout_height="0.5dp"
-                                android:background="@color/light_gray"
-                                app:layout_constraintBottom_toTopOf="@+id/detail_review_difficult_textView"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult" />
-
-                            <TextView
-                                android:id="@+id/detail_review_difficult_textView"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:drawablePadding="10dp"
-                                android:text="@{reviewTodoModel.difficult}"
-                                android:textColor="@color/text_color_dark_gray"
-                                app:drawableStartCompat="@drawable/ic_speech_bubble"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/detail_review_difficult_vertical_right_guideline"
-                                app:layout_constraintStart_toStartOf="@+id/detail_review_difficult_vertical_left_guideline"
-                                app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult_line"
-                                tools:text="없습니다." />
-
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/detail_review_difficult_vertical_left_guideline"
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintGuide_percent="0.04"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/detail_review_difficult_vertical_right_guideline"
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintGuide_percent="0.96"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </soup.neumorphism.NeumorphCardView>
-
-
-                    <!-- =================================== like =================================== -->
-                    <!-- =================================== like =================================== -->
-
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
-                        app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult_cardView">
+                        android:id="@+id/detail_review_constraintLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/detail_review_horizontal_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintGuide_percent="0.25"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/detail_review_vertical_left_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintGuide_percent="0.04"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/detail_review_vertical_right_guideline"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintGuide_percent="0.96"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <!-- =================================== Title =================================== -->
+                        <!-- =================================== Title =================================== -->
 
                         <soup.neumorphism.NeumorphCardView
-                            android:id="@+id/detail_review_pass_cardView"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/detail_review_title_cardView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
-                            app:neumorph_shapeType="flat"
+                            app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                            app:neumorph_shapeType="basin"
                             tools:ignore="MissingConstraints">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="wrap_content"
+                                android:paddingTop="10dp"
+                                android:paddingBottom="10dp">
 
-                                <CheckBox
-                                    android:id="@+id/detail_review_pass_button"
-                                    android:layout_width="26dp"
-                                    android:layout_height="26dp"
-                                    android:layout_margin="5dp"
-                                    android:background="@drawable/checkbox_selector"
-                                    android:button="@null"
-                                    android:checked="@{reviewDetailViewModel.getCheckedCurrentUserBooleanLiveData}"
-                                    android:onClick="@{(v) -> handler.onClickPassButton(v, reviewTodoModel)}"
-                                    android:stateListAnimator="@animator/scale"
+                                <TextView
+                                    android:id="@+id/detail_review_title_textView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="12dp"
+                                    android:layout_marginEnd="12dp"
+                                    android:fontFamily="@font/three_dimensional_hatch"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="@{reviewTodoModel.title}"
+                                    android:textColor="@color/text_color_dark_gray"
+                                    android:textSize="20sp"
+                                    android:transitionName="@string/title_transition_name"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent" />
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:text="상세 정보" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </soup.neumorphism.NeumorphCardView>
 
                         <TextView
-                            android:id="@+id/detail_review_pass_count_textView"
+                            android:id="@+id/detail_review_category"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginBottom="5dp"
-                            android:fontFamily="@font/cute_light"
-                            android:text="@{String.format(@string/pass_count_text, Integer.toString(reviewDetailViewModel.getCheckedUserCountLiveData))}"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/category_text"
                             android:textColor="@color/text_color_dark_gray"
                             android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/detail_review_title_cardView" />
+
+                        <TextView
+                            android:id="@+id/detail_review_category_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:text="@{reviewTodoModel.category.categoryNameId}"
+                            android:textColor="@color/text_color_dark_gray"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/detail_review_category"
+                            app:layout_constraintTop_toBottomOf="@+id/detail_review_title_cardView"
+                            tools:text="Android" />
+
+
+                        <!-- =================================== Todo_ =================================== -->
+                        <!-- =================================== Todo_ =================================== -->
+
+                        <soup.neumorphism.NeumorphCardView
+                            android:id="@+id/detail_review_todo_cardView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
+                            app:layout_constraintTop_toTopOf="@+id/detail_review_horizontal_guideline"
+                            app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                            app:neumorph_shapeType="basin"
+                            tools:ignore="MissingConstraints">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/detail_review_todo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:fontFamily="@font/cute_light"
+                                    android:text="@string/todo"
+                                    android:textColor="@color/text_color_dark_gray"
+                                    app:layout_constraintBottom_toTopOf="@+id/detail_review_todo_line"
+                                    app:layout_constraintEnd_toStartOf="@+id/detail_review_todo_vertical_right_guideline"
+                                    app:layout_constraintStart_toStartOf="@+id/detail_review_todo_vertical_left_guideline"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/detail_review_todo_line"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0.5dp"
+                                    android:background="@color/light_gray"
+                                    app:layout_constraintBottom_toTopOf="@+id/detail_review_todo_textView"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/detail_review_todo" />
+
+                                <TextView
+                                    android:id="@+id/detail_review_todo_textView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:drawablePadding="10dp"
+                                    android:text="@{reviewTodoModel.todo}"
+                                    android:textColor="@color/text_color_dark_gray"
+                                    app:drawableStartCompat="@drawable/ic_todo_list"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/detail_review_todo_vertical_right_guideline"
+                                    app:layout_constraintStart_toStartOf="@+id/detail_review_todo_vertical_left_guideline"
+                                    app:layout_constraintTop_toBottomOf="@+id/detail_review_todo_line"
+                                    tools:text="공부하기" />
+
+                                <androidx.constraintlayout.widget.Guideline
+                                    android:id="@+id/detail_review_todo_vertical_left_guideline"
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintGuide_percent="0.04"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <androidx.constraintlayout.widget.Guideline
+                                    android:id="@+id/detail_review_todo_vertical_right_guideline"
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintGuide_percent="0.96"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </soup.neumorphism.NeumorphCardView>
+
+
+                        <!-- =================================== Difficult =================================== -->
+                        <!-- =================================== Difficult =================================== -->
+
+                        <soup.neumorphism.NeumorphCardView
+                            android:id="@+id/detail_review_difficult_cardView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/detail_review_todo_cardView"
+                            app:neumorph_shapeAppearance="@style/Neumorph_Round_Shape"
+                            app:neumorph_shapeType="basin"
+                            tools:ignore="MissingConstraints">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/detail_review_difficult"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:fontFamily="@font/cute_light"
+                                    android:text="@string/difficult"
+                                    android:textColor="@color/text_color_dark_gray"
+                                    app:layout_constraintBottom_toTopOf="@+id/detail_review_difficult_line"
+                                    app:layout_constraintEnd_toStartOf="@+id/detail_review_difficult_vertical_right_guideline"
+                                    app:layout_constraintStart_toStartOf="@+id/detail_review_difficult_vertical_left_guideline"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/detail_review_difficult_line"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0.5dp"
+                                    android:background="@color/light_gray"
+                                    app:layout_constraintBottom_toTopOf="@+id/detail_review_difficult_textView"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult" />
+
+                                <TextView
+                                    android:id="@+id/detail_review_difficult_textView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:drawablePadding="10dp"
+                                    android:text="@{reviewTodoModel.difficult}"
+                                    android:textColor="@color/text_color_dark_gray"
+                                    app:drawableStartCompat="@drawable/ic_speech_bubble"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/detail_review_difficult_vertical_right_guideline"
+                                    app:layout_constraintStart_toStartOf="@+id/detail_review_difficult_vertical_left_guideline"
+                                    app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult_line"
+                                    tools:text="없습니다." />
+
+                                <androidx.constraintlayout.widget.Guideline
+                                    android:id="@+id/detail_review_difficult_vertical_left_guideline"
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintGuide_percent="0.04"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <androidx.constraintlayout.widget.Guideline
+                                    android:id="@+id/detail_review_difficult_vertical_right_guideline"
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintGuide_percent="0.96"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </soup.neumorphism.NeumorphCardView>
+
+
+                        <!-- =================================== like =================================== -->
+                        <!-- =================================== like =================================== -->
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/detail_review_pass_cardView"
-                            tools:text="2" />
+                            app:layout_constraintEnd_toStartOf="@+id/detail_review_vertical_right_guideline"
+                            app:layout_constraintStart_toStartOf="@+id/detail_review_vertical_left_guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/detail_review_difficult_cardView">
+
+                            <soup.neumorphism.NeumorphCardView
+                                android:id="@+id/detail_review_pass_cardView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
+                                app:neumorph_shapeType="flat"
+                                tools:ignore="MissingConstraints">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <CheckBox
+                                        android:id="@+id/detail_review_pass_button"
+                                        android:layout_width="26dp"
+                                        android:layout_height="26dp"
+                                        android:layout_margin="5dp"
+                                        android:background="@drawable/checkbox_selector"
+                                        android:button="@null"
+                                        android:checked="@{reviewDetailViewModel.getCheckedCurrentUserBooleanLiveData}"
+                                        android:onClick="@{(v) -> handler.onClickPassButton(v, reviewTodoModel)}"
+                                        android:stateListAnimator="@animator/scale"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+                            </soup.neumorphism.NeumorphCardView>
+
+                            <TextView
+                                android:id="@+id/detail_review_pass_count_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/cute_light"
+                                android:text="@{String.format(@string/pass_count_text, Integer.toString(reviewDetailViewModel.getCheckedUserCountLiveData))}"
+                                android:textColor="@color/text_color_dark_gray"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/detail_review_pass_cardView"
+                                tools:text="2" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.core.widget.NestedScrollView>
 
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.core.widget.NestedScrollView>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/main_container_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/bg_border"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/comments_textView"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/comments"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="@id/main_container_layout"
+                    app:layout_constraintStart_toStartOf="@id/main_container_layout"
+                    app:layout_constraintTop_toTopOf="@id/main_container_layout" />
 
 
+                <EditText
+                    android:id="@+id/comment_value_EditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:hint="@string/please_enter_comment"
+                    android:inputType="none"
+                    android:maxLength="500"
+                    android:maxLines="5"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@id/main_container_layout"
+                    app:layout_constraintStart_toStartOf="@id/main_container_layout"
+                    app:layout_constraintTop_toBottomOf="@id/comments_textView"
+                    android:autofillHints="" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/main_container_layout"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:background="@drawable/bg_border"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/comments_textView"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/comments"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="@id/main_container_layout"
-                app:layout_constraintStart_toStartOf="@id/main_container_layout"
-                app:layout_constraintTop_toTopOf="@id/main_container_layout" />
-
-
-            <EditText
-                android:id="@+id/comment_value_EditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:hint="@string/please_enter_comment"
-                android:inputType="none"
-                android:maxLength="500"
-                android:maxLines="5"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@id/main_container_layout"
-                app:layout_constraintStart_toStartOf="@id/main_container_layout"
-                app:layout_constraintTop_toBottomOf="@id/comments_textView"
-                android:autofillHints="" />
-
-            <Button
-                android:id="@+id/comment_send_button"
-                style="?attr/buttonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/white"
-                android:onClick="@{() -> handler.insertCommentOnClick(reviewTodoModel)}"
-                android:text="@string/send"
-                app:layout_constraintEnd_toEndOf="@id/main_container_layout"
-                app:layout_constraintTop_toBottomOf="@id/comment_value_editText" />
+                <Button
+                    android:id="@+id/comment_send_button"
+                    style="?attr/buttonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/white"
+                    android:onClick="@{() -> handler.insertCommentOnClick(reviewTodoModel)}"
+                    android:text="@string/send"
+                    app:layout_constraintEnd_toEndOf="@id/main_container_layout"
+                    app:layout_constraintTop_toBottomOf="@id/comment_value_editText" />
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comment_recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@color/white"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/main_container_layout"
-                app:setAdapter="@{commentRecycvlerViewAdapter}" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comment_recyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/main_container_layout"
+                    app:setAdapter="@{commentRecycvlerViewAdapter}" />
 
-        </androidx.constraintlayout.motion.widget.MotionLayout>
+            </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
