@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- SplashTheme
+      windowBackground : App 실행 시 Activity가 실행되기 전 표시되며, onCreate()가 불려오는 동안 표시됩니다. -->
+    <style name="SplashTheme" parent="Theme.CheeseTodo">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <!-- Toolbar 설정 -->
     <style name="ThemeOverlay.CheeseTodo.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
         <item name="android:layout_height">?attr/actionBarSize</item>
