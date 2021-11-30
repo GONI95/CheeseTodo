@@ -93,19 +93,23 @@ class NetworkConnection(private val context: Context) : LiveData<Boolean>() {
 
     /**
      * Gon : connectivityManager로 부터 현재 네트워크 연결 상태를 읽어오는 메서드
-     *       [update - 21.11.29]
+     *       [update - 21.11.30]
      */
     private fun updateConnection() {
         LogUtil.d(Constants.TAG, "$THIS_NAME updateConnection() called")
 
 
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        postValue(activeNetwork?.isConnected == true)
+        val networkCapabilities = connectivityManager.activeNetwork
+        val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities)
 
-        /*  // NetworkInfo가 API 28부터 Deprecated되어 대체 메서드로 변경
-            val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-            postValue(activeNetwork?.isConnected == true)
-         */
+        activeNetwork?.let {
+            postValue(when {
+                it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            })
+        } ?:  postValue(false)
     }
 
 }
