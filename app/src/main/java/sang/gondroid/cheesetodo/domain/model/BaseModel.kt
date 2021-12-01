@@ -35,7 +35,7 @@ abstract class BaseModel (
             override fun areContentsTheSame(oldItem: BaseModel, newItem: BaseModel): Boolean {
                 Log.d(Constants.TAG, "BaseModel areContentsTheSame() called : ${oldItem.id} ${newItem.id}")
 
-                return oldItem === newItem
+                return oldItem == newItem
             }
         }
     }

@@ -28,8 +28,6 @@ class BaseAdapter<M : BaseModel>(
 
     private val THIS_NAME = this::class.simpleName
 
-    override fun getItemCount(): Int = modelList.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<M> {
         val inflater = LayoutInflater.from(parent.context)
 
@@ -115,17 +113,13 @@ class BaseAdapter<M : BaseModel>(
         holder.bindData(modelList[position] as M)
     }
 
+    override fun getItemCount(): Int = modelList.size
+
     override fun submitList(list: List<BaseModel>?) {
         list?.let {
             modelList = it
 
-            super.submitList(list.toMutableList())
+            super.submitList(it.toMutableList())
         }
-    }
-
-    override fun onViewRecycled(holder: BaseViewHolder<M>) {
-        LogUtil.d(Constants.TAG, "$THIS_NAME, onViewRecycled() called : ViewHolder가 재사용 됩니다.")
-
-        super.onViewRecycled(holder)
     }
 }
