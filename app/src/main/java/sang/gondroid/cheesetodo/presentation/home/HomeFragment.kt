@@ -48,7 +48,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 LogUtil.d(Constants.TAG, "$THIS_NAME jobState : $jobState")
 
                 when (jobState) {
-                    is JobState.True -> { Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show() }
+                    is JobState.True -> { Toast.makeText(requireContext(), getString(R.string.insert_job_complete), Toast.LENGTH_SHORT).show() }
                     is JobState.Error -> { Toast.makeText(requireContext(), getString(R.string.an_error_occurred), Toast.LENGTH_LONG).show() }
                 }
             }

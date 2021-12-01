@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="importance1">급하지 않음</string>
+    <string name="importance2">보통</string>
+    <string name="importance3">중요함</string>
+    <string name="importance4">아주 중요함</string>
+</resources>

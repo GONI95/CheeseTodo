@@ -249,7 +249,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     override fun onQueryTextChange(newText: String?): Boolean {
         LogUtil.i(Constants.TAG, "$THIS_NAME onQueryTextChange() newText : $newText")
 
-        if (newText?.count() == 50) Toast.makeText(requireContext(), getString(R.string.String_length_limit), Toast.LENGTH_SHORT).show()
+        if (newText?.count() == 50) Toast.makeText(requireContext(), getString(R.string.string_length_limit), Toast.LENGTH_SHORT).show()
 
         return true
     }

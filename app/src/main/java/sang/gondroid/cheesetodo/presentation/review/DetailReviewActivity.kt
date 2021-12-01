@@ -119,7 +119,7 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         viewModel.insertCheckedUserJobStateLiveData.observe(this@DetailReviewActivity, Observer {
             when(it) {
                 is JobState.False -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.insert_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DetailReviewActivity, R.string.insert_pass_information_job_error, Toast.LENGTH_SHORT).show()
                 }
                 is JobState.Error -> {
                     Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
@@ -130,7 +130,7 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         viewModel.getCheckedCurrentUserBooleanLiveData.observe(this@DetailReviewActivity, Observer {
             when(it) {
                 false -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.get_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DetailReviewActivity, R.string.get_pass_information_job_error, Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -138,7 +138,7 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
         viewModel.deleteCheckedUserLiveData.observe(this@DetailReviewActivity, Observer {
             when(it) {
                 is JobState.False -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.delete_pass_information_operation_error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DetailReviewActivity, R.string.delete_pass_information_job_error, Toast.LENGTH_SHORT).show()
                 }
                 is JobState.Error -> {
                     Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()

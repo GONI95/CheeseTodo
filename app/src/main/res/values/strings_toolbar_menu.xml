@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update">변경하기</string>
+
+    <string name="edit">편집하기</string>
+    <string name="request_a_review">검토 요청</string>
+    <string name="delete">삭제하기</string>
+
+    <string name="search">검색하기</string>
+    <string name="search_for_review_plan">리뷰 검색하기</string>
+</resources>
