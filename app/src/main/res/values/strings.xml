@@ -1,56 +1,39 @@
 <resources>
     <string name="app_name">치즈Todo</string>
 
-    <string name="home">Home</string>
-    <string name="my">My</string>
-    <string name="review">Review</string>
-
-    <string name="initialize">초기화</string>
-    <string name="hight_importance">중요도 순</string>
-    <string name="fast_date">날짜 빠른 순</string>
-
     <string name="title_transition_name">TodoTitle</string>
 
     <string name="save">저장하기</string>
-    <string name="todo">TODO</string>
-    <string name="difficult">DIFFICULT</string>
+
+    <string name="title">TITLE</string>
     <string name="category">CATEGORY</string>
     <string name="importance">IMPORTANCE</string>
-    <string name="title">TITLE</string>
+    <string name="todo">TODO</string>
+    <string name="difficult">DIFFICULT</string>
+
     <string name="please_enter_the_text">글을 입력해주세요.</string>
 
-    <string name="success">작업이 완료되었습니다.</string>
+    <string name="insert_job_complete">"추가" 작업이 완료되었습니다.</string>
     <string name="an_error_occurred">오류가 발생했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
 
-    <string name="delete_pass_information_operation_error">Pass 정보를 삭제하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
-    <string name="insert_pass_information_operation_error">Pass 정보를 추가하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
-    <string name="get_pass_information_operation_error">Pass 정보를 받아오지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
-
-    <string name="edit">편집하기</string>
-    <string name="request_a_review">검토 요청</string>
-    <string name="delete">삭제하기</string>
-    <string name="update">변경하기</string>
+    <string name="delete_pass_information_job_error">Pass 정보를 삭제하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
+    <string name="insert_pass_information_job_error">Pass 정보를 추가하지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
+    <string name="get_pass_information_job_error">Pass 정보를 받아오지 못했습니다. \n서비스 이용에 불편함을 끼쳐드려 죄송합니다.</string>
 
     <string name="category_text">주제 :</string>
     <string name="importance_text">중요도 :</string>
-    <string name="todo_text">할 일</string>
-    <string name="difficult_text">어려웠던 것</string>
-    <string name="title_hint_text">제목</string>
 
     <string name="request_error">Error Message( %s )</string>
     <string name="request_false">작업이 완료되었지만, 성공적으로 이루어지지 못했습니다.</string>
 
     <string name="search_history_clear">모두 삭제</string>
-    <string name="search_history_save">저장 모드</string>
+    <string name="search_history_save_mode">저장 모드</string>
 
     <string name="there_are_blank_entries">빈 항목이 있습니다.</string>
-
-    <string name="search">검색하기</string>
-    <string name="search_for_review_plan">리뷰 검색하기</string>
-
-    <string name="String_length_limit">검색어는 50자 내로 작성이 가능합니다.</string>
+    <string name="string_length_limit">검색어는 50자 내로 작성이 가능합니다.</string>
 
     <string name="comments">Comments</string>
+
     <string name="please_enter_comment"> 여러분의 소중한 댓글을 입력해주세요.</string>
     <string name="pass_count_text">검토완료 %s개</string>
     <string name="send">보내기</string>
@@ -60,10 +43,8 @@
     <string name="what_are_my_todos">나의 검증된 계획 갯수는?</string>
     <string name="logout">로그아웃</string>
     <string name="revoke">회원탈퇴</string>
-    <string name="google_login_require">로그인이 필요합니다.</string>
 
     <string name="use_as_a_non_member">비회원으로 이용 중입니다.</string>
     <string name="use_as_a_member">%s님 반갑습니다.</string>
-    <string name="checking_member_info">회원 정보 확인 중…</string>
     <string name="login_is_required">서비스 이용은 로그인이 필요합니다.</string>
 </resources>

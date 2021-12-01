@@ -106,7 +106,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/search_history_save"
+                    android:text="@string/search_history_save_mode"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
                     app:layout_constraintEnd_toStartOf="@+id/searchHistorySaveMode"
                     app:layout_constraintStart_toStartOf="parent"

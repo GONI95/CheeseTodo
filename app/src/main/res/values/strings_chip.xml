@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HomeFragment : todoItem sort -->
+    <string name="initialize">초기화</string>
+    <string name="hight_importance">중요도 순</string>
+    <string name="fast_date">날짜 빠른 순</string>
+</resources>
