@@ -40,38 +40,38 @@ class AppPreferenceManager(
         editor.apply()
     }
 
-    fun putIdToken(idToken: String) {
+    fun putIdTokenString(idToken: String) {
         editor.putString(BuildConfig.KEY_ID_TOKEN, idToken)
         editor.apply()
     }
 
-    fun getIdToken(): String? {
+    fun getIdTokenString(): String? {
         return prefs.getString(BuildConfig.KEY_ID_TOKEN, null)
     }
 
-    fun removeIdToken() {
+    fun clearIdTokenString() {
         editor.putString(BuildConfig.KEY_ID_TOKEN, null)
         editor.apply()
     }
 
-    fun setUserNameString(value: String?) {
-        editor.putString(BuildConfig.KEY_USER_NAME, value)
+    fun putDisPlayNameString(value: String?) {
+        editor.putString(BuildConfig.KEY_DISPLAY_NAME, value)
         editor.apply()
     }
 
-    fun getUserNameString() : String? {
-        return prefs.getString(BuildConfig.KEY_USER_NAME, null)
+    fun getDisPlayNameString() : String? {
+        return prefs.getString(BuildConfig.KEY_DISPLAY_NAME, null)
     }
 
-    fun removeUserNameString() {
-        editor.putString(BuildConfig.KEY_USER_NAME, null)
+    fun clearDisPlayNameString() {
+        editor.putString(BuildConfig.KEY_DISPLAY_NAME, null)
         editor.apply()
     }
 
     /**
      * 검색어 저장모드 설정
      */
-    fun setSaveMode(isActivated: Boolean){
+    fun putSaveMode(isActivated: Boolean){
         editor.putBoolean(BuildConfig.KEY_SAVE_MODE, isActivated)
         editor.apply()
     }
@@ -86,7 +86,7 @@ class AppPreferenceManager(
     /**
      * SearchHistory List 설정
      */
-    fun setSearchHistory(searchHistoryList: MutableList<SearchHistoryModel>) {
+    fun putSearchHistory(searchHistoryList: MutableList<SearchHistoryModel>) {
 
         /**
          * List -> String 변환 : toJson() [java -> json]

@@ -15,7 +15,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.FragmentMyBinding
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
+import sang.gondroid.cheesetodo.domain.model.FireStoreMemberModel
 import sang.gondroid.cheesetodo.presentation.base.BaseFragment
 import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.LogUtil
@@ -26,7 +26,6 @@ import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import java.lang.Exception
 
 
-@Suppress("UNCHECKED_CAST")
 class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     private val THIS_NAME = this::class.simpleName
 
@@ -42,9 +41,9 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
             = FragmentMyBinding.inflate(layoutInflater)
 
     /**
-     * Google login 기능을 구현하기위한 인스턴스
-     * - GoogleSignInOptions : 사용자의 아이디, 이메일 주소, 기본 정보를 요청하기 위한 로그인 설정
-     *                          (default_web_clien_id엔 자신의 client id 있음 / DEFAULT_SIGN_IN에 기본 프로필이 포함되어 있음)
+     * Gon : GoogleSignInOptions : 사용자의 아이디, 이메일 주소, 기본 정보를 요청하기 위한 설정
+     *                             default_web_clien_id엔 자신의 client id / DEFAULT_SIGN_IN에 기본 프로필이 포함
+     *       [update - 21.12.3]
      */
     private val gso : GoogleSignInOptions by lazy {
         LogUtil.v(Constants.TAG, "$THIS_NAME initializing GoogleSignInOptions")
@@ -56,8 +55,8 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * Google login 기능을 구현하기위한 인스턴스
-     * - GoogleSignInClient : Google Sign In API와 상호작용하기 위한 클라이언트(Google 로그인 관리 클라이언트)
+     * Gon : GoogleSignInClient : Google Sign In API와 상호작용하기 위한 클라이언트(Google 로그인 관리 클라이언트)
+     *       [update - 21.12.3]
      */
     private val gsc by lazy {
         LogUtil.v(Constants.TAG, "$THIS_NAME initializing GoogleSignInClient")
@@ -66,19 +65,22 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * Google login 기능을 구현하기위한 인스턴스
-     * 1. registerForActivityResult : ActivityResultContract 및 ActivityResultCallback을 가져와 다른 활동을 실행하는데 사용할 ActivityResultLauncher를 반환합니다.
-     * 2. ActivityResultContracts : android에서 제공하는 일부 표준 활동 호출 계약의 모음
-     * 3. StartActivityForResult() : 활동? 작업?을 실행하고 결과값을 반환받아 옵니다.
-     * 4. GoogleSignIn.getSignedInAccountFromIntent() : Task<GoogleSignInAccount> 객체로 변환할 수 있다
-     * 5. Task<GoogleSignInAccount>.getResult() : authentication에 요청하고 GoogleSignInAccount 객체를 반환받으며, 사용자의 Google 계정 정보를 얻습니다.
+     * Gon : ActivityResultLauncher<Intent> : ActivityResultContract 실행 프로세스를 시작하기 위해 미리 준비된 호출의 시작점
+     *
+     *       Google login 기능을 구현하기위한 인스턴스
+     *       registerForActivityResult : ActivityResultContract 및 ActivityResultCallback을 가져와 다른 활동을 실행하는데 사용할 ActivityResultLauncher를 반환합니다.
+     *       ActivityResultContracts : android에서 제공하는 일부 표준 활동 호출 계약의 모음
+     *       StartActivityForResult() : 활동? 작업?을 실행하고 결과값을 반환받아 옵니다.
+     *       GoogleSignIn.getSignedInAccountFromIntent() : Task<GoogleSignInAccount> 객체로 변환할 수 있다
+     *       Task<GoogleSignInAccount>.getResult() : authentication에 요청하고 GoogleSignInAccount 객체를 반환받으며, 사용자의 Google 계정 정보를 얻습니다.
+     *       [update - 21.12.3]
      */
-    private val loginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 task.getResult(ApiException::class.java)?.let { accont ->
-                    Log.d(Constants.TAG, "$THIS_NAME loginLauncher getResult() : ${accont.idToken}, ${accont.displayName}")
+                    Log.i(Constants.TAG, "$THIS_NAME GoogleSignInAccount getResult() : ${accont.idToken}, ${accont.displayName}")
 
                     viewModel.saveToken(accont.idToken ?: throw Exception(), accont.displayName ?: throw Exception())
                 }
@@ -89,12 +91,14 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     /**
-     * - getSignInIntent() : registerForActivityResult를 호출하여 Google 로그인 흐름을 시작하기 위한 Intent를 가져옵니다.
-     * - launch() : ActivityResultContract를 실행합니다.
+     * Gon : GoogleSignInClient.getSignInIntent() : registerForActivityResult를 호출하여 Google 로그인 흐름을 시작하기 위한 Intent를 가져옵니다.
+     *       ActivityResultLauncher.launch() : ActivityResultContract를 실행합니다.
+     *       [update - 21.12.3]
      */
     private fun signInGoogle() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME signInGoogle() called")
         val signInIntent = gsc.signInIntent
-        loginLauncher.launch(signInIntent)
+        signInLauncher.launch(signInIntent)
     }
 
     /**
@@ -104,6 +108,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      *       [update - 21.11.17]
      */
     private fun signOut() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME signOut() called")
         gsc.signOut()
         gsc.revokeAccess()
         viewModel.removeToken()
@@ -111,21 +116,30 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     override fun initViews() = with(binding) {
 
-        loginButton.setOnClickListener {
+        /**
+         * Gon : 로그인 버튼을 클릭하고 발생한 SignIn
+         *       [update - 21.11.17]
+         */
+        signInButton.setOnClickListener {
+            LogUtil.v(Constants.TAG, "$THIS_NAME signInButton onClick called")
             signInGoogle()
         }
 
-        logoutButton.setOnClickListener {
+        /**
+         * Gon : 로그아웃 버튼을 클릭하고 발생한 Dialog의 선택 값에 따라 작업을 처리합니다.
+         *       [update - 21.11.17]
+         */
+        signOutButton.setOnClickListener {
             CustomDialog(requireContext(),
-                getString(R.string.logout_dialog_title),
-                getString(R.string.logout_dialog_description),
+                getString(R.string.sign_out_dialog_title),
+                getString(R.string.sign_out_dialog_description),
                 object : CustomDialogClickListener {
                     override fun onPositiveClick() {
-                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME 로그아웃 CustomDialog Positive")
                         signOut()
                     }
                     override fun onNegativeClick() {
-                        LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME 로그아웃 CustomDialog Negative")
                     }
                 }).show()
         }
@@ -134,11 +148,11 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
          * Gon : 회원탈퇴 버튼을 클릭하고 발생한 Dialog의 선택 값에 따라 작업을 처리합니다.
          *       [update - 21.11.17]
          */
-        deleteButton.setOnClickListener {
-            CustomDialog(requireContext(), getString(R.string.delete_user_dialog_title), getString(R.string.delete_user_dialog_description), object : CustomDialogClickListener {
+        deleteAccountButton.setOnClickListener {
+            CustomDialog(requireContext(), getString(R.string.delete_account_dialog_title), getString(R.string.delete_account_dialog_description), object : CustomDialogClickListener {
                 override fun onPositiveClick() {
                     LogUtil.v(Constants.TAG, "$THIS_NAME 회원탈퇴 CustomDialog Positive")
-                    viewModel.disjoinMembership()
+                    viewModel.deleteAccount()
                 }
                 override fun onNegativeClick() {
                     LogUtil.v(Constants.TAG, "$THIS_NAME 회원탈퇴 CustomDialog Negative")
@@ -147,30 +161,35 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         }
     }
 
-    /**
-     * Preference 또는 Firebase의 현재 유저 정보를 기초로 MyState를 관리하고 그에 맞는 메서드를 실행
-     */
     override fun observeData() = with(binding) {
-        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer {
-            LogUtil.i(Constants.TAG, "$THIS_NAME observeData jobStateLiveData : ${it}")
+
+        /**
+         * Gon : memberVerification() 또는 signInWithCredential()의 반환값을 토대로 메서드를 실행
+         *       [update - 21.12.3]
+         */
+        viewModel.signInStateLiveData.observe(viewLifecycleOwner, Observer {
+            LogUtil.i(Constants.TAG, "$THIS_NAME observeData signInStateLiveData : ${it}")
             when (it) {
                 is JobState.Loading -> handleLoadingState()
-                is JobState.True -> signOut()
+                is JobState.Signin -> handleSignInState()
                 is JobState.Success -> handleSuccessState(it)
-                is JobState.Login -> handleLoginState(it)
-                is JobState.Error -> handleErrorState(it)
                 is JobState.False -> handleFalseState()
+                is JobState.Error -> handleErrorState(it)
                 is JobState.Uninitialized -> handleUninitialized()
             }
         })
 
-        viewModel.dsjnMembJobStateLiveData.observe(viewLifecycleOwner, Observer {
-            LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+        /**
+         * Gon : deleteAccount() 반환값을 토대로 메서드를 실행
+         *       [update - 21.12.3]
+         */
+        viewModel.deleteAccountLiveData.observe(viewLifecycleOwner, Observer {
+            LogUtil.d(Constants.TAG, "$THIS_NAME observeData deleteAccountLiveData : ${it}")
             when (it) {
+                is JobState.Loading -> handleLoadingState()
                 is JobState.True -> signOut()
-                is JobState.False -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
-                is JobState.Error -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
-                is JobState.Uninitialized -> LogUtil.i(Constants.TAG, "$THIS_NAME observeData dsjnMembJobStateLiveData : ${it}")
+                is JobState.False -> handleFalseState()
+                is JobState.Error -> handleErrorState(it)
             }
         })
 
@@ -180,12 +199,12 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
          */
         connection.observe(this@MyFragment, Observer { isConnected ->
             if (isConnected) {
-                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : On ")
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : $isConnected ")
 
                 myLayoutDisconnected.visibility = View.GONE
                 myLayoutConnected.visibility = View.VISIBLE
             } else {
-                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : Off ")
+                LogUtil.d(Constants.TAG, "$THIS_NAME, 네트워크 연결 상태 : $isConnected ")
 
                 myLayoutDisconnected.visibility = View.VISIBLE
                 myLayoutConnected.visibility = View.GONE
@@ -193,64 +212,90 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
         })
     }
 
+    /**
+     * Gon : FirebaseAuth CurrentUser 또는 FirebaseAuth CurrentUser 하위 정보가 null인 경우 호출
+     *       [update - 21.12.3]
+     */
     private fun handleUninitialized() {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleUninitialized() called")
-    }
-
-    private fun handleLoadingState() {
-        LogUtil.v(Constants.TAG, "$THIS_NAME handleLoadingState() called")
-        binding.loginRequireGroup.isGone = true
-        binding.loginPrograssBar.isVisible = true
+        Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
     }
 
     /**
-     * handleSuccessState() : Registered - "validateCurrentUser()로부터 받은 User 정보를 전달하며 hanlderRegisteredState() 호출"
+     * Gon : 작업 중 [ProgressBar 표시]
+     *       [update - 21.12.3]
      */
+    private fun handleLoadingState() = with(binding) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleLoadingState() called")
+        signInRequireGroup.isGone = true
+        profileGroup.isGone = true
+        signStatePrograssBar.isVisible = true
+    }
+
+    /**
+     * Gon : signInWithCredential()로부터 JobState.SignIn을 반환받은 경우 Firestore에서 저장된 회원을 검증하는 memberVerification() 호출
+     *       [update - 21.12.3]
+     */
+    private fun handleSignInState() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleSignInState() called")
+
+        viewModel.memberVerification()
+    }
+
+    /**
+     * Gon : Registered - getCurrentMember() 반환값을 전달하며 hanlderRegisteredState() 호출
+     *       NotRegistered - signIn Require 표시
+     *       [update - 21.12.3]
+     */
+    @Suppress("UNCHECKED_CAST")
     private fun handleSuccessState(state: JobState.Success) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleSuccessState() called")
+        LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : $state")
 
         when(state) {
             is JobState.Success.Registered<*> -> {
-                LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : Registered")
-                handleRegisteredState(state as JobState.Success.Registered<FireStoreMembershipModel>)
+                handleRegisteredState(state as JobState.Success.Registered<FireStoreMemberModel>)
             }
 
             is JobState.Success.NotRegistered -> {
-                LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : NotRegistered")
                 profileGroup.isGone = true
-                loginRequireGroup.isVisible = true
+                signInRequireGroup.isVisible = true
             }
         }
 
-        loginPrograssBar.isGone = true
+        signStatePrograssBar.isGone = true
     }
 
     /**
-     * handleRegisteredState() : validateCurrentUser() -> handleSuccessState() -> 로그인 완료 상태의 UI를 표시
+     * Gon : SignIn 상태로 profileGroup을 표시
+     *       fireStoreMemberModel : userInfoLayout(ViewGroup) 내의 View들이 표시할 데이터
+     *       [update - 21.12.3]
      */
-    private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMembershipModel>) = with(binding) {
+    private fun handleRegisteredState(state: JobState.Success.Registered<FireStoreMemberModel>) = with(binding) {
         LogUtil.v(Constants.TAG, "$THIS_NAME handleRegisteredState() called")
 
-        binding.fireStoreMembershipModel = state.data
+        fireStoreMemberModel = state.data
 
         profileGroup.isVisible = true
-        loginRequireGroup.isGone = true
+        signInRequireGroup.isGone = true
     }
 
-    private fun handleLoginState(state: JobState.Login) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME handleLoginState() called")
-
-        viewModel.validateMembership()
-    }
-
-    private fun handleErrorState(state: JobState.Error) {
+    /**
+     * Gon : 공통적으로 JobState.Error 반환되면, Toast Message를 표시하고, SignIn Require 표시
+     *       [update - 21.12.3]
+     */
+    private fun handleErrorState(state: JobState.Error) = with(binding) {
         LogUtil.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
         Toast.makeText(requireContext(), R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
-        binding.loginPrograssBar.isGone = true
-        binding.loginRequireGroup.isVisible = true
+        signStatePrograssBar.isGone = true
+        signInRequireGroup.isVisible = true
     }
 
+    /**
+     * Gon : 공통적으로 JobState.False 반환되면, Toast Message를 표시
+     *       [update - 21.12.3]
+     */
     private fun handleFalseState() {
         LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
         Toast.makeText(requireContext(), R.string.request_false, Toast.LENGTH_LONG).show()

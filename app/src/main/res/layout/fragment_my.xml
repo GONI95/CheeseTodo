@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="fireStoreMembershipModel"
-            type="sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel" />
+            name="fireStoreMemberModel"
+            type="sang.gondroid.cheesetodo.domain.model.FireStoreMemberModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +37,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                app:imageUrl="@{fireStoreMembershipModel.userPhoto.toString()}"
+                app:imageUrl="@{fireStoreMemberModel.userPhoto.toString()}"
                 app:layout_constraintBottom_toTopOf="@+id/userImageBottomGuideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cute_light"
-                android:text="@{fireStoreMembershipModel.userName}"
+                android:text="@{fireStoreMemberModel.userName}"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/userNameBottomGuideline"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,21 +56,21 @@
                 app:layout_constraintTop_toTopOf="@+id/userNameTopGuideline" />
 
             <TextView
-                android:id="@+id/logoutButton"
+                android:id="@+id/signOutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_midline_left_button"
                 android:paddingEnd="20dp"
-                android:text="@string/logout"
+                android:text="@string/sign_out"
                 android:textSize="12sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+                app:layout_constraintEnd_toStartOf="@+id/deleteAccountButton"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/deleteButton"
+                android:id="@+id/deleteAccountButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -89,12 +89,12 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="gone"
-                app:constraint_referenced_ids="deleteButton,logoutButton,userNameTextView,userImageView,userInfoLayout"
+                app:constraint_referenced_ids="deleteAccountButton, signOutButton, userNameTextView, userImageView, userInfoLayout"
                 tools:visibility="visible" />
 
 
             <ProgressBar
-                android:id="@+id/loginPrograssBar"
+                android:id="@+id/signStatePrograssBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -105,15 +105,15 @@
                 tools:visibility="gone" />
 
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/loginRequireGroup"
+                android:id="@+id/signInRequireGroup"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="gone"
-                app:constraint_referenced_ids="loginButton,loginTextView"
+                app:constraint_referenced_ids="signInButton,signInTextView"
                 tools:visibility="visible" />
 
             <com.google.android.gms.common.SignInButton
-                android:id="@+id/loginButton"
+                android:id="@+id/signInButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -122,14 +122,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/loginTextView"
+                android:id="@+id/signInTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/login_is_required"
-                app:layout_constraintEnd_toEndOf="@+id/loginButton"
-                app:layout_constraintStart_toStartOf="@+id/loginButton"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+                android:text="@string/sign_in_is_required"
+                app:layout_constraintEnd_toEndOf="@+id/signInButton"
+                app:layout_constraintStart_toStartOf="@+id/signInButton"
+                app:layout_constraintTop_toBottomOf="@+id/signInButton" />
 
             <LinearLayout
                 android:id="@+id/userInfoLayout"
@@ -188,7 +188,7 @@
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMembershipModel.userTodoCount.toString()}"
+                        android:text="@{fireStoreMemberModel.userTodoCount.toString()}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -244,7 +244,7 @@
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMembershipModel.userRank}"
+                        android:text="@{fireStoreMemberModel.userRank}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -301,7 +301,7 @@
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMembershipModel.userScore.toString()}"
+                        android:text="@{fireStoreMemberModel.userScore.toString()}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

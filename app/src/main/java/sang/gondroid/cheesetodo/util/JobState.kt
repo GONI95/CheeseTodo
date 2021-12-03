@@ -21,7 +21,7 @@ sealed class JobState : Serializable {
     object False : JobState()
 
     // 로그인 상태 (idToken을 가짐)
-    data class Login(
+    data class Signin(
         val idData : String,
         val nameData : String
     ) : JobState()

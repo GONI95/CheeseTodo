@@ -11,7 +11,7 @@ import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.domain.mapper.MapperToCommentModel
 import sang.gondroid.cheesetodo.domain.model.CommentModel
-import sang.gondroid.cheesetodo.domain.model.FireStoreMembershipModel
+import sang.gondroid.cheesetodo.domain.model.FireStoreMemberModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.usecase.firestore.*
 import sang.gondroid.cheesetodo.presentation.base.BaseViewModel
@@ -21,7 +21,7 @@ import sang.gondroid.cheesetodo.util.LogUtil
 
 class DetailReviewViewModel(
     private val insertCommentUseCase: InsertCommentUseCase,
-    private val getCurrentMembershipUseCase: GetCurrentMembershipUseCase,
+    private val memberVerificationUseCase: MemberVerificationUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
     private val insertCheckedUserUseCase: InsertCheckedUserUseCase,
     private val getCheckedCurrentUserUseCase: GetCheckedCurrentUserUseCase,
@@ -64,24 +64,24 @@ class DetailReviewViewModel(
     /**
      * comment 객체 생성
      */
-    private fun createCommentModel(commentValue: String, currentMembershipModel: FireStoreMembershipModel) : CommentModel {
+    private fun createCommentModel(commentValue: String, currentMemberModel: FireStoreMemberModel) : CommentModel {
         return CommentModel(
             id = null,
-            userEmail = currentMembershipModel.userEmail,
-            userName = currentMembershipModel.userName,
-            userPhoto = currentMembershipModel.userPhoto,
-            userRank = currentMembershipModel.userRank,
-            userScore = currentMembershipModel.userScore.toLong(),
+            userEmail = currentMemberModel.userEmail,
+            userName = currentMemberModel.userName,
+            userPhoto = currentMemberModel.userPhoto,
+            userRank = currentMemberModel.userRank,
+            userScore = currentMemberModel.userScore.toLong(),
             date = System.currentTimeMillis(),
             comment = commentValue
         )
     }
 
     fun insertComment(commentValue: String, reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        getCurrentMembershipUseCase.invoke().run {
+        memberVerificationUseCase.invoke().run {
             when(this) {
                 is JobState.Success.Registered<*> -> {
-                    val commentModel = createCommentModel(commentValue, this.data as FireStoreMembershipModel)
+                    val commentModel = createCommentModel(commentValue, this.data as FireStoreMemberModel)
                     val insertCommentResult = insertCommentUseCase.invoke(commentModel, reviewTodoModel)
                     LogUtil.i(Constants.TAG, "$THIS_NAME insertComment() : $insertCommentResult")
                 }

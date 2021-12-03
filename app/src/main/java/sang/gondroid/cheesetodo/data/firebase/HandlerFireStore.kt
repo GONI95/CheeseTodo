@@ -2,15 +2,15 @@ package sang.gondroid.cheesetodo.data.firebase
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import sang.gondroid.cheesetodo.R
-import sang.gondroid.cheesetodo.data.db.FireStoreMembershipDTO
+import sang.gondroid.cheesetodo.data.db.FireStoreMemberDTO
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
@@ -42,43 +42,59 @@ class HandlerFireStore(
 
     /**
      * Email Field를 기준으로 Firestore 테이블에서 회원 조회
+     *       1. Firestore Users 콜렉션에서 현재 Firebase Auth 사용자 정보와 동일한 정보가 있는지 확인
+     *       1-1 정보가 있는 경우 : Firebase Auth 사용자 정보에 해당하는 Firestore User 정보를 가져옵니다.
+     *       1-2 정보가 없는 경우 : Firestore User 콜렉션에 Firebase Auth 사용자 정보를 추가합니다.
      */
-    suspend fun validateMembership() : JobState = withContext(ioDispatchers) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() called")
+    suspend fun memberVerification() : JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME memberVerification() called")
 
-        return@withContext firebaseAuth.currentUser?.email.let { email ->
-            try {
-                val result = firestore.collection(getFireStoreString(R.string.user_collection))
-                    .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
+        return@withContext firebaseAuth.currentUser?.let { firebaseUser ->
+            return@let firebaseUser.email?.let { email ->
+                try {
+                    val result = firestore.collection(getFireStoreString(R.string.user_collection))
+                        .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
 
-                if (result.isEmpty) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME validateMembership() ${joinMembership()}")
-                    return@let joinMembership()
+                    if (result.isEmpty) {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME memberVerification() createAccount() call")
+                        createAccount(firebaseUser).let {
+                            if (it !is JobState.True) return@withContext it
+                        }
+                    }
+
+                    LogUtil.d(Constants.TAG, "$THIS_NAME memberVerification() getCurrentMember() call")
+                    getCurrentMember(firebaseUser)
+
+                } catch (e : Exception) {
+                    LogUtil.e(Constants.TAG, "$THIS_NAME memberVerification() JobState.Error")
+                    JobState.Error(R.string.request_error, e)
                 }
-                else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME validateMembership() JobState.True")
-                    return@let JobState.True
-                }
 
-            } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME validateMembership() JobState.Error")
-                return@let JobState.Error(R.string.request_error, e)
+            } ?: kotlin.run {
+                LogUtil.d(Constants.TAG, "$THIS_NAME joinMember() firebaseUser.email Uninitialized")
+                return@withContext JobState.Uninitialized
             }
+        }?: kotlin.run {
+            LogUtil.d(Constants.TAG, "$THIS_NAME joinMember() firebaseUser.email Uninitialized")
+            return@withContext JobState.Uninitialized
         }
     }
 
     /**
      * FireStore에 회원 추가
+     *
+     *  firebaseAuth.currentUser?.let { firebaseUser ->
+    firebaseUser.email.let { email ->
      */
-    suspend fun joinMembership() : JobState = withContext(ioDispatchers) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME joinMembership() called")
+    suspend fun createAccount(firebaseUser: FirebaseUser): JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME createAccount() called")
 
         var jobState : JobState = JobState.Uninitialized
 
-        return@withContext firebaseAuth.currentUser.let { firebaseUser ->
+        firebaseUser.email?.let { email ->
             try {
                 firestore.collection(getFireStoreString(R.string.user_collection))
-                    .document(firebaseUser?.email!!)
+                    .document(email)
                     .set(hashMapOf(
                         getFireStoreString(R.string.user_email) to firebaseUser.email,
                         getFireStoreString(R.string.user_uid) to firebaseUser.uid,
@@ -91,13 +107,88 @@ class HandlerFireStore(
                         jobState = if (task.isSuccessful) JobState.True else JobState.False
                     }.await()
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME joinMembership() $jobState")
-                return@let jobState
+                LogUtil.d(Constants.TAG, "$THIS_NAME createAccount() $jobState")
+                return@withContext jobState
 
             } catch (e: Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME joinMembership() JobState.Error")
-                return@let JobState.Error(R.string.request_error, e)
+                LogUtil.e(Constants.TAG, "$THIS_NAME createAccount() JobState.Error")
+                return@withContext JobState.Error(R.string.request_error, e)
             }
+        } ?: kotlin.run {
+            LogUtil.d(Constants.TAG, "$THIS_NAME createAccount() firebaseAuth.currentUser Uninitialized")
+            return@withContext jobState
+        }
+    }
+
+    suspend fun getCurrentMember(firebaseUser: FirebaseUser): JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMember() called")
+
+        return@withContext firebaseUser.email?.let { email ->
+            try {
+                val result = firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).get().await()
+
+                if (result.exists()) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMember() JobState.Registered")
+
+                    return@let JobState.Success.Registered(
+                        result.toObject(FireStoreMemberDTO::class.java)
+                    )
+                }
+                else {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMember() JobState.NotRegistered")
+                    return@let JobState.Success.NotRegistered
+                }
+
+            } catch (e : Exception) {
+                LogUtil.e(Constants.TAG, "$THIS_NAME getCurrentMember() JobState.Error")
+                return@let  JobState.Error(R.string.request_error, e)
+            }
+        } ?: kotlin.run {
+            LogUtil.d(Constants.TAG, "$THIS_NAME joinMember() firebaseAuth.currentUser Uninitialized")
+            return@withContext JobState.Uninitialized
+        }
+    }
+
+    /**
+     * Gon : Firestore Users Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
+     *       [update - 21.11.17]
+     */
+    suspend fun deleteAccount() : JobState {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() called")
+        var jobState : JobState = JobState.Uninitialized
+
+        firebaseAuth.currentUser?.let { firebaseUser ->
+            firebaseUser.email.let { email ->
+                return try {
+
+                    deleteReviewTodoOwnedByMember().let { result ->
+                        when(result) {
+                            is JobState.True -> {
+                                firestore.collection(getFireStoreString(R.string.user_collection))
+                                    .document(email!!).delete().addOnCompleteListener { task ->
+                                        jobState = if (task.isSuccessful) JobState.True else JobState.False
+                                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() True $jobState")
+                                    }.await()
+                            }
+                            is JobState.False -> {
+                                LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() False called")
+                            }
+                            is JobState.Uninitialized -> {
+                                LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() Uninitialized")
+                            }
+                            else -> LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() else")
+                        }
+                    }
+
+                    jobState
+                } catch (e : Throwable) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() Error")
+                    JobState.Error(R.string.request_error, e)
+                }
+            }
+        } ?: kotlin.run {
+            LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() firebaseAuth Uninitialized")
+            return JobState.Uninitialized
         }
     }
 
@@ -112,6 +203,7 @@ class HandlerFireStore(
      */
     suspend fun deleteReviewTodoOwnedByMember() : JobState = withContext(ioDispatchers) {
         LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() called : ${currentCoroutineContext()}")
+
         val taskResult = ArrayList<Boolean>()
 
         firebaseAuth.currentUser?.let { firebaseUser ->
@@ -145,16 +237,20 @@ class HandlerFireStore(
                                 }.await()
                         }
 
+                        LogUtil.d(Constants.TAG, "$THIS_NAME deleteReviewTodoOwnedByMember() 멤버 컬랙션에서 회원 삭제 ${taskResult.isEmpty()}")
                         return@withContext if (taskResult.isEmpty()) JobState.True else JobState.False
                     }
 
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() False")
                     return@withContext JobState.False
 
                 } catch (e : Throwable) {
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() False")
                     return@withContext JobState.Error(R.string.request_error, e)
                 }
             }
         } ?: kotlin.run {
+            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() firebaseAuth Un")
             return@withContext JobState.Uninitialized
         }
     }
@@ -193,9 +289,11 @@ class HandlerFireStore(
                     .await()
             }
 
+            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() ${taskResult.isEmpty()}")
             return taskResult.isEmpty()
         }
 
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() false")
         return false
     }
 
@@ -239,57 +337,6 @@ class HandlerFireStore(
         return false
     }
 
-    /**
-     * Gon : Firestore Users Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
-     *       [update - 21.11.17]
-     */
-    suspend fun deleteMemberInfo() : JobState {
-        LogUtil.d(Constants.TAG, "$THIS_NAME deleteMemberInfo() called")
-        var jobState : JobState = JobState.Uninitialized
-
-        firebaseAuth.currentUser?.let { firebaseUser ->
-            firebaseUser.email.let { email ->
-                return try {
-                    firestore.collection(getFireStoreString(R.string.user_collection))
-                        .document(email!!).delete().addOnCompleteListener { task ->
-                            jobState = if (task.isSuccessful) JobState.True else JobState.False
-                        }.await()
-
-                    jobState
-                } catch (e : Throwable) {
-                    JobState.Error(R.string.request_error, e)
-                }
-            }
-        } ?: kotlin.run {
-            return jobState
-        }
-    }
-
-    suspend fun getCurrentMembership() : JobState = withContext(ioDispatchers) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMembership() called")
-
-        return@withContext firebaseAuth.currentUser?.email.let { email ->
-            try {
-                val result = firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).get().await()
-
-                if (result.exists()) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMembership() JobState.Registered")
-
-                    return@let JobState.Success.Registered(
-                        result.toObject(FireStoreMembershipDTO::class.java)
-                    )
-                }
-                else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME getCurrentMembership() JobState.NotRegistered")
-                    return@let JobState.Success.NotRegistered
-                }
-
-            } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME getCurrentMembership() JobState.Error")
-                return@let  JobState.Error(R.string.request_error, e)
-            }
-        }
-    }
 
     suspend fun validateReviewTodoExist(model: TodoModel): JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME validateReviewTodoExist() called")
@@ -350,14 +397,14 @@ class HandlerFireStore(
     /**
      *  Gon : insertReviewTodo()의 반환값이 JobState.True이면 userTodoCount를 증가시키기 위한 메서드 입니다.
      */
-    suspend fun updateMembershipUserTodoCount(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+    suspend fun updateMemberUserTodoCount(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { _ ->
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount()")
 
-                getReviewTodoWriterMembership(model.userEmail)?.let {
+                getReviewTodoWriterMember(model.userEmail)?.let {
                     val userTodoCount = it.get(getFireStoreString(R.string.user_todo_count)) as Long + 1
 
                     firestore.collection(getFireStoreString(R.string.user_collection))
@@ -368,11 +415,11 @@ class HandlerFireStore(
                         }.await()
                 }
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount() JobState : $jobState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount() JobState : $jobState")
                 return@let jobState
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME updateMembershipUserTodoCount() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
@@ -560,11 +607,11 @@ class HandlerFireStore(
         }
     }
 
-    private suspend fun getReviewTodoWriterMembership(userEmail : String) : DocumentSnapshot? = withContext(ioDispatchers) {
+    private suspend fun getReviewTodoWriterMember(userEmail : String) : DocumentSnapshot? = withContext(ioDispatchers) {
 
         return@withContext firebaseAuth.currentUser.let {
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMembership()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMember()")
 
                 val result = firestore.collection(getFireStoreString(R.string.user_collection))
                     .document(userEmail)
@@ -572,14 +619,14 @@ class HandlerFireStore(
                     .await()
 
                 if (result.exists()) {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMembership() : JobState.True")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMember() : JobState.True")
                     return@let result
                 } else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMembership() : JobState.False")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMember() : JobState.False")
                     return@let null
                 }
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME getReviewTodoWriterMembership() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME getReviewTodoWriterMember() JobState.Error : $e")
                 return@let  null
             }
         }
@@ -588,14 +635,14 @@ class HandlerFireStore(
     /**
      *  Gon : insertCheckedUser()의 반환값이 JobState.True이면 userScore를 증가시키기 위한 메서드 입니다.
      */
-    suspend fun updateMembershipUserScore(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+    suspend fun updateMemberUserScore(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME updateUserScore()")
 
-                getReviewTodoWriterMembership(model.userEmail)?.let {
+                getReviewTodoWriterMember(model.userEmail)?.let {
                     val userScore = it.get(getFireStoreString(R.string.user_score)) as Long + 10L
 
                     firestore.collection(getFireStoreString(R.string.user_collection))
