@@ -31,32 +31,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/userImageView"
+            <soup.neumorphism.NeumorphCardView
+                android:id="@+id/user_image_neumorph_cardView"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                app:imageUrl="@{fireStoreMemberModel.userPhoto.toString()}"
-                app:layout_constraintBottom_toTopOf="@+id/userImageBottomGuideline"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/user_name_textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/userImageTopGuideline" />
+                app:layout_constraintTop_toTopOf="@+id/user_image_top_guideline"
+                app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
+                app:neumorph_shapeType="basin"
+                tools:ignore="MissingConstraints">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/user_imageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        app:imageUrl="@{fireStoreMemberModel.userPhoto.toString()}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </soup.neumorphism.NeumorphCardView>
 
             <TextView
-                android:id="@+id/userNameTextView"
+                android:id="@+id/user_name_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cute_light"
                 android:text="@{fireStoreMemberModel.userName}"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/userNameBottomGuideline"
+                app:layout_constraintBottom_toTopOf="@+id/user_image_bottom_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/userNameTopGuideline" />
+                app:layout_constraintTop_toBottomOf="@+id/user_image_neumorph_cardView" />
 
             <TextView
-                android:id="@+id/signOutButton"
+                android:id="@+id/sign_out_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -66,11 +84,11 @@
                 android:textSize="12sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/deleteAccountButton"
+                app:layout_constraintEnd_toStartOf="@+id/delete_account_button"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/deleteAccountButton"
+                android:id="@+id/delete_account_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -85,16 +103,16 @@
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/profileGroup"
+                android:id="@+id/profile_group"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="gone"
-                app:constraint_referenced_ids="deleteAccountButton, signOutButton, userNameTextView, userImageView, userInfoLayout"
+                app:constraint_referenced_ids="delete_account_button, sign_out_button, user_image_neumorph_cardView, user_info_layout"
                 tools:visibility="visible" />
 
 
             <ProgressBar
-                android:id="@+id/signStatePrograssBar"
+                android:id="@+id/sign_state_prograssBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -105,15 +123,15 @@
                 tools:visibility="gone" />
 
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/signInRequireGroup"
+                android:id="@+id/sign_in_require_group"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="gone"
-                app:constraint_referenced_ids="signInButton,signInTextView"
+                app:constraint_referenced_ids="sign_in_button, sign_in_textView"
                 tools:visibility="visible" />
 
             <com.google.android.gms.common.SignInButton
-                android:id="@+id/signInButton"
+                android:id="@+id/sign_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -122,28 +140,30 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/signInTextView"
+                android:id="@+id/sign_in_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/sign_in_is_required"
-                app:layout_constraintEnd_toEndOf="@+id/signInButton"
-                app:layout_constraintStart_toStartOf="@+id/signInButton"
-                app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+                app:layout_constraintEnd_toEndOf="@+id/sign_in_button"
+                app:layout_constraintStart_toStartOf="@+id/sign_in_button"
+                app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
             <LinearLayout
-                android:id="@+id/userInfoLayout"
+                android:id="@+id/user_info_layout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
                 android:orientation="vertical"
                 android:weightSum="3"
-                app:layout_constraintBottom_toTopOf="@+id/botttomGuideline"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_Guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/middleGuideline">
+                app:layout_constraintTop_toTopOf="@+id/middle_guideline">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/userReviewTodoCountLayout"
+                    android:id="@+id/user_review_todo_count_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -151,24 +171,24 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/todoImageView"
+                        android:id="@+id/todo_imageView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingStart="30dp"
+                        android:paddingStart="20dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_note" />
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/verticalGuideline1"
+                        android:id="@+id/review_todo_vertical_guideline"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.65" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/review_todo_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
@@ -177,13 +197,13 @@
                         android:text="@string/what_are_my_todos"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalGuideline1"
-                        app:layout_constraintStart_toEndOf="@+id/todoImageView"
+                        app:layout_constraintEnd_toStartOf="@+id/review_todo_vertical_guideline"
+                        app:layout_constraintStart_toEndOf="@+id/todo_imageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
                     <TextView
-                        android:id="@+id/userReviewTodoCountTv"
+                        android:id="@+id/user_review_todo_count_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
@@ -192,14 +212,14 @@
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/verticalGuideline1"
+                        app:layout_constraintStart_toStartOf="@+id/review_todo_vertical_guideline"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/userRankLayout"
+                    android:id="@+id/user_rank_Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -207,24 +227,24 @@
                     android:orientation="horizontal">
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/verticalGuideline2"
+                        android:id="@+id/rank_vertical_guideline"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.65" />
 
                     <ImageView
-                        android:id="@+id/rankImageView"
+                        android:id="@+id/rank_imageView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingStart="30dp"
+                        android:paddingStart="20dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_rank" />
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/rank_textView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:fontFamily="@font/cute_light"
@@ -233,13 +253,13 @@
                         android:text="@string/what_is_my_rank"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalGuideline2"
-                        app:layout_constraintStart_toEndOf="@+id/rankImageView"
+                        app:layout_constraintEnd_toStartOf="@+id/rank_vertical_guideline"
+                        app:layout_constraintStart_toEndOf="@+id/rank_imageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
                     <TextView
-                        android:id="@+id/userRankTv"
+                        android:id="@+id/user_rank_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
@@ -248,7 +268,7 @@
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/verticalGuideline2"
+                        app:layout_constraintStart_toStartOf="@+id/rank_vertical_guideline"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -256,7 +276,7 @@
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/userScoreLayout"
+                    android:id="@+id/user_score_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -264,24 +284,24 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/scoreImageView"
+                        android:id="@+id/score_imageView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingStart="30dp"
+                        android:paddingStart="20dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_score" />
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/verticalGuideline3"
+                        android:id="@+id/score_vertical_guideline"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.65" />
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/score_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
@@ -290,13 +310,13 @@
                         android:text="@string/what_is_my_score"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalGuideline3"
-                        app:layout_constraintStart_toEndOf="@+id/scoreImageView"
+                        app:layout_constraintEnd_toStartOf="@+id/score_vertical_guideline"
+                        app:layout_constraintStart_toEndOf="@+id/score_imageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
                     <TextView
-                        android:id="@+id/userScoreTv"
+                        android:id="@+id/user_score_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
@@ -305,7 +325,7 @@
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/verticalGuideline3"
+                        app:layout_constraintStart_toStartOf="@+id/score_vertical_guideline"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -315,54 +335,38 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/userImageTopGuideline"
+                android:id="@+id/user_image_top_guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_begin="0dp"
+                app:layout_constraintGuide_percent="0.05"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/userImageBottomGuideline"
+                android:id="@+id/user_image_bottom_guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.2"
+                app:layout_constraintGuide_percent="0.3"
                 app:layout_constraintStart_toStartOf="parent" />
 
+
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/userNameTopGuideline"
+                android:id="@+id/middle_guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.2" />
-
+                app:layout_constraintGuide_percent="0.43" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/userNameBottomGuideline"
+                android:id="@+id/bottom_Guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintGuide_percent="0.25"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/middleGuideline"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.35" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/botttomGuideline"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.75" />
+                app:layout_constraintGuide_percent="0.73" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

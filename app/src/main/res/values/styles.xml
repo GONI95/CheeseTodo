@@ -97,6 +97,6 @@
 
     <style name="Neumorph_Circle_Shape">
         <item name="neumorph_cornerFamily">rounded</item>
-        <item name="neumorph_cornerSize">50dp</item>
+        <item name="neumorph_cornerSize">75dp</item>
     </style>
 </resources>

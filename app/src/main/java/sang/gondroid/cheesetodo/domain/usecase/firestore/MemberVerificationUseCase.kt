@@ -8,7 +8,8 @@ import sang.gondroid.cheesetodo.util.JobState
 class MemberVerificationUseCase (private val memberRepository: MemberRepository, private val ioDispatcher: CoroutineDispatcher) {
 
     /**
-     * Firestore에 Users에 Get 작업 요청
+     * Gon : Firestore User 콜렉션에서 사용자 정보를 가져오거나, Firestore User 콜렉션에 사용자 정보를 추가하는 memberVerification() 호출
+     *       [update - 21.12.4]
      */
     suspend operator fun invoke(): JobState = withContext(ioDispatcher) {
         return@withContext memberRepository.memberVerification()
