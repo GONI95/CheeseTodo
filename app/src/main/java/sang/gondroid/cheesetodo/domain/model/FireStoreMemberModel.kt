@@ -2,7 +2,7 @@ package sang.gondroid.cheesetodo.domain.model
 
 import android.net.Uri
 
-data class FireStoreMembershipModel (
+data class FireStoreMemberModel (
     val userEmail : String,
     val userName : String,
     val userPhoto : String,

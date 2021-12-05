@@ -74,7 +74,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
                         startActivity(this, getBudle(view))
                     }
                 } else {
-                    Snackbar.make(view, getString(R.string.login_is_required), Snackbar.LENGTH_SHORT).run {
+                    Snackbar.make(view, getString(R.string.sign_in_is_required), Snackbar.LENGTH_SHORT).run {
                         this.setAction(getString(R.string.yes)) {
                             this.dismiss()
                         }
@@ -132,7 +132,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
         /**
          * AppPreferenceManager의 회원명 값을 관찰
          */
-        liveSharedPreferences.getString(BuildConfig.KEY_USER_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
+        liveSharedPreferences.getString(BuildConfig.KEY_DISPLAY_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
             LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
 
             binding.displayName = displayName

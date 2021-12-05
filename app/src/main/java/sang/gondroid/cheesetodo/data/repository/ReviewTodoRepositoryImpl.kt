@@ -24,7 +24,7 @@ class ReviewTodoRepositoryImpl(
         with(handlerFireStore) {
             when(val result = insertReviewTodo( toReviewTodoMapper.map(model))) {
                 is JobState.True -> {
-                    return@withContext if (updateMembershipUserTodoCount(model) == JobState.True)
+                    return@withContext if (updateMemberUserTodoCount(model) == JobState.True)
                         JobState.True
                     else
                         JobState.False
@@ -59,7 +59,7 @@ class ReviewTodoRepositoryImpl(
         with(handlerFireStore) {
             when(val result = insertCheckedUser(model)) {
                 is JobState.True -> {
-                    return@withContext if (updateMembershipUserScore(model) == JobState.True)
+                    return@withContext if (updateMemberUserScore(model) == JobState.True)
                         JobState.True
                     else
                         JobState.False

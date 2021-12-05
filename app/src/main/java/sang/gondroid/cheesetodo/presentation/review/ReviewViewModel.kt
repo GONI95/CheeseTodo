@@ -69,10 +69,10 @@ class ReviewViewModel(
         when (isChecked) {
             true -> {
                 LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 활성화")
-                appPreferenceManager.setSaveMode(isActivated = true)
+                appPreferenceManager.putSaveMode(isActivated = true)
             } false -> {
             LogUtil.v(Constants.TAG, "$THIS_NAME, onHistoryCheckedChanged() : 검색어 저장기능 비활성화")
-            appPreferenceManager.setSaveMode(isActivated = false)
+            appPreferenceManager.putSaveMode(isActivated = false)
         }
         }
     }
@@ -116,7 +116,7 @@ class ReviewViewModel(
             LogUtil.d(Constants.TAG, "$THIS_NAME, insertSearchTermHistory() SearchHistoryModel : $searchHistoryList.")
 
             // 기존 데이터에 덮어쓰기
-            appPreferenceManager.setSearchHistory(searchHistoryList)
+            appPreferenceManager.putSearchHistory(searchHistoryList)
         }
     }
 
@@ -125,7 +125,7 @@ class ReviewViewModel(
      */
     fun removeSearchHistory(searchHistoryList: ArrayList<SearchHistoryModel>, model: BaseModel) {
         searchHistoryList.remove(model)
-        appPreferenceManager.setSearchHistory(searchHistoryList)
+        appPreferenceManager.putSearchHistory(searchHistoryList)
     }
 
     /**

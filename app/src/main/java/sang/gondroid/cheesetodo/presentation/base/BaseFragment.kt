@@ -49,6 +49,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         LogUtil.v(Constants.TAG, "$THIS_NAME, onViewCreated() called : ${hashCode()}")
         initViews()
+        observeData()
     }
 
     override fun onResume() {
@@ -56,7 +57,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewDataBinding> : Fragment
         super.onResume()
 
         viewModel.fetchData()
-        observeData()
     }
 
     /**

@@ -28,7 +28,6 @@ import sang.gondroid.cheesetodo.domain.usecase.GetTodoListUseCase
 import sang.gondroid.cheesetodo.domain.usecase.InsertTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.UpdateTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.*
-import sang.gondroid.cheesetodo.presentation.home.HomeViewModel
 import sang.gondroid.cheesetodo.presentation.my.MyViewModel
 import sang.gondroid.cheesetodo.presentation.review.DetailReviewViewModel
 import sang.gondroid.cheesetodo.presentation.review.ReviewViewModel
@@ -52,7 +51,6 @@ val appModule = module {
     viewModel { MyViewModel(get<AppPreferenceManager>(), get(), get(), get(), get(named("io"))) }
     viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
     viewModel { DetailReviewViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(named("io"))) }
-    viewModel { HomeViewModel(get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
     viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
 
@@ -63,7 +61,7 @@ val appModule = module {
      */
     single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get(named("io"))) }
     single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(), get(named("io"))) }
-    single<MembershipRepository> { MembershipRepositoryImpl(get(), get(), get(named("io"))) }
+    single<MemberRepository> { MemberRepositoryImpl(get(), get(), get(named("io"))) }
 
     /**
      * Mapper : Model <-> DTO
@@ -72,7 +70,7 @@ val appModule = module {
     single { MapperToReviewTodoModel(get(named("io"))) }
     single { MapperToCommentModel(get(named("io"))) }
     single { MapperToCommentDTO(get(named("io"))) }
-    single { MapperToFireStoreMembershipModel(get(named("io"))) }
+    single { MapperToFireStoreMemberModel(get(named("io"))) }
 
     /**
      * Database
@@ -93,7 +91,8 @@ val appModule = module {
     factory { GetReviewTodoUseCase(get()) }
 
     factory { InsertCommentUseCase(get()) }
-    factory { GetCurrentMembershipUseCase(get(), get(named("io"))) }
+    factory { MemberVerificationUseCase(get(), get(named("io"))) }
+    factory { DeleteAccountUseCase(get(), get(named("io"))) }
     factory { GetCommentsUseCase(get(), get(named("io"))) }
     factory { InsertCheckedUserUseCase(get(), get(named("io"))) }
     factory { GetCheckedCurrentUserUseCase(get(), get(named("io"))) }
