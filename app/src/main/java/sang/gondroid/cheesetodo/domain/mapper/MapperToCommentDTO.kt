@@ -10,11 +10,11 @@ class MapperToCommentDTO (
 ) : Mapper<CommentModel, CommentDTO> {
     override suspend fun map(input: CommentModel): CommentDTO = withContext(ioDispatcher) {
         return@withContext CommentDTO(
-            userEmail = input.userEmail,
-            userName = input.userName,
-            userPhoto = input.userPhoto,
-            userRank = input.userRank,
-            userScore = input.userScore,
+            memberEmail = input.memberEmail,
+            memberName = input.memberName,
+            memberPhoto = input.memberPhoto,
+            memberRank = input.memberRank,
+            memberScore = input.memberScore,
             date = input.date,
             comment = input.comment
         )

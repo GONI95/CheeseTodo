@@ -8,13 +8,13 @@ import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
 
-class DeleteCheckedUserUseCase(private val reviewTodoRepository: ReviewTodoRepository, private val ioDispatcher: CoroutineDispatcher) {
+class DeleteCheckedMemberUseCase(private val reviewTodoRepository: ReviewTodoRepository, private val ioDispatcher: CoroutineDispatcher) {
 
     /**
-     * Firestore에 ReviewTodo의 checked_users 컬렉션에 Delete 작업 요청
+     * Firestore에 ReviewTodo의 checked_members 컬렉션에 Delete 작업 요청
      */
     suspend operator fun invoke(model: ReviewTodoModel) : JobState = withContext(ioDispatcher) {
-        LogUtil.d(Constants.TAG, "DeleteCheckedUserUseCase deleteCheckedUser()")
-        return@withContext reviewTodoRepository.deleteCheckedUser(model)
+        LogUtil.d(Constants.TAG, "DeleteCheckedMemberUseCase deleteCheckedMember()")
+        return@withContext reviewTodoRepository.deleteCheckedMember(model)
     }
 }

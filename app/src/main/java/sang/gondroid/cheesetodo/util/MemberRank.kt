@@ -3,8 +3,8 @@ package sang.gondroid.cheesetodo.util
 import androidx.annotation.StringRes
 import sang.gondroid.cheesetodo.R
 
-enum class UserRank(
-    @StringRes val userRankStringId : Int
+enum class MemberRank(
+    @StringRes val memberRankStringId : Int
 ) {
     Level1(R.string.level1),
     Level2(R.string.level2),

@@ -96,12 +96,12 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
     private val searchHistoryAdapter by lazy {
         BaseAdapter<SearchHistoryModel>(modelList = listOf(), adapterListener = object : SearchHistoryListener {
             override fun onClickItem(v: View, model: BaseModel) {
-                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME onClickItem() -> removeSearchHistory()")
                 viewModel.removeSearchHistory(searchHistoryList, model)
             }
 
             override fun onClickItem(v: View, query: String) {
-                LogUtil.i(Constants.TAG, "$THIS_NAME onClickItem()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME onClickItem() -> filterSearchHistory()")
                 viewModel.filterSearchHistory(reviewTodoList, query)
             }
         })
@@ -133,7 +133,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
          * AppPreferenceManager의 회원명 값을 관찰
          */
         liveSharedPreferences.getString(BuildConfig.KEY_DISPLAY_NAME, null).observe(viewLifecycleOwner, Observer { displayName ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME getString() called : $displayName")
+            LogUtil.v(Constants.TAG, "$THIS_NAME getString() called : $displayName")
 
             binding.displayName = displayName
         })
@@ -142,7 +142,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
          * AppPreferenceManager의 검색 히스토리 값을 관찰
          */
         liveSharedPreferences.getString(BuildConfig.KEY_SEARCH_HISTORY, null).observe(viewLifecycleOwner, Observer { list ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME getSearchHistoryList() called : $list")
+            LogUtil.v(Constants.TAG, "$THIS_NAME getSearchHistoryList() called : $list")
 
             if(!list.isNullOrBlank()) {
                 /**
@@ -160,16 +160,7 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
          * AppPreferenceManager의 저장모드 값을 관찰
          */
         liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, false).observe(viewLifecycleOwner, Observer { state ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME getBoolean() called")
-            saveModeState = state
-            binding.switchState = saveModeState
-        })
-
-        /**
-         * AppPreferenceManager의 저장모드 값을 관찰
-         */
-        liveSharedPreferences.getBoolean(BuildConfig.KEY_SAVE_MODE, false).observe(viewLifecycleOwner, Observer { state ->
-            LogUtil.i(Constants.TAG, "$THIS_NAME getBoolean() called")
+            LogUtil.v(Constants.TAG, "$THIS_NAME getBoolean() called")
             saveModeState = state
             binding.switchState = saveModeState
         })
@@ -201,10 +192,12 @@ class ReviewFragment  : BaseFragment<ReviewViewModel, FragmentReviewBinding>(),
             }
         })
 
-        viewModel.jobStateLiveData.observe(viewLifecycleOwner, Observer { state ->
-            when (state) {
+        viewModel.getReviewTodoLiveData.observe(viewLifecycleOwner, Observer {
+            LogUtil.d(Constants.TAG, "$THIS_NAME observeData getReviewTodoLiveData : ${it}")
+
+            when (it) {
                 is JobState.True.Result<*> -> {
-                    reviewTodoList = state.data as ArrayList<ReviewTodoModel>
+                    reviewTodoList = it.data as ArrayList<ReviewTodoModel>
                     reviewTodoAdapter.submitList(reviewTodoList)
                 }
                 is JobState.Error -> {

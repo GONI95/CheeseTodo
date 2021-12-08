@@ -64,13 +64,13 @@ class HomeFragment : Fragment() {
          */
         binding.filterChipGroup.setOnCheckedChangeListener { group, checkedId ->
             when(checkedId) {
-                R.id.chipInitialize ->
+                R.id.chip_initialize ->
                     changeTodoListSortFilter(TodoListSortFilter.DEFAULT)
 
-                R.id.chipLowImportance ->
+                R.id.chip_low_importance ->
                     changeTodoListSortFilter(TodoListSortFilter.HIGH_IMPORTANCE)
 
-                R.id.chipFastDate ->
+                R.id.chip_fast_date ->
                     changeTodoListSortFilter(TodoListSortFilter.FAST_DATE)
 
                 else ->

@@ -13,7 +13,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/todoCategoryRecyclerView"
+            android:id="@+id/todo_category_recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:setAdapter="@{adapter}"

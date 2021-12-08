@@ -43,8 +43,8 @@ class HandlerFireStore(
     /**
      * Email Field를 기준으로 Firestore 테이블에서 회원 조회
      *       1. Firestore Users 콜렉션에서 현재 Firebase Auth 사용자 정보와 동일한 정보가 있는지 확인
-     *       1-1 정보가 있는 경우 : Firebase Auth 사용자 정보에 해당하는 Firestore User 정보를 가져옵니다.
-     *       1-2 정보가 없는 경우 : Firestore User 콜렉션에 Firebase Auth 사용자 정보를 추가합니다.
+     *       1-1 정보가 있는 경우 : Firebase Auth 사용자 정보에 해당하는 Firestore Member 정보를 가져옵니다.
+     *       1-2 정보가 없는 경우 : Firestore Member 콜렉션에 Firebase Auth 사용자 정보를 추가합니다.
      */
     suspend fun memberVerification() : JobState = withContext(ioDispatchers) {
         LogUtil.v(Constants.TAG, "$THIS_NAME memberVerification() called")
@@ -52,8 +52,8 @@ class HandlerFireStore(
         return@withContext firebaseAuth.currentUser?.let { firebaseUser ->
             return@let firebaseUser.email?.let { email ->
                 try {
-                    val result = firestore.collection(getFireStoreString(R.string.user_collection))
-                        .whereEqualTo(getFireStoreString(R.string.user_email), email).get().await()
+                    val result = firestore.collection(getFireStoreString(R.string.member_collection))
+                        .whereEqualTo(getFireStoreString(R.string.member_email), email).get().await()
 
                     if (result.isEmpty) {
                         LogUtil.d(Constants.TAG, "$THIS_NAME memberVerification() createAccount() call")
@@ -93,16 +93,16 @@ class HandlerFireStore(
 
         firebaseUser.email?.let { email ->
             try {
-                firestore.collection(getFireStoreString(R.string.user_collection))
+                firestore.collection(getFireStoreString(R.string.member_collection))
                     .document(email)
                     .set(hashMapOf(
-                        getFireStoreString(R.string.user_email) to firebaseUser.email,
-                        getFireStoreString(R.string.user_uid) to firebaseUser.uid,
-                        getFireStoreString(R.string.user_photo) to firebaseUser.photoUrl.toString(),
-                        getFireStoreString(R.string.user_name) to firebaseUser.displayName as String,
-                        getFireStoreString(R.string.user_todo_count) to 0,
-                        getFireStoreString(R.string.user_rank) to getFireStoreString(UserRank.Level1.userRankStringId),
-                        getFireStoreString(R.string.user_score) to 0
+                        getFireStoreString(R.string.member_email) to firebaseUser.email,
+                        getFireStoreString(R.string.member_uid) to firebaseUser.uid,
+                        getFireStoreString(R.string.member_photo) to firebaseUser.photoUrl.toString(),
+                        getFireStoreString(R.string.member_name) to firebaseUser.displayName as String,
+                        getFireStoreString(R.string.member_todo_count) to 0,
+                        getFireStoreString(R.string.member_rank) to getFireStoreString(MemberRank.Level1.memberRankStringId),
+                        getFireStoreString(R.string.member_score) to 0
                     )).addOnCompleteListener { task ->
                         jobState = if (task.isSuccessful) JobState.True else JobState.False
                     }.await()
@@ -125,7 +125,7 @@ class HandlerFireStore(
 
         return@withContext firebaseUser.email?.let { email ->
             try {
-                val result = firestore.collection(getFireStoreString(R.string.user_collection)).document(email!!).get().await()
+                val result = firestore.collection(getFireStoreString(R.string.member_collection)).document(email!!).get().await()
 
                 if (result.exists()) {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCurrentMember() JobState.Registered")
@@ -150,7 +150,7 @@ class HandlerFireStore(
     }
 
     /**
-     * Gon : Firestore Users Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
+     * Gon : Firestore Member Collection에서 현재 로그인한 회원 정보의 삭제하는 메서드
      *       [update - 21.11.17]
      */
     suspend fun deleteAccount() : JobState {
@@ -164,7 +164,7 @@ class HandlerFireStore(
                     deleteReviewTodoOwnedByMember().let { result ->
                         when(result) {
                             is JobState.True -> {
-                                firestore.collection(getFireStoreString(R.string.user_collection))
+                                firestore.collection(getFireStoreString(R.string.member_collection))
                                     .document(email!!).delete().addOnCompleteListener { task ->
                                         jobState = if (task.isSuccessful) JobState.True else JobState.False
                                         LogUtil.d(Constants.TAG, "$THIS_NAME deleteAccount() True $jobState")
@@ -210,12 +210,12 @@ class HandlerFireStore(
             firebaseUser.email.let { email ->
                 try {
                     val reviewTodoDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                        .whereEqualTo(getFireStoreString(R.string.user_email), email)
+                        .whereEqualTo(getFireStoreString(R.string.member_email), email)
                         .get().await().documents
 
-                    val dltCheckedUser = async {
-                        deleteCheckedUserOwnedByMemeber(reviewTodoDocumentList).also {
-                            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() return : $it")
+                    val dltCheckedMember = async {
+                        deleteCheckedMemberOwnedByMemeber(reviewTodoDocumentList).also {
+                            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() return : $it")
                         }
                     }
 
@@ -225,7 +225,7 @@ class HandlerFireStore(
                         }
                     }
 
-                    if (dltComments.await() && dltCheckedUser.await()) {
+                    if (dltComments.await() && dltCheckedMember.await()) {
                         reviewTodoDocumentList.forEach { documentSnapshot ->
                             firestore.collection(getFireStoreString(R.string.review_todo_collection))
                                 .document(documentSnapshot.id)
@@ -241,16 +241,16 @@ class HandlerFireStore(
                         return@withContext if (taskResult.isEmpty()) JobState.True else JobState.False
                     }
 
-                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() False")
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() False")
                     return@withContext JobState.False
 
                 } catch (e : Throwable) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() False")
+                    LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() False")
                     return@withContext JobState.Error(R.string.request_error, e)
                 }
             }
         } ?: kotlin.run {
-            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() firebaseAuth Un")
+            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() firebaseAuth Un")
             return@withContext JobState.Uninitialized
         }
     }
@@ -289,11 +289,11 @@ class HandlerFireStore(
                     .await()
             }
 
-            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() ${taskResult.isEmpty()}")
+            LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() ${taskResult.isEmpty()}")
             return taskResult.isEmpty()
         }
 
-        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedUserOwnedByMemeber() false")
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteCheckedMemberOwnedByMemeber() false")
         return false
     }
 
@@ -301,26 +301,26 @@ class HandlerFireStore(
      * Gon : Firestore ReviewTodo Collection에서 현재 로그인한 회원의 게시물의 CheckedUser를 삭제하는 메서드
      *
      *       Firestore는 기본적으로 document 삭제에 대한 작업을 한번에 할 수 없습니다.
-     *       checkedUsersDocumentList - 삭제할 회원의 checked_user에 해당하는 document들을 찾아냅니다.
-     *       checkedUsersDocumentList의 정보를 확인하여 checked_user의 document를 삭제합니다.
+     *       checkedMemberDocumentList - 삭제할 회원의 checked_member에 해당하는 document들을 찾아냅니다.
+     *       checkedMemberDocumentList의 정보를 확인하여 checked_member의 document를 삭제합니다.
      *       taskResult - document 삭제 작업 중 실패할 경우에만 값을 가집니다.
      *       [update - 21.11.17]
      */
-    private suspend fun deleteCheckedUserOwnedByMemeber(reviewTodoDocumentList: List<DocumentSnapshot>) : Boolean {
+    private suspend fun deleteCheckedMemberOwnedByMemeber(reviewTodoDocumentList: List<DocumentSnapshot>) : Boolean {
         LogUtil.d(Constants.TAG, "$THIS_NAME deleteCommentsOwnedByMemeber() called")
         val taskResult = ArrayList<Boolean>()
 
         reviewTodoDocumentList.forEach { documentSnapshot ->
 
-            val checkedUsersDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
+            val checkedMembersDocumentList = firestore.collection(getFireStoreString(R.string.review_todo_collection))
                 .document(documentSnapshot.id)
-                .collection(getFireStoreString(R.string.checked_user_collection))
+                .collection(getFireStoreString(R.string.checked_member_collection))
                 .get().await().documents
 
-            checkedUsersDocumentList.forEach {
+            checkedMembersDocumentList.forEach {
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
                     .document(documentSnapshot.id)
-                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .collection(getFireStoreString(R.string.checked_member_collection))
                     .document(it.id)
                     .delete()
                     .addOnCompleteListener { task ->
@@ -345,7 +345,7 @@ class HandlerFireStore(
             try {
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUser?.email)
+                    .whereEqualTo(getFireStoreString(R.string.member_email), firebaseUser?.email)
                     .whereEqualTo(getFireStoreString(R.string.review_title), model.title)
                     .whereEqualTo(getFireStoreString(R.string.review_id), model.id)
                     .get().await()
@@ -395,31 +395,31 @@ class HandlerFireStore(
     }
 
     /**
-     *  Gon : insertReviewTodo()의 반환값이 JobState.True이면 userTodoCount를 증가시키기 위한 메서드 입니다.
+     *  Gon : insertReviewTodo()의 반환값이 JobState.True이면 memberTodoCount를 증가시키기 위한 메서드 입니다.
      */
-    suspend fun updateMemberUserTodoCount(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+    suspend fun updateMemberTodoCount(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { _ ->
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME updateMemberTodoCount()")
 
-                getReviewTodoWriterMember(model.userEmail)?.let {
-                    val userTodoCount = it.get(getFireStoreString(R.string.user_todo_count)) as Long + 1
+                getReviewTodoWriterMember(model.memberEmail)?.let {
+                    val memberTodoCount = it.get(getFireStoreString(R.string.member_todo_count)) as Long + 1
 
-                    firestore.collection(getFireStoreString(R.string.user_collection))
-                        .document(model.userEmail)
-                        .update(getFireStoreString(R.string.user_todo_count), userTodoCount)
+                    firestore.collection(getFireStoreString(R.string.member_collection))
+                        .document(model.memberEmail)
+                        .update(getFireStoreString(R.string.member_todo_count), memberTodoCount)
                         .addOnCompleteListener { task ->
                             jobState = if (task.isSuccessful) JobState.True else JobState.False
                         }.await()
                 }
 
-                LogUtil.d(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount() JobState : $jobState")
+                LogUtil.d(Constants.TAG, "$THIS_NAME updateMemberTodoCount() JobState : $jobState")
                 return@let jobState
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME updateMemberUserTodoCount() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME updateMemberTodoCount() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
@@ -432,7 +432,7 @@ class HandlerFireStore(
     suspend fun getReviewTodo() : JobState = withContext(ioDispatchers) {
         return@withContext firebaseAuth.currentUser.let { _ ->
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodo()")
+                LogUtil.d(Constants.TAG, "$THIS_NAME getReviewTodo()")
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
                     .get().await()
@@ -454,7 +454,7 @@ class HandlerFireStore(
                 val result =
 
                     firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                        .document(reviewTodoModel.userEmail + reviewTodoModel.modelId)
+                        .document(reviewTodoModel.memberEmail + reviewTodoModel.modelId)
                         .collection(getFireStoreString(R.string.review_comments_collection))
                         .document()
                         .set(commentDTO)
@@ -479,7 +479,7 @@ class HandlerFireStore(
         return@withContext Observable.create { emitter ->
             firebaseAuth.currentUser.let { firebaseUser ->
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(model.userEmail + model.modelId)
+                    .document(model.memberEmail + model.modelId)
                     .collection(getFireStoreString(R.string.review_comments_collection))
                     .addSnapshotListener { value, error ->
                         if (error != null)
@@ -497,18 +497,18 @@ class HandlerFireStore(
         }
     }
 
-    suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatchers) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME insertCheckedUser() called")
+    suspend fun insertCheckedMember(reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME insertCheckedMember() called")
 
         return@withContext firebaseAuth.currentUser.let { firebaseUser ->
             try {
                 var state : JobState = JobState.Uninitialized
 
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(reviewTodoModel.userEmail + reviewTodoModel.modelId)
-                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .document(reviewTodoModel.memberEmail + reviewTodoModel.modelId)
+                    .collection(getFireStoreString(R.string.checked_member_collection))
                     .document(firebaseUser!!.email.toString())
-                    .set(mapOf(getFireStoreString(R.string.user_email) to firebaseUser.email))
+                    .set(mapOf(getFireStoreString(R.string.member_email) to firebaseUser.email))
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             state = JobState.True
@@ -517,25 +517,25 @@ class HandlerFireStore(
                             state = JobState.False
                     }.await()
 
-                LogUtil.v(Constants.TAG, "$THIS_NAME insertCheckedUser() JobState : ${state}")
+                LogUtil.v(Constants.TAG, "$THIS_NAME insertCheckedMember() JobState : ${state}")
                 return@let state
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME insertCheckedUser() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME insertCheckedMember() JobState.Error : $e")
                 return@let JobState.Error(R.string.request_error, e)
             }
         }
     }
 
-    suspend fun getCheckedUserCount(model: ReviewTodoModel) : Observable<Int> = withContext(ioDispatchers) {
+    suspend fun getCheckedMemberCount(model: ReviewTodoModel) : Observable<Int> = withContext(ioDispatchers) {
 
         return@withContext Observable.create { emitter ->
             firebaseAuth.currentUser.let {
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(model.userEmail + model.modelId)
-                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .document(model.memberEmail + model.modelId)
+                    .collection(getFireStoreString(R.string.checked_member_collection))
                     .addSnapshotListener { value, error ->
-                        LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedUserCount() : ${value}")
+                        LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedMemberCount() : ${value}")
 
                         if (error != null)
                             emitter.onError(error)
@@ -551,45 +551,45 @@ class HandlerFireStore(
 
         }
     }
-    suspend fun getCheckedCurrentUser(model: ReviewTodoModel) : JobState = withContext(ioDispatchers) {
+    suspend fun getCheckedCurrentMember(model: ReviewTodoModel) : JobState = withContext(ioDispatchers) {
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedCurrentUser()")
 
                 val result = firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(model.userEmail + model.modelId)
-                    .collection(getFireStoreString(R.string.checked_user_collection))
-                    .whereEqualTo(getFireStoreString(R.string.user_email), firebaseUserEmail)
+                    .document(model.memberEmail + model.modelId)
+                    .collection(getFireStoreString(R.string.checked_member_collection))
+                    .whereEqualTo(getFireStoreString(R.string.member_email), firebaseUserEmail)
                     .get()
                     .await()
 
                 if (!result.isEmpty) {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() JobState.True")
+                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentMember() JobState.True")
                     return@let JobState.True
                 }
                 else {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() JobState.False")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME getCheckedCurrentMember() JobState.False")
                     return@let JobState.False
                 }
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME getCheckedCurrentMember() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
     }
 
-    suspend fun deleteCheckedUser(model: ReviewTodoModel) : JobState = withContext(ioDispatchers) {
+    suspend fun deleteCheckedMember(model: ReviewTodoModel) : JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME deleteCheckedUser()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME deleteCheckedMember()")
 
                 firestore.collection(getFireStoreString(R.string.review_todo_collection))
-                    .document(model.userEmail + model.modelId)
-                    .collection(getFireStoreString(R.string.checked_user_collection))
+                    .document(model.memberEmail + model.modelId)
+                    .collection(getFireStoreString(R.string.checked_member_collection))
                     .document(firebaseUserEmail.toString())
                     .delete()
                     .addOnCompleteListener { task ->
@@ -601,20 +601,20 @@ class HandlerFireStore(
                 return@let jobState
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME deleteCheckedUser() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME deleteCheckedMember() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }
     }
 
-    private suspend fun getReviewTodoWriterMember(userEmail : String) : DocumentSnapshot? = withContext(ioDispatchers) {
+    private suspend fun getReviewTodoWriterMember(memberEmail : String) : DocumentSnapshot? = withContext(ioDispatchers) {
 
         return@withContext firebaseAuth.currentUser.let {
             try {
                 LogUtil.v(Constants.TAG, "$THIS_NAME getReviewTodoWriterMember()")
 
-                val result = firestore.collection(getFireStoreString(R.string.user_collection))
-                    .document(userEmail)
+                val result = firestore.collection(getFireStoreString(R.string.member_collection))
+                    .document(memberEmail)
                     .get()
                     .await()
 
@@ -633,21 +633,21 @@ class HandlerFireStore(
     }
 
     /**
-     *  Gon : insertCheckedUser()의 반환값이 JobState.True이면 userScore를 증가시키기 위한 메서드 입니다.
+     *  Gon : insertCheckedMember()의 반환값이 JobState.True이면 userScore를 증가시키기 위한 메서드 입니다.
      */
-    suspend fun updateMemberUserScore(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
+    suspend fun updateMemberScore(model: ReviewTodoModel): JobState = withContext(ioDispatchers) {
         var jobState : JobState = JobState.Uninitialized
 
         return@withContext firebaseAuth.currentUser?.email.let { firebaseUserEmail ->
             try {
-                LogUtil.v(Constants.TAG, "$THIS_NAME updateUserScore()")
+                LogUtil.v(Constants.TAG, "$THIS_NAME updateMemberScore()")
 
-                getReviewTodoWriterMember(model.userEmail)?.let {
-                    val userScore = it.get(getFireStoreString(R.string.user_score)) as Long + 10L
+                getReviewTodoWriterMember(model.memberEmail)?.let {
+                    val memberScore = it.get(getFireStoreString(R.string.member_score)) as Long + 10L
 
-                    firestore.collection(getFireStoreString(R.string.user_collection))
-                        .document(model.userEmail)
-                        .update(getFireStoreString(R.string.user_score), userScore, getFireStoreString(R.string.user_rank), userScore.toUserRank())
+                    firestore.collection(getFireStoreString(R.string.member_collection))
+                        .document(model.memberEmail)
+                        .update(getFireStoreString(R.string.member_score), memberScore, getFireStoreString(R.string.member_rank), memberScore.toUserRank())
                         .addOnCompleteListener { task ->
                             jobState = if (task.isSuccessful) JobState.True else JobState.False
                         }.await()
@@ -656,7 +656,7 @@ class HandlerFireStore(
                 return@let jobState
 
             } catch (e : Exception) {
-                LogUtil.e(Constants.TAG, "$THIS_NAME updateUserScore() JobState.Error : $e")
+                LogUtil.e(Constants.TAG, "$THIS_NAME updateMemberScore() JobState.Error : $e")
                 return@let  JobState.Error(R.string.request_error, e)
             }
         }

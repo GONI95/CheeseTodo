@@ -6,9 +6,9 @@ import sang.gondroid.cheesetodo.util.TodoCategory
 data class ReviewTodoModel(
     override val id: Long?,
     val modelId: Long,
-    val userEmail: String,
-    val userName: String,
-    val userPhoto: String,
+    val memberEmail: String,
+    val memberName: String,
+    val memberPhoto: String,
     val category: TodoCategory,
     val date: Long,
     val title: String,

@@ -15,9 +15,9 @@ class MapperToReviewTodoModel(
         return@withContext ReviewTodoModel(
             id = null,
             modelId = input.modelId,
-            userEmail = input.userEmail,
-            userName = input.userName,
-            userPhoto = input.userPhoto,
+            memberEmail = input.memberEmail,
+            memberName = input.memberName,
+            memberPhoto = input.memberPhoto,
             category = input.category,
             date = input.date,
             title = input.title,

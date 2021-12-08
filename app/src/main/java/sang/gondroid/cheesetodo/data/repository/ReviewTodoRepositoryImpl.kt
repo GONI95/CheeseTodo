@@ -24,7 +24,7 @@ class ReviewTodoRepositoryImpl(
         with(handlerFireStore) {
             when(val result = insertReviewTodo( toReviewTodoMapper.map(model))) {
                 is JobState.True -> {
-                    return@withContext if (updateMemberUserTodoCount(model) == JobState.True)
+                    return@withContext if (updateMemberTodoCount(model) == JobState.True)
                         JobState.True
                     else
                         JobState.False
@@ -55,11 +55,11 @@ class ReviewTodoRepositoryImpl(
         return@withContext handlerFireStore.getComments(model)
     }
 
-    override suspend fun insertCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+    override suspend fun insertCheckedMember(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
         with(handlerFireStore) {
-            when(val result = insertCheckedUser(model)) {
+            when(val result = insertCheckedMember(model)) {
                 is JobState.True -> {
-                    return@withContext if (updateMemberUserScore(model) == JobState.True)
+                    return@withContext if (updateMemberScore(model) == JobState.True)
                         JobState.True
                     else
                         JobState.False
@@ -71,16 +71,16 @@ class ReviewTodoRepositoryImpl(
         }
     }
 
-    override suspend fun getCheckedCurrentUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handlerFireStore.getCheckedCurrentUser(model)
+    override suspend fun getCheckedCurrentMember(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handlerFireStore.getCheckedCurrentMember(model)
     }
 
-    override suspend fun deleteCheckedUser(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
-        return@withContext handlerFireStore.deleteCheckedUser(model)
+    override suspend fun deleteCheckedMember(model: ReviewTodoModel): JobState = withContext(ioDispatcher) {
+        return@withContext handlerFireStore.deleteCheckedMember(model)
     }
 
-    override suspend fun getCheckedUserCount(model: ReviewTodoModel): Observable<Int> = withContext(ioDispatcher) {
-        return@withContext handlerFireStore.getCheckedUserCount(model)
+    override suspend fun getCheckedMemberCount(model: ReviewTodoModel): Observable<Int> = withContext(ioDispatcher) {
+        return@withContext handlerFireStore.getCheckedMemberCount(model)
     }
 
     override suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState = withContext(ioDispatcher) {

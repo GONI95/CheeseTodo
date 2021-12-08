@@ -76,9 +76,9 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
         return ReviewTodoModel(
             id = null,
             modelId = model.id!!,
-            userEmail = firebaseUser.email!!,
-            userName = firebaseUser.displayName!!,
-            userPhoto = firebaseUser.photoUrl.toString(),
+            memberEmail = firebaseUser.email!!,
+            memberName = firebaseUser.displayName!!,
+            memberPhoto = firebaseUser.photoUrl.toString(),
             category = model.category,
             date = currentMillis,
             title = model.title,
@@ -101,16 +101,9 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
                 is JobState.True -> {
                     val insertState = insertReviewTodoUseCase.invoke(reviewTodoModel)
 
-                    when(insertState) {
-                        is JobState.True -> _jobState.postValue(insertState)
-                        is JobState.False -> _jobState.postValue(insertState)
-                        is JobState.Error -> _jobState.postValue(insertState)
-                        else -> _jobState.postValue(insertState)
-                    }
+                    _jobState.postValue(insertState)
                 }
-                is JobState.False -> _jobState.postValue(existState)
-                is JobState.Error -> _jobState.postValue(existState)
-                else -> LogUtil.w(Constants.TAG, "$THIS_NAME uploadReviewTodo() else : $existState")
+                else -> _jobState.postValue(existState)
             }
         } ?: kotlin.run { _jobState.postValue(JobState.Uninitialized) }
     }

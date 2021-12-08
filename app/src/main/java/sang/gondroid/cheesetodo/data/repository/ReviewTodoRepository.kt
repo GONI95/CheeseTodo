@@ -13,8 +13,8 @@ interface ReviewTodoRepository {
     suspend fun getReviewTodo() : JobState
     suspend fun insertComment(commentModel: CommentModel, reviewTodoModel: ReviewTodoModel): JobState
     suspend fun getComments(model: ReviewTodoModel): Observable<List<CommentDTO>>
-    suspend fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) : JobState
-    suspend fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel) : JobState
-    suspend fun deleteCheckedUser(reviewTodoModel: ReviewTodoModel) : JobState
-    suspend fun getCheckedUserCount(model: ReviewTodoModel): Observable<Int>
+    suspend fun insertCheckedMember(reviewTodoModel: ReviewTodoModel) : JobState
+    suspend fun getCheckedCurrentMember(reviewTodoModel: ReviewTodoModel) : JobState
+    suspend fun deleteCheckedMember(reviewTodoModel: ReviewTodoModel) : JobState
+    suspend fun getCheckedMemberCount(model: ReviewTodoModel): Observable<Int>
 }

@@ -24,7 +24,7 @@ class ReviewTodoViewHolder(
         binding.root.setOnClickListener {
             LogUtil.d(Constants.TAG, "$THIS_NAME, setOnClickListener() called : 사용자 이벤트가 발생했습니다.")
 
-            onItemClick(binding.reviewTodoTitle, adapterPosition)
+            onItemClick(binding.reviewTodoTitleTextView, adapterPosition)
         }
     }
 }

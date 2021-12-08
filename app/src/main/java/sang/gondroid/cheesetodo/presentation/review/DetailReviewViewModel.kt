@@ -9,6 +9,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
+import sang.gondroid.cheesetodo.data.firebase.HandlerFirebaseAuth
 import sang.gondroid.cheesetodo.domain.mapper.MapperToCommentModel
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.FireStoreMemberModel
@@ -23,77 +24,74 @@ class DetailReviewViewModel(
     private val insertCommentUseCase: InsertCommentUseCase,
     private val memberVerificationUseCase: MemberVerificationUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
-    private val insertCheckedUserUseCase: InsertCheckedUserUseCase,
-    private val getCheckedCurrentUserUseCase: GetCheckedCurrentUserUseCase,
-    private val getCheckedUserCountUseCase: GetCheckedUserCountUseCase,
-    private val deleteCheckedUserUseCase: DeleteCheckedUserUseCase,
+    private val insertCheckedMemberUseCase: InsertCheckedMemberUseCase,
+    private val getCheckedCurrentMemberUseCase: GetCheckedCurrentMemberUseCase,
+    private val getCheckedMemberCountUseCase: GetCheckedMemberCountUseCase,
+    private val deleteCheckedMemberUseCase: DeleteCheckedMemberUseCase,
     private val toCommentModel: MapperToCommentModel,
     private val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
     private val THIS_NAME = this::class.simpleName
 
     // JobState 상태가 초기화되지 않은 값으로 초기화
+    private var _memberVerificationLiveData = MutableLiveData<JobState>()
+    val memberVerificationLiveData : LiveData<JobState>
+        get() = _memberVerificationLiveData
+
+    private var _getCommentLiveData = MutableLiveData<JobState>()
+    val getCommentLiveData : LiveData<JobState>
+        get() = _getCommentLiveData
+
+    private var _getCheckedMemberCountLiveData = MutableLiveData<Int>()
+    val getCheckedMemberCountLiveData : LiveData<Int>
+        get() = _getCheckedMemberCountLiveData
+
+    val getCheckedCurrentMemberBooleanLiveData = MutableLiveData<Boolean>()
+
     private var _jobStateLiveData = MutableLiveData<JobState>()
     val jobStateLiveData : LiveData<JobState>
         get() = _jobStateLiveData
 
-    private var _getCommentJobStateLiveData = MutableLiveData<JobState>()
-    val getCommentJobStateLiveData : LiveData<JobState>
-        get() = _getCommentJobStateLiveData
-
-    private var _insertCheckedUserJobStateLiveData = MutableLiveData<JobState>()
-    val insertCheckedUserJobStateLiveData : LiveData<JobState>
-        get() = _insertCheckedUserJobStateLiveData
-
-    private var _getCheckedCurrentUserBooleanLiveData = MutableLiveData<Boolean>()
-    val getCheckedCurrentUserBooleanLiveData : LiveData<Boolean>
-        get() = _getCheckedCurrentUserBooleanLiveData
-
-    private var _deleteCheckedUserLiveData = MutableLiveData<JobState>()
-    val deleteCheckedUserLiveData : LiveData<JobState>
-        get() = _deleteCheckedUserLiveData
-
-    private var _getCheckedUserCountLiveData = MutableLiveData<Int>()
-    val getCheckedUserCountLiveData : LiveData<Int>
-        get() = _getCheckedUserCountLiveData
+    private lateinit var memberModel: FireStoreMemberModel
 
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() called")
 
+        memberVerificationUseCase.invoke().let { result ->
+            if (result is JobState.Success.Registered<*>) memberModel = result.data as FireStoreMemberModel
+            _memberVerificationLiveData.postValue(result)
+        }
     }
 
     /**
      * comment 객체 생성
      */
     private fun createCommentModel(commentValue: String, currentMemberModel: FireStoreMemberModel) : CommentModel {
+        LogUtil.v(Constants.TAG, "$THIS_NAME createCommentModel() called")
         return CommentModel(
             id = null,
-            userEmail = currentMemberModel.userEmail,
-            userName = currentMemberModel.userName,
-            userPhoto = currentMemberModel.userPhoto,
-            userRank = currentMemberModel.userRank,
-            userScore = currentMemberModel.userScore.toLong(),
+            memberEmail = currentMemberModel.memberEmail,
+            memberName = currentMemberModel.memberName,
+            memberPhoto = currentMemberModel.memberPhoto,
+            memberRank = currentMemberModel.memberRank,
+            memberScore = currentMemberModel.memberScore.toLong(),
             date = System.currentTimeMillis(),
             comment = commentValue
         )
     }
 
-    fun insertComment(commentValue: String, reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        memberVerificationUseCase.invoke().run {
-            when(this) {
-                is JobState.Success.Registered<*> -> {
-                    val commentModel = createCommentModel(commentValue, this.data as FireStoreMemberModel)
-                    val insertCommentResult = insertCommentUseCase.invoke(commentModel, reviewTodoModel)
-                    LogUtil.i(Constants.TAG, "$THIS_NAME insertComment() : $insertCommentResult")
-                }
-                is JobState.Success.NotRegistered -> _jobStateLiveData.postValue(this)
-                is JobState.Error -> _jobStateLiveData.postValue(this)
-                else -> LogUtil.w(Constants.TAG, "$THIS_NAME insertComment() else : $this")
-            }
-        }
 
+    fun insertComment(commentValue: String, reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME insertComment() called")
+
+        val commentModel = createCommentModel(commentValue, memberModel)
+        insertCommentUseCase.invoke(commentModel, reviewTodoModel).let { result ->
+            _jobStateLiveData.postValue(result)
+        }
     }
 
     fun getComments(model: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.v(Constants.TAG, "$THIS_NAME getComments() called")
 
         getCommentsUseCase.invoke(model).run {
             this.subscribeOn(Schedulers.io())
@@ -104,75 +102,73 @@ class DetailReviewViewModel(
                     }
 
                     override fun onNext(value: List<CommentDTO>) {
-                        LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
+                        LogUtil.i(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
 
                         viewModelScope.launch(ioDispatcher) {
-                            _getCommentJobStateLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
+                            _getCommentLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
                         }
                     }
 
                     override fun onError(e: Throwable) {
-                        LogUtil.e(Constants.TAG, "$THIS_NAME getComments() : onError")
-                        _getCommentJobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
+                        _getCommentLiveData.postValue(JobState.Error(R.string.request_error, e))
                     }
                 })
         }
     }
 
-    fun insertCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        insertCheckedUserUseCase.invoke(reviewTodoModel).run {
-            _insertCheckedUserJobStateLiveData.postValue(this)
+    fun insertCheckedMember(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME insertCheckedMember() called")
+        _jobStateLiveData.postValue(JobState.Loading)
+
+        insertCheckedMemberUseCase.invoke(reviewTodoModel).let { result ->
+            _jobStateLiveData.postValue(result)
         }
     }
 
-    fun getCheckedCurrentUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        getCheckedCurrentUserUseCase.invoke(reviewTodoModel).run {
-            when(this) {
-                is JobState.True -> {
-                    _getCheckedCurrentUserBooleanLiveData.postValue(true)
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() ${getCheckedCurrentUserBooleanLiveData.value}")
-                }
-                is JobState.False -> {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() True")
-                    _getCheckedCurrentUserBooleanLiveData.postValue(false)
-                }
-                is JobState.Error -> {
-                    LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentUser() Error")
-                    _getCheckedCurrentUserBooleanLiveData.postValue(false)
-                }
-            }
+    fun getCheckedCurrentMember(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedCurrentMember() called")
+
+        getCheckedCurrentMemberUseCase.invoke(reviewTodoModel).let { result ->
+            _jobStateLiveData.postValue(result)
+
+            if (result is JobState.True)
+                getCheckedCurrentMemberBooleanLiveData.postValue(true)
+            else
+                getCheckedCurrentMemberBooleanLiveData.postValue(false)
         }
     }
 
-    fun getCheckedUserCount(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+    fun getCheckedMemberCount(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedMemberCount() called")
 
-        getCheckedUserCountUseCase.invoke(reviewTodoModel).run {
+        getCheckedMemberCountUseCase.invoke(reviewTodoModel).run {
             this.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableObserver<Int>() {
                     override fun onComplete() {
-                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onComplete")
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedMemberCount() : onComplete")
                     }
 
                     override fun onNext(value: Int) {
-                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onNext : $value")
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedMemberCount() : onNext : $value")
 
                         viewModelScope.launch(ioDispatcher) {
-                            _getCheckedUserCountLiveData.postValue(value)
+                            _getCheckedMemberCountLiveData.postValue(value)
                         }
                     }
 
                     override fun onError(e: Throwable) {
-                        LogUtil.e(Constants.TAG, "$THIS_NAME getCheckedUserCount() : onError")
-                        _getCheckedUserCountLiveData.postValue(0)
+                        _getCheckedMemberCountLiveData.postValue(0)
                     }
                 })
         }
     }
 
-    fun deleteUnCheckedUser(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
-        deleteCheckedUserUseCase.invoke(reviewTodoModel).run {
-            _deleteCheckedUserLiveData.postValue(this)
+    fun deleteUnCheckedMember(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "$THIS_NAME deleteUnCheckedMember() called")
+
+        deleteCheckedMemberUseCase.invoke(reviewTodoModel).let { result ->
+            _jobStateLiveData.postValue(result)
         }
     }
 }

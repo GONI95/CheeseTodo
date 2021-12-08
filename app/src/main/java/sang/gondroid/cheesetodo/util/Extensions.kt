@@ -5,21 +5,13 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.google.android.gms.common.util.Base64Utils
 import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.BaseModel
-import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.widget.base.BaseAdapter
-import java.security.KeyPairGenerator
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.security.Signature
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.crypto.Cipher
 
 /**
  * 1. 일반적인 Generic Function Body에서 타입 T는 런타임에는 Type erasure 때문에 접근이 불가능
@@ -53,18 +45,18 @@ fun Long.toUserRank() : String? {
     with(CheeseTodoApplication.appContext) {
         LogUtil.i(Constants.TAG, "toUserRank() : $value")
         return when (value) {
-            in 0..100 -> this?.getString(UserRank.Level1.userRankStringId)
-            in 100..200 -> this?.getString(UserRank.Level2.userRankStringId)
-            in 200..300 -> this?.getString(UserRank.Level3.userRankStringId)
-            in 300..400 -> this?.getString(UserRank.Level4.userRankStringId)
-            in 400..500 -> this?.getString(UserRank.Level5.userRankStringId)
-            in 500..600 -> this?.getString(UserRank.Level6.userRankStringId)
-            in 600..700 -> this?.getString(UserRank.Level7.userRankStringId)
-            in 700..800 -> this?.getString(UserRank.Level8.userRankStringId)
-            in 800..900 -> this?.getString(UserRank.Level9.userRankStringId)
-            in 900..1000 -> this?.getString(UserRank.Level10.userRankStringId)
-            in 1000..1100 -> this?.getString(UserRank.Level11.userRankStringId)
-            else -> this?.getString(UserRank.Level12.userRankStringId)
+            in 0..100 -> this?.getString(MemberRank.Level1.memberRankStringId)
+            in 100..200 -> this?.getString(MemberRank.Level2.memberRankStringId)
+            in 200..300 -> this?.getString(MemberRank.Level3.memberRankStringId)
+            in 300..400 -> this?.getString(MemberRank.Level4.memberRankStringId)
+            in 400..500 -> this?.getString(MemberRank.Level5.memberRankStringId)
+            in 500..600 -> this?.getString(MemberRank.Level6.memberRankStringId)
+            in 600..700 -> this?.getString(MemberRank.Level7.memberRankStringId)
+            in 700..800 -> this?.getString(MemberRank.Level8.memberRankStringId)
+            in 800..900 -> this?.getString(MemberRank.Level9.memberRankStringId)
+            in 900..1000 -> this?.getString(MemberRank.Level10.memberRankStringId)
+            in 1000..1100 -> this?.getString(MemberRank.Level11.memberRankStringId)
+            else -> this?.getString(MemberRank.Level12.memberRankStringId)
         }
     }
 }

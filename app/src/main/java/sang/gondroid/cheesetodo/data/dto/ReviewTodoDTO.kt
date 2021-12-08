@@ -9,9 +9,9 @@ import sang.gondroid.cheesetodo.util.TodoCategory
 
 data class ReviewTodoDTO(
     val modelId: Long = 0,
-    val userEmail: String = "",
-    val userName: String = "",
-    val userPhoto: String = "",
+    val memberEmail: String = "",
+    val memberName: String = "",
+    val memberPhoto: String = "",
     val category: TodoCategory = TodoCategory.ALL,
     val date: Long = 0,
     val title: String = "",
