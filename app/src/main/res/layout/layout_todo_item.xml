@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/todoItemTitle"
+                        android:id="@+id/todo_item_title_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -47,13 +47,13 @@
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
-                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
+                        app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                        app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="제목" />
 
                     <TextView
-                        android:id="@+id/todoItemDate"
+                        android:id="@+id/todo_item_date_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -62,22 +62,22 @@
                         android:text="@{ExtensionsKt.toDateFormat(todoItem.date)}"
                         android:textSize="10sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
+                        app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
                         app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
+                        app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/todoItemImportance"
                         tools:text="날짜" />
 
                     <TextView
-                        android:id="@+id/todoItemCategory"
+                        android:id="@+id/todo_item_category_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:maxLength="20"
                         android:text="@{todoItem.category.categoryNameId}"
                         android:textSize="10sp"
-                        app:layout_constraintStart_toStartOf="@+id/verticalLeftGuideline"
-                        app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
+                        app:layout_constraintStart_toStartOf="@+id/vertical_left_guideline"
+                        app:layout_constraintTop_toBottomOf="@+id/todo_item_title_textView"
                         tools:text="카테고리" />
 
                     <TextView
@@ -89,20 +89,20 @@
                         android:maxLength="20"
                         android:text="@{ExtensionsKt.toImportanceString(todoItem.importanceId)}"
                         android:textSize="10sp"
-                        app:layout_constraintEnd_toStartOf="@+id/verticalRightGuideline"
-                        app:layout_constraintStart_toEndOf="@+id/todoItemCategory"
-                        app:layout_constraintTop_toBottomOf="@+id/todoItemTitle"
+                        app:layout_constraintEnd_toStartOf="@+id/vertical_right_guideline"
+                        app:layout_constraintStart_toEndOf="@+id/todo_item_category_textView"
+                        app:layout_constraintTop_toBottomOf="@+id/todo_item_title_textView"
                         tools:text="중요도" />
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/verticalLeftGuideline"
+                        android:id="@+id/vertical_left_guideline"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.1" />
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/verticalRightGuideline"
+                        android:id="@+id/vertical_right_guideline"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"

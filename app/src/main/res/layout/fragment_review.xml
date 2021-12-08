@@ -41,7 +41,7 @@
             android:id="@+id/layout_connected_Group"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:constraint_referenced_ids="toolbar, welcomeUserTextView, reviewRefreshLayout"
+            app:constraint_referenced_ids="toolbar, welcome_user_textView, review_todo_swipeRefreshLayout"
             tools:visibility="visible"
             tools:ignore="NotSibling" />
 
@@ -56,14 +56,14 @@
             android:theme="@style/Widget.CheeseTodo.SearchView">
 
             <TextView
-                android:id="@+id/welcomeUserTextView"
+                android:id="@+id/welcome_user_textView"
                 style="@style/ThemeOverlay.CheeseTodo.Toobar.TextView"
                 android:text="@{displayName != null ? String.format(@string/use_as_a_member, displayName) : @string/use_as_a_non_member}"
                 tools:text="어서오세요." />
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/reviewRefreshLayout"
+            android:id="@+id/review_todo_swipeRefreshLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +76,7 @@
             app:refreshing="@{reviewViewModel.isLoading}">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reviewTodoRecyclerView"
+                android:id="@+id/review_todo_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -85,7 +85,7 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout
-            android:id="@+id/searchHistoryLayout"
+            android:id="@+id/search_history_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -103,17 +103,17 @@
                 android:paddingHorizontal="10dp">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/save_mode_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/search_history_save_mode"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
-                    app:layout_constraintEnd_toStartOf="@+id/searchHistorySaveMode"
+                    app:layout_constraintEnd_toStartOf="@+id/search_history_saveMode_switch"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/searchHistorySaveMode"
+                    android:id="@+id/search_history_saveMode_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
@@ -125,7 +125,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/searchHistoryClear"
+                    android:id="@+id/search_history_clear_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -142,24 +142,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/light_gray"
-                    app:layout_constraintBottom_toTopOf="@+id/searchHistoryRecyclerview"
+                    app:layout_constraintBottom_toTopOf="@+id/search_history_recyclerview"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/searchHistorySaveMode" />
+                    app:layout_constraintTop_toBottomOf="@+id/search_history_saveMode_switch" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/searchHistoryRecyclerview"
+                    android:id="@+id/search_history_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toTopOf="@+id/recyclerViewBottomLine"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerView_bottom_line"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerViewTopLine"
                     app:setAdapter="@{historyAdapter}" />
 
                 <View
-                    android:id="@+id/recyclerViewBottomLine"
+                    android:id="@+id/recyclerView_bottom_line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/black"

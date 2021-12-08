@@ -3,6 +3,8 @@ package sang.gondroid.cheesetodo.presentation.review
 import android.view.View
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import org.koin.android.ext.android.inject
 import sang.gondroid.cheesetodo.R
@@ -53,8 +55,8 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
             val model = it.getSerializable("ReviewTodoItemData") as ReviewTodoModel
             binding.reviewTodoModel = model
             viewModel.getComments(model)
-            viewModel.getCheckedCurrentUser(model)
-            viewModel.getCheckedUserCount(model)
+            viewModel.getCheckedCurrentMember(model)
+            viewModel.getCheckedMemberCount(model)
             observeData()
         }
     }
@@ -72,15 +74,13 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
      * Gon : like 추가 작업 [ onCheckedChanged 리스너 사용 시 Review 열람할 때 checked 값으로 인해서 passCount가 증가 ]
      */
     fun onClickPassButton(view: View, reviewTodoModel : ReviewTodoModel) {
-        LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton ... ")
-
         if (view is CheckBox && view.isChecked) {
             LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton checked")
-            viewModel.insertCheckedUser(reviewTodoModel)
+            viewModel.insertCheckedMember(reviewTodoModel)
         }
         else {
             LogUtil.d(Constants.TAG, "$THIS_NAME insertPassButton not checked")
-            viewModel.deleteUnCheckedUser(reviewTodoModel)
+            viewModel.deleteUnCheckedMember(reviewTodoModel)
         }
     }
 
@@ -104,47 +104,61 @@ class DetailReviewActivity : BaseActivity<DetailReviewViewModel, ActivityDetailR
             }
         })
 
-        viewModel.getCommentJobStateLiveData.observe(this@DetailReviewActivity, Observer {
+        viewModel.memberVerificationLiveData.observe(this@DetailReviewActivity, Observer {
+            LogUtil.d(Constants.TAG, "$THIS_NAME, memberVerificationLiveData : $it ")
+            when(it) {
+                is JobState.Success.NotRegistered -> handleFalseState()
+                is JobState.False -> handleFalseState()
+                is JobState.Error -> handleErrorState(it)
+                is JobState.Uninitialized -> handleUninitialized()
+            }
+        })
+
+        viewModel.getCommentLiveData.observe(this@DetailReviewActivity, Observer {
             when(it) {
                 is JobState.True.Result<*> -> {
                     LogUtil.d(Constants.TAG, "$THIS_NAME getCommentJobStateLiveData True")
                     commentAdapter.submitList(it.data as List<CommentModel>)
                 }
-                is JobState.Error -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
-                }
+                is JobState.Error -> handleErrorState(it)
+                is JobState.Uninitialized -> handleUninitialized()
             }
         })
 
-        viewModel.insertCheckedUserJobStateLiveData.observe(this@DetailReviewActivity, Observer {
+        viewModel.jobStateLiveData.observe(this@DetailReviewActivity, Observer {
+            LogUtil.d(Constants.TAG, "$THIS_NAME, jobStateLiveData : $it ")
             when(it) {
-                is JobState.False -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.insert_pass_information_job_error, Toast.LENGTH_SHORT).show()
-                }
-                is JobState.Error -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-
-        viewModel.getCheckedCurrentUserBooleanLiveData.observe(this@DetailReviewActivity, Observer {
-            when(it) {
-                false -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.get_pass_information_job_error, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-
-        viewModel.deleteCheckedUserLiveData.observe(this@DetailReviewActivity, Observer {
-            when(it) {
-                is JobState.False -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.delete_pass_information_job_error, Toast.LENGTH_SHORT).show()
-                }
-                is JobState.Error -> {
-                    Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_SHORT).show()
-                }
+                is JobState.False -> handleFalseState()
+                is JobState.Error -> handleErrorState(it)
+                is JobState.Uninitialized -> handleUninitialized()
             }
         })
     }
 
+    /**
+     * Gon : FirebaseAuth CurrentUser 또는 FirebaseAuth CurrentUser 하위 정보가 null인 경우 호출
+     *       [update - 21.12.8]
+     */
+    private fun handleUninitialized() {
+        LogUtil.v(Constants.TAG, "$THIS_NAME handleUninitialized() called")
+        Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Gon : 공통적으로 JobState.False 반환되면, Toast Message를 표시
+     *       [update - 21.12.8]
+     */
+    private fun handleFalseState() {
+        LogUtil.w(Constants.TAG, "$THIS_NAME handleFalseState() called")
+        Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Gon : 공통적으로 JobState.Error 반환되면, Toast Message를 표시하고, SignIn Require 표시
+     *       [update - 21.12.8]
+     */
+    private fun handleErrorState(state: JobState.Error) = with(binding) {
+        LogUtil.e(Constants.TAG, "$THIS_NAME handleErrorState() : ${getString(state.messageId, state.e)}")
+        Toast.makeText(this@DetailReviewActivity, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
+    }
 }

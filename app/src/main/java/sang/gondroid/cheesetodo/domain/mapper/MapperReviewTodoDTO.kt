@@ -12,9 +12,9 @@ class MapperReviewTodoDTO(
     override suspend fun map(input: ReviewTodoModel): ReviewTodoDTO = withContext(ioDispatcher) {
         return@withContext ReviewTodoDTO(
             modelId = input.modelId,
-            userEmail = input.userEmail,
-            userName = input.userName,
-            userPhoto = input.userPhoto,
+            memberEmail = input.memberEmail,
+            memberName = input.memberName,
+            memberPhoto = input.memberPhoto,
             category = input.category,
             date = input.date,
             title = input.title,

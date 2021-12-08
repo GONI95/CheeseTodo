@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/reviewCardView"
+            android:id="@+id/review_cardView"
             style="@style/Widget.CheeseTodo.CardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/reviewTodoTitle"
+                    android:id="@+id/review_todo_title_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -52,7 +52,7 @@
                     tools:text="제목" />
 
                 <TextView
-                    android:id="@+id/reviewTodoDate"
+                    android:id="@+id/review_todo_date_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -62,26 +62,26 @@
                     android:textSize="10sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/displayNameTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/display_name_textView"
                     tools:text="2020 10 23" />
 
                 <TextView
-                    android:id="@+id/displayNameTextView"
+                    android:id="@+id/display_name_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="@{reviewTodoModel.userName}"
+                    android:text="@{reviewTodoModel.memberName}"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/reviewTodoDate"
-                    app:layout_constraintEnd_toStartOf="@+id/verticalGuideline"
+                    app:layout_constraintBottom_toTopOf="@+id/review_todo_date_textView"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/review_todo_title_textView"
                     tools:text="이상곤" />
 
                 <ImageView
@@ -92,15 +92,15 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:src="@drawable/ic_cheese"
-                    app:imageUrl="@{reviewTodoModel.userPhoto.toString()}"
+                    app:imageUrl="@{reviewTodoModel.memberPhoto.toString()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/reviewTodoTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/review_todo_title_textView"
                     app:layout_constraintVertical_bias="0.0"
                     app:srcCompat="@drawable/ic_cheese" />
 
                 <TextView
-                    android:id="@+id/reviewTodoCategory"
+                    android:id="@+id/review_todo_category_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -110,11 +110,11 @@
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/verticalGuideline" />
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline" />
 
 
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/verticalGuideline"
+                    android:id="@+id/vertical_guideline"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"

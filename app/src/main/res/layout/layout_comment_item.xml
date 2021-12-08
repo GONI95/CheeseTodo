@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/commentCardView"
+            android:id="@+id/comment_cardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/commentValueTextView"
+                    android:id="@+id/comment_value_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -48,12 +48,12 @@
                     android:transitionName="@string/title_transition_name"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/commentUserPhotoimageView"
-                    app:layout_constraintTop_toBottomOf="@+id/commentUserNameTextView"
+                    app:layout_constraintStart_toEndOf="@+id/commentmemberPhotoimageView"
+                    app:layout_constraintTop_toBottomOf="@+id/commentmemberNameTextView"
                     tools:text="열공하셨네요" />
 
                 <TextView
-                    android:id="@+id/commentDateTextView"
+                    android:id="@+id/comment_date_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -69,29 +69,29 @@
                     tools:text="2020 10 23" />
 
                 <TextView
-                    android:id="@+id/commentUserNameTextView"
+                    android:id="@+id/comment_member_name_textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:text="@{commentModel.userName}"
+                    android:text="@{commentModel.memberName}"
                     android:textSize="10sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/verticalGuideline"
-                    app:layout_constraintStart_toEndOf="@+id/commentUserPhotoimageView"
+                    app:layout_constraintStart_toEndOf="@+id/comment_member_photo_imageView"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="이상곤" />
 
                 <ImageView
-                    android:id="@+id/commentUserPhotoimageView"
+                    android:id="@+id/comment_member_photo_imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:src="@drawable/ic_cheese"
-                    app:imageUrl="@{commentModel.userPhoto}"
+                    app:imageUrl="@{commentModel.memberPhoto}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

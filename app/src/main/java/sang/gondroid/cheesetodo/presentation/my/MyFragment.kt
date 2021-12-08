@@ -168,7 +168,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
          *       [update - 21.12.3]
          */
         viewModel.signInStateLiveData.observe(viewLifecycleOwner, Observer {
-            LogUtil.i(Constants.TAG, "$THIS_NAME observeData signInStateLiveData : ${it}")
+            LogUtil.d(Constants.TAG, "$THIS_NAME observeData signInStateLiveData : ${it}")
             when (it) {
                 is JobState.Loading -> handleLoadingState()
                 is JobState.Signin -> handleSignInState()
@@ -249,8 +249,7 @@ class MyFragment : BaseFragment<MyViewModel, FragmentMyBinding>() {
      */
     @Suppress("UNCHECKED_CAST")
     private fun handleSuccessState(state: JobState.Success) = with(binding) {
-        LogUtil.v(Constants.TAG, "$THIS_NAME handleSuccessState() called")
-        LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() : $state")
+        LogUtil.d(Constants.TAG, "$THIS_NAME handleSuccessState() called : $state")
 
         when(state) {
             is JobState.Success.Registered<*> -> {

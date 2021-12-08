@@ -16,7 +16,7 @@
         <!-- ?attr/selectableItemBackground : layout이 선택되도록 설정 -->
 
         <TextView
-            android:id="@+id/historyValueTv"
+            android:id="@+id/history_value_textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -26,12 +26,12 @@
             android:text="@{searchHistoryModel.value}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/historyDateTv"
+            app:layout_constraintEnd_toStartOf="@+id/history_date_textView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/historyDateTv"
+            android:id="@+id/history_date_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -40,11 +40,11 @@
             android:text="@{searchHistoryModel.timeSet}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/historyDeleteImageView"
+            app:layout_constraintEnd_toStartOf="@+id/history_delete_imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/historyDeleteImageView"
+            android:id="@+id/history_delete_imageView"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginTop="8dp"

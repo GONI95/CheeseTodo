@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="user_collection">Users</string>
-    <string name="user_email">userEmail</string>
-    <string name="user_name">userName</string>
-    <string name="user_photo">userPhoto</string>
-    <string name="user_uid">userUid</string>
-    <string name="user_todo_count">userTodoCount</string>
-    <string name="user_todo_info">userTodoInfo</string>
-    <string name="user_rank">userRank</string>
-    <string name="user_score">userScore</string>
+    <string name="member_collection">Member</string>
+    <string name="member_email">memberEmail</string>
+    <string name="member_name">memberName</string>
+    <string name="member_photo">memberPhoto</string>
+    <string name="member_uid">memberUid</string>
+    <string name="member_todo_count">memberTodoCount</string>
+    <string name="member_todo_info">memberTodoInfo</string>
+    <string name="member_rank">memberRank</string>
+    <string name="member_score">memberScore</string>
 
     <string name="review_todo_collection">ReviewTodo</string>
     <string name="review_comments_collection">comments</string>
-    <string name="checked_user_collection">checked_users</string>
+    <string name="checked_member_collection">checked_member</string>
 
     <string name="review_id">modelId</string>
     <string name="review_date">date</string>

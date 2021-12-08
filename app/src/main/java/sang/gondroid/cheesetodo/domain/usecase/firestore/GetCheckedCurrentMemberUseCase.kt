@@ -10,12 +10,13 @@ import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
 
-class InsertCheckedUserUseCase(private val reviewTodoRepository: ReviewTodoRepository, private val ioDispatcher: CoroutineDispatcher) {
+class GetCheckedCurrentMemberUseCase(private val reviewTodoRepository: ReviewTodoRepository, private val ioDispatcher: CoroutineDispatcher) {
 
     /**
-     * Firestore에 ReviewTodo의 CheckedUser 컬렉션에 Insert 작업 요청
+     * Firestore에 ReviewTodo의 checked_users 컬렉션에 Get 작업 요청
      */
-    suspend operator fun invoke(reviewTodoModel: ReviewTodoModel) : JobState {
-        return reviewTodoRepository.insertCheckedUser(reviewTodoModel)
+    suspend operator fun invoke(model: ReviewTodoModel) : JobState = withContext(ioDispatcher) {
+        LogUtil.d(Constants.TAG, "GetCheckedCurrentMemberUseCase getCheckedCurrentMember()")
+        return@withContext reviewTodoRepository.getCheckedCurrentMember(model)
     }
 }

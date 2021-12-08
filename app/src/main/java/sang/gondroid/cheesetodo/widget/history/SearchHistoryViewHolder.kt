@@ -28,7 +28,7 @@ class SearchHistoryViewHolder(
             onItemClick(it, adapterPosition)
         }
 
-        binding.historyValueTv.setOnClickListener {
+        binding.historyValueTextView.setOnClickListener {
             LogUtil.d(Constants.TAG, "$THIS_NAME, setOnClickListener()dd called : 사용자 이벤트가 발생했습니다. (TextView)")
 
             onItemClick(it, adapterPosition)

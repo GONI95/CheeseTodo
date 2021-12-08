@@ -26,9 +26,9 @@ class ReviewViewModel(
     private val THIS_NAME = this::class.simpleName
 
     // JobState 상태가 초기화되지 않은 값으로 초기화
-    private var _jobStateLiveData = MutableLiveData<JobState>()
-    val jobStateLiveData : LiveData<JobState>
-        get() = _jobStateLiveData
+    private var _getReviewTodoLiveData = MutableLiveData<JobState>()
+    val getReviewTodoLiveData : LiveData<JobState>
+        get() = _getReviewTodoLiveData
 
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean>
@@ -39,17 +39,8 @@ class ReviewViewModel(
      *       [update - 21.11.18]
      */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
-        getReviewTodoUseCase.invoke().also { jobState ->
-            _jobStateLiveData.postValue(jobState)
-
-            when(jobState) {
-                is JobState.True.Result<*> ->
-                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() ReviewTodo 가져오기 성공")
-                is JobState.Error ->
-                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() Error 발생 : ${jobState.e}")
-                else ->
-                    LogUtil.d(Constants.TAG, "$THIS_NAME HandlerFireStore getReviewTodo() 알 수 없는 반환값")
-            }
+        getReviewTodoUseCase.invoke().also { result ->
+            _getReviewTodoLiveData.postValue(result)
         }
     }
 
@@ -141,7 +132,7 @@ class ReviewViewModel(
         filterList.sortedByDescending { it.date }
 
         LogUtil.i(Constants.TAG, "$THIS_NAME, filterSearchHistory() ReviewTodoList : $filterList")
-        _jobStateLiveData.value = JobState.True.Result(filterList)
+        _getReviewTodoLiveData.value = JobState.True.Result(filterList)
 
     }
 }

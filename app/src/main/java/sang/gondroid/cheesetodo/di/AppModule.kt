@@ -86,18 +86,18 @@ val appModule = module {
     factory { UpdateTodoUseCase(get()) }
     factory { DeleteTodoUseCase(get()) }
 
-    factory { InsertReviewTodoUseCase(get()) }
-    factory { ValidateReviewTodoExistUseCase(get()) }
-    factory { GetReviewTodoUseCase(get()) }
+    factory { InsertReviewTodoUseCase(get(), get(named("io"))) }
+    factory { ValidateReviewTodoExistUseCase(get(), get(named("io"))) }
+    factory { GetReviewTodoUseCase(get(), get(named("io"))) }
 
-    factory { InsertCommentUseCase(get()) }
+    factory { InsertCommentUseCase(get(), get(named("io"))) }
     factory { MemberVerificationUseCase(get(), get(named("io"))) }
     factory { DeleteAccountUseCase(get(), get(named("io"))) }
     factory { GetCommentsUseCase(get(), get(named("io"))) }
-    factory { InsertCheckedUserUseCase(get(), get(named("io"))) }
-    factory { GetCheckedCurrentUserUseCase(get(), get(named("io"))) }
-    factory { DeleteCheckedUserUseCase(get(), get(named("io"))) }
-    factory { GetCheckedUserCountUseCase(get(), get(named("io"))) }
+    factory { InsertCheckedMemberUseCase(get(), get(named("io"))) }
+    factory { GetCheckedCurrentMemberUseCase(get(), get(named("io"))) }
+    factory { DeleteCheckedMemberUseCase(get(), get(named("io"))) }
+    factory { GetCheckedMemberCountUseCase(get(), get(named("io"))) }
 
     /**
      * FirebaseAuth

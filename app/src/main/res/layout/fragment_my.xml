@@ -32,13 +32,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <soup.neumorphism.NeumorphCardView
-                android:id="@+id/user_image_neumorph_cardView"
+                android:id="@+id/member_image_neumorph_cardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/user_name_textView"
+                app:layout_constraintBottom_toTopOf="@+id/member_name_textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/user_image_top_guideline"
+                app:layout_constraintTop_toTopOf="@+id/member_image_top_guideline"
                 app:neumorph_shapeAppearance="@style/Neumorph_Circle_Shape"
                 app:neumorph_shapeType="basin"
                 tools:ignore="MissingConstraints">
@@ -48,11 +48,11 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/user_imageView"
+                        android:id="@+id/member_imageView"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:imageUrl="@{fireStoreMemberModel.userPhoto.toString()}"
+                        app:imageUrl="@{fireStoreMemberModel.memberPhoto.toString()}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -62,16 +62,16 @@
             </soup.neumorphism.NeumorphCardView>
 
             <TextView
-                android:id="@+id/user_name_textView"
+                android:id="@+id/member_name_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cute_light"
-                android:text="@{fireStoreMemberModel.userName}"
+                android:text="@{fireStoreMemberModel.memberName}"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/user_image_bottom_guideline"
+                app:layout_constraintBottom_toTopOf="@+id/member_image_bottom_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_image_neumorph_cardView" />
+                app:layout_constraintTop_toBottomOf="@+id/member_image_neumorph_cardView" />
 
             <TextView
                 android:id="@+id/sign_out_button"
@@ -107,7 +107,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:visibility="gone"
-                app:constraint_referenced_ids="delete_account_button, sign_out_button, user_image_neumorph_cardView, user_info_layout"
+                app:constraint_referenced_ids="delete_account_button, sign_out_button, member_image_neumorph_cardView, member_name_textView, member_info_layout"
                 tools:visibility="visible" />
 
 
@@ -150,7 +150,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
             <LinearLayout
-                android:id="@+id/user_info_layout"
+                android:id="@+id/member_info_layout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="25dp"
@@ -163,7 +163,7 @@
                 app:layout_constraintTop_toTopOf="@+id/middle_guideline">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/user_review_todo_count_layout"
+                    android:id="@+id/member_review_todo_count_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -203,12 +203,12 @@
 
 
                     <TextView
-                        android:id="@+id/user_review_todo_count_textView"
+                        android:id="@+id/member_review_todo_count_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMemberModel.userTodoCount.toString()}"
+                        android:text="@{fireStoreMemberModel.memberTodoCount.toString()}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -219,7 +219,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/user_rank_Layout"
+                    android:id="@+id/member_rank_Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -259,12 +259,12 @@
 
 
                     <TextView
-                        android:id="@+id/user_rank_textView"
+                        android:id="@+id/member_rank_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMemberModel.userRank}"
+                        android:text="@{fireStoreMemberModel.memberRank}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -276,7 +276,7 @@
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/user_score_layout"
+                    android:id="@+id/member_score_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -316,12 +316,12 @@
 
 
                     <TextView
-                        android:id="@+id/user_score_textView"
+                        android:id="@+id/member_score_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/cute_light"
                         android:gravity="center_vertical"
-                        android:text="@{fireStoreMemberModel.userScore.toString()}"
+                        android:text="@{fireStoreMemberModel.memberScore.toString()}"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -335,7 +335,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/user_image_top_guideline"
+                android:id="@+id/member_image_top_guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"
@@ -345,7 +345,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/user_image_bottom_guideline"
+                android:id="@+id/member_image_bottom_guideline"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:orientation="horizontal"

@@ -11,12 +11,12 @@ class MapperToFireStoreMemberModel (
 
     override suspend fun map(input: FireStoreMemberDTO): FireStoreMemberModel = withContext(ioDispatcher) {
         return@withContext FireStoreMemberModel(
-            userName = input.userName,
-            userEmail = input.userEmail,
-            userPhoto = input.userPhoto,
-            userTodoCount = input.userTodoCount,
-            userScore = input.userScore,
-            userRank = input.userRank
+            memberName = input.memberName,
+            memberEmail = input.memberEmail,
+            memberPhoto = input.memberPhoto,
+            memberTodoCount = input.memberTodoCount,
+            memberScore = input.memberScore,
+            memberRank = input.memberRank
         )
     }
 }
