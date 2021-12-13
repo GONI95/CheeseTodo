@@ -45,4 +45,9 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewDataBinding> : AppCompa
 
         initViews()
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchData()
+    }
 }

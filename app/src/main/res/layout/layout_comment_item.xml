@@ -48,8 +48,8 @@
                     android:transitionName="@string/title_transition_name"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/commentmemberPhotoimageView"
-                    app:layout_constraintTop_toBottomOf="@+id/commentmemberNameTextView"
+                    app:layout_constraintStart_toEndOf="@+id/comment_member_photo_imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/comment_member_name_textView"
                     tools:text="열공하셨네요" />
 
                 <TextView
