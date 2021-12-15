@@ -1,5 +1,6 @@
 package sang.gondroid.cheesetodo.data.repository
 
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.data.db.FireStoreMemberDTO
@@ -14,12 +15,10 @@ class MemberRepositoryImpl (
 ) : MemberRepository {
 
     override suspend fun memberVerification(): JobState = withContext(ioDispatcher) {
-        val result = handlerFireStore.memberVerification()
+        return@withContext when (val result = handlerFireStore.memberVerification()) {
 
-        return@withContext when (result) {
-            is JobState.Success.Registered<*> -> {
-                JobState.Success.Registered(mapperToFireStoreMemberModel.map(result.data as FireStoreMemberDTO))
-            }
+            is JobState.Success.Registered<*> -> JobState.Success.Registered(mapperToFireStoreMemberModel.map(result.data as FireStoreMemberDTO))
+
             else -> result
         }
     }

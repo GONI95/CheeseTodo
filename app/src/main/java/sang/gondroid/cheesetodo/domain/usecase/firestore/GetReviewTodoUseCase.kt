@@ -1,5 +1,6 @@
 package sang.gondroid.cheesetodo.domain.usecase.firestore
 
+import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.data.repository.ReviewTodoRepository
@@ -12,7 +13,7 @@ class GetReviewTodoUseCase(
     /**
      * Firestore에 ReviewTodo의 Get 작업 요청
      */
-    suspend operator fun invoke(): JobState = withContext(ioDispatcher) {
+    suspend operator fun invoke(): Observable<JobState.True.Result<List<ReviewTodoModel>>> = withContext(ioDispatcher) {
         return@withContext reviewTodoRepository.getReviewTodo()
     }
 }

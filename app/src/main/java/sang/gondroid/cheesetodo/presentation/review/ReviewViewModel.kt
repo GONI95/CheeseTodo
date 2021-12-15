@@ -3,9 +3,14 @@ package sang.gondroid.cheesetodo.presentation.review
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import sang.gondroid.cheesetodo.R
+import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.domain.model.BaseModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
@@ -39,8 +44,24 @@ class ReviewViewModel(
      *       [update - 21.11.18]
      */
     override fun fetchData(): Job = viewModelScope.launch(ioDispatcher) {
-        getReviewTodoUseCase.invoke().also { result ->
-            _getReviewTodoLiveData.postValue(result)
+        getReviewTodoUseCase.invoke().run {
+            this.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<JobState.True.Result<List<ReviewTodoModel>>>() {
+                    override fun onComplete() {
+                        LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onComplete")
+                    }
+
+                    override fun onNext(value: JobState.True.Result<List<ReviewTodoModel>>) {
+                        LogUtil.i(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
+
+                        _getReviewTodoLiveData.postValue(value)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        _getReviewTodoLiveData.postValue(JobState.Error(R.string.request_error, e))
+                    }
+                })
         }
     }
 

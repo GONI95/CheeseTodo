@@ -5,11 +5,9 @@ import kotlinx.coroutines.withContext
 import sang.gondroid.cheesetodo.data.dto.CommentDTO
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 
-class MapperToCommentModel(
-    private val ioDispatcher: CoroutineDispatcher
-) : Mapper<CommentDTO, CommentModel> {
-    override suspend fun map(input: CommentDTO): CommentModel = withContext(ioDispatcher) {
-        return@withContext CommentModel(
+class MapperToCommentModel : Mapper<CommentDTO, CommentModel> {
+    override fun map(input: CommentDTO): CommentModel {
+        return CommentModel(
             id = null,
             memberEmail = input.memberEmail,
             memberName = input.memberName,
