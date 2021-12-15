@@ -60,17 +60,17 @@ val appModule = module {
      * Repository : Domain과 Data Layer 사이를 중재해주는 객체입니다.
      */
     single<TodoRepository> { TodoRepositoryImpl(get<TodoDao>(), get(named("io"))) }
-    single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(), get(named("io"))) }
+    single<ReviewTodoRepository> { ReviewTodoRepositoryImpl(get(), get(), get(), get(), get(), get(named("io"))) }
     single<MemberRepository> { MemberRepositoryImpl(get(), get(), get(named("io"))) }
 
     /**
      * Mapper : Model <-> DTO
      */
-    single { MapperReviewTodoDTO(get(named("io"))) }
-    single { MapperToReviewTodoModel(get(named("io"))) }
-    single { MapperToCommentModel(get(named("io"))) }
-    single { MapperToCommentDTO(get(named("io"))) }
-    single { MapperToFireStoreMemberModel(get(named("io"))) }
+    single { MapperReviewTodoDTO() }
+    single { MapperToReviewTodoModel() }
+    single { MapperToCommentModel() }
+    single { MapperToCommentDTO() }
+    single { MapperToFireStoreMemberModel() }
 
     /**
      * Database

@@ -96,17 +96,15 @@ class DetailReviewViewModel(
         getCommentsUseCase.invoke(model).run {
             this.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableObserver<List<CommentDTO>>() {
+                .subscribeWith(object: DisposableObserver<JobState.True.Result<List<CommentModel>>>() {
                     override fun onComplete() {
                         LogUtil.d(Constants.TAG, "$THIS_NAME getComments() : onComplete")
                     }
 
-                    override fun onNext(value: List<CommentDTO>) {
+                    override fun onNext(value: JobState.True.Result<List<CommentModel>>) {
                         LogUtil.i(Constants.TAG, "$THIS_NAME getComments() : onNext : $value")
 
-                        viewModelScope.launch(ioDispatcher) {
-                            _getCommentLiveData.postValue(JobState.True.Result(value.map { toCommentModel.map(it) }))
-                        }
+                        _getCommentLiveData.postValue(value)
                     }
 
                     override fun onError(e: Throwable) {
@@ -118,7 +116,6 @@ class DetailReviewViewModel(
 
     fun insertCheckedMember(reviewTodoModel: ReviewTodoModel) = viewModelScope.launch(ioDispatcher) {
         LogUtil.d(Constants.TAG, "$THIS_NAME insertCheckedMember() called")
-        _jobStateLiveData.postValue(JobState.Loading)
 
         insertCheckedMemberUseCase.invoke(reviewTodoModel).let { result ->
             _jobStateLiveData.postValue(result)
@@ -131,8 +128,8 @@ class DetailReviewViewModel(
         getCheckedCurrentMemberUseCase.invoke(reviewTodoModel).let { result ->
             _jobStateLiveData.postValue(result)
 
-            if (result is JobState.True)
-                getCheckedCurrentMemberBooleanLiveData.postValue(true)
+            if (result is JobState.True.Result<*>)
+                getCheckedCurrentMemberBooleanLiveData.postValue(result.data as Boolean)
             else
                 getCheckedCurrentMemberBooleanLiveData.postValue(false)
         }
@@ -144,17 +141,15 @@ class DetailReviewViewModel(
         getCheckedMemberCountUseCase.invoke(reviewTodoModel).run {
             this.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableObserver<Int>() {
+                .subscribeWith(object: DisposableObserver<JobState.True.Result<Int>>() {
                     override fun onComplete() {
                         LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedMemberCount() : onComplete")
                     }
 
-                    override fun onNext(value: Int) {
+                    override fun onNext(value: JobState.True.Result<Int>) {
                         LogUtil.d(Constants.TAG, "$THIS_NAME getCheckedMemberCount() : onNext : $value")
 
-                        viewModelScope.launch(ioDispatcher) {
-                            _getCheckedMemberCountLiveData.postValue(value)
-                        }
+                        _getCheckedMemberCountLiveData.postValue(value.data!!)
                     }
 
                     override fun onError(e: Throwable) {

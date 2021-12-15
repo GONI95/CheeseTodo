@@ -7,12 +7,10 @@ import sang.gondroid.cheesetodo.data.dto.ReviewTodoDTO
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 
-class MapperToReviewTodoModel(
-    private val ioDispatcher: CoroutineDispatcher
-) : Mapper<ReviewTodoDTO, ReviewTodoModel> {
+class MapperToReviewTodoModel : Mapper<ReviewTodoDTO, ReviewTodoModel> {
 
-    override suspend fun map(input: ReviewTodoDTO): ReviewTodoModel = withContext(ioDispatcher) {
-        return@withContext ReviewTodoModel(
+    override fun map(input: ReviewTodoDTO): ReviewTodoModel {
+        return ReviewTodoModel(
             id = null,
             modelId = input.modelId,
             memberEmail = input.memberEmail,
