@@ -17,10 +17,6 @@
             type="String" />
 
         <variable
-            name="todoCategory"
-            type="sang.gondroid.cheesetodo.util.TodoCategory" />
-
-        <variable
             name="detatilViewModel"
             type="sang.gondroid.cheesetodo.presentation.todocategory.DetailTodoViewModel" />
 
@@ -143,7 +139,6 @@
                 android:id="@+id/layout_write_mode_title"
                 layout="@layout/include_layout_write_mode_title"
                 bind:todoItem="@{todoItem}"
-                bind:todoCategory="@{todoCategory}"
                 bind:handler="@{handler}"
                 bind:readModeTitleText="@{readModeTitleText}"
                 android:layout_width="0dp"

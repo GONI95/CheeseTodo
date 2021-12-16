@@ -15,9 +15,9 @@ class TodoRepositoryImpl(
     override suspend fun getTodoList(): List<TodoEntity>
         = withContext(ioDispatcher) { todoDao.getAll() }
 
-    override suspend fun getTodoItem(id: Long): TodoEntity? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTodoItem(id: Long): TodoEntity
+        = withContext(ioDispatcher) { todoDao.getItem(id) }
+
 
     override suspend fun getTodoList_Category(category: String): List<TodoEntity>
         = withContext(ioDispatcher) { todoDao.getList_Category(category) }
