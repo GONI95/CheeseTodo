@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import org.koin.android.ext.android.bind
 import sang.gondroid.cheesetodo.widget.custom.CustomDialogClickListener
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import sang.gondroid.cheesetodo.CheeseTodoApplication
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.databinding.ActivityDetailTodoBinding
@@ -26,28 +27,28 @@ import kotlin.properties.Delegates
 class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoBinding>(),
     Toolbar.OnMenuItemClickListener {
     private val THIS_NAME = this::class.simpleName
-    private lateinit var model: TodoModel
-    private lateinit var categoryValue: TodoCategory
-    private var importanceValue by Delegates.notNull<Int>()
+    private lateinit var todoModel : TodoModel
 
-    override val viewModel: DetailTodoViewModel by viewModel()
+    override val viewModel: DetailTodoViewModel by viewModel() {
+        parametersOf(this.intent.getBundleExtra("TodoItemBundle"))
+    }
 
     override fun getDataBinding(): ActivityDetailTodoBinding =
         ActivityDetailTodoBinding.inflate(layoutInflater)
 
     override fun initViews() {
         super.initViews()
+        LogUtil.v(Constants.TAG, "$THIS_NAME initViews() called")
 
         /**
          * TodoCategoryFragment의 리사이클러뷰 클릭 이벤트를 통해 받은 Bundle 객체를 이용
          */
-        val bundle = this.intent.getBundleExtra("bundle")
-        bundle?.let {
-            model = it.getSerializable("TodoItemData") as TodoModel
-            categoryValue = model.category   //category 초기화
-            importanceValue = model.importanceId    //중요도 초기화
+        val bundle = this.intent.getBundleExtra("TodoItemBundle")
 
-            binding.todoItem = model
+        todoModel = (bundle?.getSerializable("TodoItemData") as TodoModel).let {
+            LogUtil.v(Constants.TAG, "$THIS_NAME bundle getSerializable")
+            binding.todoItem = it
+            it
         }
 
         binding.detatilViewModel = viewModel
@@ -129,7 +130,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
      *       [21.11.21]
      */
     fun onImportanceItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        importanceValue = position
+        todoModel.importanceId = position
     }
 
     /**
@@ -138,7 +139,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
      *       [21.11.21]
      */
     fun onCategoryCheckChanged(group: RadioGroup?, checkedId: Int) {
-        categoryValue = when (checkedId) {
+        todoModel.category = when (checkedId) {
             R.id.android_radio_button -> TodoCategory.ANDROID
             R.id.lauguage_radio_button -> TodoCategory.LANGUAGE
             R.id.db_radio_button -> TodoCategory.DB
@@ -171,7 +172,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 if (layoutReadModeInfo.readModeDifficultTextView.text.isNullOrEmpty())
                     Toast.makeText(this@DetailTodoActivity, R.string.there_are_blank_entries, Toast.LENGTH_LONG).show()
                 else
-                    viewModel.uploadReviewTodo(model)
+                    viewModel.uploadReviewTodo(todoModel)
             }
             true
         }
@@ -186,13 +187,13 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
                 val (titleText, todoText) =
                     layoutWriteModeTitle.writeModeTitleEditText.text to layoutWriteModeInfo.writeModeTodoEditText.text
 
-                if (titleText.isNullOrEmpty()) layoutWriteModeTitle.writeModeTitleTextInputLayout.error = getString(R.string.please_enter_the_text)
-
-                else if (todoText.isNullOrEmpty()) layoutWriteModeInfo.writeModeTodoTextInputLayout.error = getString(R.string.please_enter_the_text)
-
-                else {
-                    TodoModel(model.id, model.date, categoryValue, importanceValue, titleText.toString(), todoText.toString(),
-                        layoutWriteModeInfo.writeModeDifficultEditText.text.toString()).let { viewModel.updateData(it) }
+                when {
+                    titleText.isNullOrEmpty() -> layoutWriteModeTitle.writeModeTitleTextInputLayout.error = getString(R.string.please_enter_the_text)
+                    todoText.isNullOrEmpty() -> layoutWriteModeInfo.writeModeTodoTextInputLayout.error = getString(R.string.please_enter_the_text)
+                    else -> {
+                        TodoModel(todoModel.id, todoModel.date, todoModel.category, todoModel.importanceId, titleText.toString(), todoText.toString(),
+                            layoutWriteModeInfo.writeModeDifficultEditText.text.toString()).let { viewModel.updateData(it) }
+                    }
                 }
             }
 
@@ -247,7 +248,7 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
             object : CustomDialogClickListener {
                 override fun onPositiveClick() {
                     LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Positive")
-                    viewModel.deleteData(model.id)
+                    todoModel.id?.let { viewModel.deleteData(it) }
                 }
                 override fun onNegativeClick() {
                     LogUtil.v(Constants.TAG, "$THIS_NAME onMenuItemClick CustomDialog Negative")
@@ -256,29 +257,46 @@ class DetailTodoActivity : BaseActivity<DetailTodoViewModel, ActivityDetailTodoB
     }
 
     override fun observeData() {
-        viewModel.jobState.observe(this) { jobState ->
-
+        viewModel.JobStateLiveData.observe(this) { jobState ->
             when (jobState) {
                 is JobState.Error -> {
-                    LogUtil.e(Constants.TAG, "$THIS_NAME observeData() jobState : ${getString(jobState.messageId, jobState.e)}")
+                    LogUtil.e(Constants.TAG, "$THIS_NAME observeData() JobStateLiveData : ${getString(jobState.messageId, jobState.e)}")
                     Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
 
                     finish()
                 }
                 is JobState.True -> {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() JobStateLiveData : $jobState")
 
                     finish()
                 }
                 is JobState.Uninitialized -> {
-                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() jobState : $jobState")
+                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() JobStateLiveData : $jobState")
                     Toast.makeText(this, R.string.sign_in_is_required, Toast.LENGTH_LONG).show()
                 }
-                else -> {
-                    LogUtil.w(Constants.TAG, "$THIS_NAME observeData() jobState else $jobState")
-                    Toast.makeText(this, R.string.request_false, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.updateDataLiveData.observe(this) { jobState ->
+            when (jobState) {
+                is JobState.Error -> {
+                    LogUtil.e(Constants.TAG, "$THIS_NAME observeData() updateDataLiveData : ${getString(jobState.messageId, jobState.e)}")
+                    Toast.makeText(this, R.string.an_error_occurred, Toast.LENGTH_LONG).show()
+
+                    finish()
+                }
+                is JobState.True -> {
+                    LogUtil.v(Constants.TAG, "$THIS_NAME observeData() updateDataLiveData : $jobState")
+
+                    binding.readModeConstraintLayout.visibility = View.VISIBLE
+                    binding.writeModeConstraintLayout.visibility = View.GONE
                 }
             }
+        }
+
+        viewModel.todoModelLiveData.observe(this) {
+            LogUtil.v(Constants.TAG, "$THIS_NAME observeData() todoModelLiveData : $todoModel")
+            binding.todoItem = it
         }
     }
 }

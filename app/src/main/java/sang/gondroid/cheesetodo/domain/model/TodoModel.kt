@@ -6,8 +6,8 @@ import sang.gondroid.cheesetodo.util.TodoCategory
 data class TodoModel(
     override val id: Long?,
     val date: Long,
-    val category: TodoCategory,
-    val importanceId: Int,
+    var category: TodoCategory,
+    var importanceId: Int,
     val title: String,
     val todo: String,
     val difficult: String?

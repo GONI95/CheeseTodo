@@ -23,10 +23,7 @@ import sang.gondroid.cheesetodo.data.preference.AppPreferenceManager
 import sang.gondroid.cheesetodo.data.preference.LiveSharedPreferences
 import sang.gondroid.cheesetodo.data.repository.*
 import sang.gondroid.cheesetodo.domain.mapper.*
-import sang.gondroid.cheesetodo.domain.usecase.DeleteTodoUseCase
-import sang.gondroid.cheesetodo.domain.usecase.GetTodoListUseCase
-import sang.gondroid.cheesetodo.domain.usecase.InsertTodoUseCase
-import sang.gondroid.cheesetodo.domain.usecase.UpdateTodoUseCase
+import sang.gondroid.cheesetodo.domain.usecase.*
 import sang.gondroid.cheesetodo.domain.usecase.firestore.*
 import sang.gondroid.cheesetodo.presentation.my.MyViewModel
 import sang.gondroid.cheesetodo.presentation.review.DetailReviewViewModel
@@ -52,7 +49,7 @@ val appModule = module {
     viewModel { ReviewViewModel(get(), get(), get(named("io"))) }
     viewModel { DetailReviewViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(named("io"))) }
     viewModel { InsertTodoViewModel(get<InsertTodoUseCase>(), get(named("io"))) }
-    viewModel { DetailTodoViewModel(get(), get(), get(), get(), get(), get(named("io"))) }
+    viewModel { DetailTodoViewModel(it[0], get(), get(), get(), get(), get(), get(), get(named("io"))) }
 
     viewModel { (todoCategory : TodoCategory) -> TodoCategoryViewModel(todoCategory, get()) }
 
@@ -83,6 +80,7 @@ val appModule = module {
      */
     factory { InsertTodoUseCase(get()) }
     factory { GetTodoListUseCase(get()) }
+    factory { GetTodoUseCase(get()) }
     factory { UpdateTodoUseCase(get()) }
     factory { DeleteTodoUseCase(get()) }
 

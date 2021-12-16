@@ -13,7 +13,7 @@ interface TodoDao {
     suspend fun getAll() : List<TodoEntity>
 
     @Query("SELECT * FROM todo_table WHERE id=:id")
-    suspend fun getItem(id : Long) : TodoEntity?
+    suspend fun getItem(id : Long) : TodoEntity
 
     @Query("SELECT * FROM todo_table WHERE category=:category")
     suspend fun getList_Category(category : String) : List<TodoEntity>

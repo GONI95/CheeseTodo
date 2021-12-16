@@ -1,18 +1,22 @@
 package sang.gondroid.cheesetodo.presentation.todocategory
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import sang.gondroid.cheesetodo.R
 import sang.gondroid.cheesetodo.domain.model.CommentModel
 import sang.gondroid.cheesetodo.domain.model.ReviewTodoModel
 import sang.gondroid.cheesetodo.domain.model.TodoModel
 import sang.gondroid.cheesetodo.domain.usecase.DeleteTodoUseCase
+import sang.gondroid.cheesetodo.domain.usecase.GetTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.UpdateTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.InsertReviewTodoUseCase
 import sang.gondroid.cheesetodo.domain.usecase.firestore.ValidateReviewTodoExistUseCase
@@ -21,49 +25,76 @@ import sang.gondroid.cheesetodo.util.Constants
 import sang.gondroid.cheesetodo.util.JobState
 import sang.gondroid.cheesetodo.util.LogUtil
 import java.lang.Exception
+import kotlin.properties.Delegates
 
-class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
-                          private val deleteTodoUseCase: DeleteTodoUseCase,
-                          private val insertReviewTodoUseCase: InsertReviewTodoUseCase,
-                          private val validateReviewTodoExistUseCase: ValidateReviewTodoExistUseCase,
-                          private val firebaseAuth: FirebaseAuth,
-                          private val ioDispatcher: CoroutineDispatcher
+class DetailTodoViewModel(
+    private val bundle: Bundle,
+    private val updateTodoUseCase: UpdateTodoUseCase,
+    private val deleteTodoUseCase: DeleteTodoUseCase,
+    private val getTodoUseCase: GetTodoUseCase,
+    private val insertReviewTodoUseCase: InsertReviewTodoUseCase,
+    private val validateReviewTodoExistUseCase: ValidateReviewTodoExistUseCase,
+    private val firebaseAuth: FirebaseAuth,
+    private val ioDispatcher: CoroutineDispatcher
 ): BaseViewModel() {
     private val THIS_NAME = this::class.simpleName
 
-    private var _jobState : MutableLiveData<JobState> = MutableLiveData()
-    val jobState : LiveData<JobState>
-        get() = _jobState
+    private var _updateDataLiveData = MutableLiveData<JobState>()
+    val updateDataLiveData : LiveData<JobState>
+        get() = _updateDataLiveData
+
+    private var _JobStateLiveData = MutableLiveData<JobState>()
+    val JobStateLiveData : LiveData<JobState>
+        get() = _JobStateLiveData
+
+    private var _todoModelLiveData = MutableLiveData<TodoModel>()
+    val todoModelLiveData : LiveData<TodoModel>
+        get() = _todoModelLiveData
+
+    private var todoModelId by Delegates.notNull<Long>()
+
+    init {
+        todoModelId = bundle.let {
+            it.getSerializable("TodoItemData") as TodoModel
+        }.id!!
+        LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() $todoModelId")
+    }
+
+    override fun fetchData() = viewModelScope.launch {
+        todoModelId.let {
+            val result = getTodoUseCase.invoke(it)
+
+            LogUtil.v(Constants.TAG, "$THIS_NAME fetchData() $result")
+            _todoModelLiveData.postValue(result)
+        }
+    }
 
     fun updateData(todoModel: TodoModel) = viewModelScope.launch {
         LogUtil.v(Constants.TAG, "$THIS_NAME updateData() called")
 
         try {
-            launch(Dispatchers.IO) {
-                updateTodoUseCase.invoke(todoModel)
-            }.join()
-
-            _jobState.postValue(JobState.True)
+            updateTodoUseCase.invoke(todoModel).let {
+                _updateDataLiveData.postValue(JobState.True)
+            }
+            fetchData()
 
         } catch (e: Exception) {
             LogUtil.e(Constants.TAG, "$THIS_NAME updateData() JobState.Error")
-            _jobState.postValue(JobState.Error(R.string.request_error, e))
+            _updateDataLiveData.postValue(JobState.Error(R.string.request_error, e))
         }
     }
 
-    fun deleteData(id: Long?) = viewModelScope.launch {
+    fun deleteData(id: Long) = viewModelScope.launch {
         LogUtil.v(Constants.TAG, "$THIS_NAME deleteData() called")
 
         try {
-            launch(Dispatchers.IO) {
-                id?.let { deleteTodoUseCase.invoke(it) }
-            }.join()
-
-            _jobState.postValue(JobState.True)
+            deleteTodoUseCase.invoke(id).let {
+                _JobStateLiveData.postValue(JobState.True)
+            }
 
         } catch (e: Exception) {
             LogUtil.e(Constants.TAG, "$THIS_NAME deleteData() JobState.Error")
-            _jobState.postValue(JobState.Error(R.string.request_error, e))
+            _JobStateLiveData.postValue(JobState.Error(R.string.request_error, e))
         }
     }
 
@@ -101,10 +132,10 @@ class DetailTodoViewModel(private val updateTodoUseCase: UpdateTodoUseCase,
                 is JobState.True -> {
                     val insertState = insertReviewTodoUseCase.invoke(reviewTodoModel)
 
-                    _jobState.postValue(insertState)
+                    _JobStateLiveData.postValue(insertState)
                 }
-                else -> _jobState.postValue(existState)
+                else -> _JobStateLiveData.postValue(existState)
             }
-        } ?: kotlin.run { _jobState.postValue(JobState.Uninitialized) }
+        } ?: kotlin.run { _JobStateLiveData.postValue(JobState.Uninitialized) }
     }
 }

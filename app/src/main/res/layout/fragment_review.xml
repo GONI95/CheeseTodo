@@ -116,12 +116,11 @@
                     android:id="@+id/search_history_saveMode_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
                     android:checked="@{switchState}"
-                    android:theme="@style/Widget.CheeseTodo.SwitchButton"
                     android:onCheckedChanged="@{(switch, checked) -> reviewViewModel.onHistoryCheckedChanged(checked)}"
+                    android:theme="@style/Widget.CheeseTodo.SwitchButton"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopLine"
-                    app:layout_constraintStart_toEndOf="@+id/textView"
+                    app:layout_constraintStart_toEndOf="@+id/save_mode_textView"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button

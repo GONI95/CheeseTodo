@@ -38,7 +38,7 @@ class TodoCategoryFragment : BaseFragment<TodoCategoryViewModel, FragmentTodoCat
                 bundle.putSerializable("TodoItemData", model)
 
                 Intent(requireContext(), DetailTodoActivity::class.java).apply {
-                    putExtra("bundle", bundle)
+                    putExtra("TodoItemBundle", bundle)
                     startActivity(this, getBudle(view))
                 }
             }
